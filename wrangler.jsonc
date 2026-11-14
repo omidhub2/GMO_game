@@ -16,7 +16,7 @@
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "${HYPERDRIVE_ID}",
+      "id": "31c412d866ba41a3a4140c839d218329",
       "localConnectionString": "postgresql://postgres:postgres@127.0.0.1:5432/gmo_arena"
     }
   ]
