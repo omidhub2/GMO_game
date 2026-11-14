@@ -64,6 +64,7 @@ describe("Persian manual board interactions", () => {
     rolls=[3,2]; roll(); const start=point(23).getAttribute("aria-label");
     click(point(23)); click(point(20)); settle();
     expect(undoEnabled()).toBe(true);
+    expect(container.querySelectorAll('[data-die-used-mark]')).toHaveLength(1);
     expect(point(20).getAttribute("aria-label")).toContain("۱ مهره سفید");
     click(undoButton()); expect(point(23).getAttribute("aria-label")).toBe(start);
     expect(container.querySelectorAll('[aria-pressed="true"]')).toHaveLength(0);
@@ -86,6 +87,7 @@ describe("Persian manual board interactions", () => {
     const sequence=[[0,3],[3,6],[6,9],[11,14]];
     for(let i=0;i<4;i++) {
       click(point(sequence[i][0])); click(point(sequence[i][1])); settle();
+      if (i < 3) expect(container.querySelectorAll('[data-die-used-mark]')).toHaveLength(i + 1);
       expect(container.querySelector("footer")).toBeNull();
       expect(undoEnabled()).toBe(i!==3);
     }

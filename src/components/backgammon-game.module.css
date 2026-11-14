@@ -570,5 +570,10 @@
   @keyframes drawerFromRightRotated{from{transform:rotate(90deg) translateX(100%);opacity:.9}to{transform:rotate(90deg);opacity:1}}
 }
 @media(prefers-reduced-motion:reduce){.drawer{animation:none}}
+
+/* Keep spent-die checks above the cube so every pip remains legible. */
+.dieScene{position:relative}
+.dieUsedMarks{position:absolute;z-index:8;top:-17px;left:50%;display:flex;gap:2px;transform:translateX(-50%);pointer-events:none}
+.dieUsedMark{display:grid;place-items:center;width:15px;height:15px;border:1px solid #17130a;border-radius:50%;background:#f0b90b;color:#17130a;box-shadow:0 2px 5px #000b}
 .setupPage .colorChoices{align-items:stretch}
 .setupPage .colorChoices button{flex:1 1 0;box-sizing:border-box}

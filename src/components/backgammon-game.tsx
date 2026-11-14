@@ -149,7 +149,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
           <button className={styles.menuToggle} dir="rtl" disabled={locked} aria-label="باز کردن منوی بازی" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={20}/><span>منو</span></button>
         </div>
         <div className={styles.diceStage} dir="ltr">
-          <DiceBox dice={dice} canRoll={!moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
+          <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={!moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
           <div className={`${styles.turnPrompt} ${state.phase === "roll" ? styles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
             {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
             <span>{state.phase === "opening" ? "تاس شروع را بریز" : state.phase === "roll" ? names[turn] + "، تاس بریز" : names[turn] + " بازی کن"}</span>
