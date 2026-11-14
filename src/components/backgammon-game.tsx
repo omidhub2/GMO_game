@@ -143,6 +143,17 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomRight}`}>{Array.from({length:6},(_,i)=>renderPoint(5-i,false))}</div>
         </div>
       </section>
+      <aside className={styles.offLane} dir="rtl" aria-label="فضای خروج مهره‌ها">
+        {(["dark", "light"] as Side[]).map(side => {
+          const options = side === turn ? destinations.filter(option => option.to === "off") : [];
+          return <div key={side} className={`${styles.offPocket} ${options.length ? styles.offPocketLegal : ""}`} aria-label={`خروج ${names[side]}: ${fa(board.off[side])} از ۱۵ مهره`}>
+            <span className={styles.offPocketLabel}>خروج {names[side]}</span>
+            <i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/>
+            <strong>{fa(board.off[side])}<small> / ۱۵</small></strong>
+            {options.length > 0 && <div className={styles.offPocketMoves}>{options.map(option => <button key={option.die} type="button" disabled={locked} aria-label={`خروج مهرهٔ ${names[side]} با تاس ${fa(option.die)}`} onClick={() => move(option)}>تاس {fa(option.die)}</button>)}</div>}
+          </div>;
+        })}
+      </aside>
       <aside className={styles.rightRail} dir="rtl" aria-label="شمارش مهره‌ها در سمت راست">
         <div className={styles.railControls} dir="ltr">
           <span className={styles.playBrand} dir="ltr">GMO<span>ARENA</span></span>
