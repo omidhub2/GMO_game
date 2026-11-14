@@ -57,7 +57,7 @@ export default function DiceBox({ dice, canRoll, opening, prompt, onRoll, onBusy
     onClick={() => { if (stage.current === "idle" && canRoll) { begin(); release(); } }}>
     <span className={styles.diceContent} dir="ltr">
       <span className={styles.centerDice}>
-        {dice || spinning ? <><Die value={visual === "holding" || visual === "settling" ? 1 : dice?.[0] ?? 1} spinning={visual === "holding" || visual === "settling"} hidden={visual === "holding" || visual === "settling"} second={false}/><Die value={spinning ? 1 : dice?.[1] ?? 1} spinning={spinning} hidden={spinning} second/>{!spinning && dice?.[0] === dice?.[1] && <><Die value={dice[0]} spinning={false} hidden={false} second={false}/><Die value={dice[1]} spinning={false} hidden={false} second/></>}</> : <><Die value={2} spinning={false} hidden={false} second={false} preview/><Die value={5} spinning={false} hidden={false} second preview/></>}
+        {dice || spinning ? <><Die value={visual === "holding" || visual === "settling" ? 1 : dice?.[0] ?? 1} spinning={visual === "holding" || visual === "settling"} hidden={visual === "holding" || visual === "settling"} second={false}/><Die value={spinning ? 1 : dice?.[1] ?? 1} spinning={spinning} hidden={spinning} second/>{!spinning && dice !== null && dice[0] === dice[1] && <><Die value={dice[0]} spinning={false} hidden={false} second={false}/><Die value={dice[1]} spinning={false} hidden={false} second/></>}</> : <><Die value={2} spinning={false} hidden={false} second={false} preview/><Die value={5} spinning={false} hidden={false} second preview/></>}
       </span>
     </span>
     <span className={styles.turnPrompt} data-turn-prompt data-visible={opening ? "false" : "true"} role="status" aria-live="polite" dir="rtl">{prompt}</span>
