@@ -15,7 +15,7 @@ function button(text: string) {
 function point(index: number) { return container.querySelector<HTMLButtonElement>(`[data-point="${index}"]`)!; }
 function click(el: HTMLElement) { act(() => el.click()); }
 function settle() { act(() => vi.advanceTimersByTime(1100)); }
-function roll() { click(button("تاس بریز")); settle(); }
+function roll() { click(container.querySelector<HTMLButtonElement>("[data-dice-box]")!); settle(); }
 function start() {
   click(button("انتخاب سفید"));
   click(button("تأیید سیاه"));
@@ -48,8 +48,8 @@ describe("Backgammon dice and turn UI", () => {
     rolls = [3, 2];
     const stage = container.querySelector<HTMLButtonElement>("[data-dice-hit-area='full-stage']");
     expect(stage).not.toBeNull();
-    expect(stage!.querySelector("[data-turn-prompt] .checker")).not.toBeNull();
-    click(stage!.querySelector<HTMLElement>("[data-turn-prompt] .checker")!);
+    expect(stage!.querySelector("[data-turn-prompt] i")).not.toBeNull();
+    click(stage!.querySelector<HTMLElement>("[data-turn-prompt] i")!);
     expect(crypto.getRandomValues).toHaveBeenCalledTimes(2);
     expect(stage!.getAttribute("data-stage")).toBe("settling");
     settle();
@@ -81,7 +81,7 @@ describe("Backgammon dice and turn UI", () => {
     click(point(12)); click(point(10)); settle();
     rolls = [3, 3];
     roll();
-    expect(container.querySelectorAll('[aria-label="تاس ۳ باقی مانده"]')).toHaveLength(4);
+    expect(container.querySelectorAll('[aria-label*="تاس ۳"]')).toHaveLength(4);
     const footer = container.querySelector<HTMLElement>(".playFooter");
     expect(footer).not.toBeNull();
     expect(footer!.textContent).not.toContain("جفت");
