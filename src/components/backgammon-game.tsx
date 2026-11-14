@@ -32,7 +32,7 @@ export default function BackgammonGame() {
 }
 
 function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: LobbyState; target: number | null; onLeave: () => void; onFullscreen: () => void }) {
-  const [state, setState] = useState(() => newGame(target, lobby.colors.guest ?? "dark"));
+  const [state, setState] = useState(() => newGame(target));
   const current = useRef(state);
   const [rolling, setRolling] = useState(false);
   const [moving, setMoving] = useState(false);
