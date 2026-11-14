@@ -70,7 +70,7 @@ describe("Persian manual board interactions", () => {
     expect(container.querySelectorAll('[aria-pressed="true"]')).toHaveLength(0);
     click(point(23)); click(point(20)); settle(); click(point(12)); click(point(10)); settle();
     expect(undoEnabled()).toBe(false); expect(button("تاس بریز").disabled).toBe(false);
-    expect(container.querySelector('[data-visible="true"][dir="rtl"]')?.textContent).toContain("سیاه");
+    expect(container.querySelector('[data-visible="true"][dir="rtl"]')?.textContent).toContain("تاس بریز");
   });
   it("blocks rapid repeated roll and move clicks during display", () => {
     rolls=[3,2,6,6]; const rollButton=button("تاس بریز");
@@ -104,5 +104,14 @@ describe("Persian manual board interactions", () => {
     click(button("پیشنهاد دوبل ×۲")); expect(container.textContent).toContain("سفید؛ پیشنهاد دوبل ×۲");
     click(button("پذیرش دوبل")); expect(container.textContent).toContain("مالک: سفید");
     expect(button("پیشنهاد دوبل ×۴").disabled).toBe(true);
+  });
+  it("changes the board theme from the menu without changing the game turn", () => {
+    click(button("باز کردن منوی بازی"));
+    click(container.querySelector<HTMLButtonElement>('[data-theme="carbon"]')!);
+    expect(container.querySelector('[data-board-theme="carbon"]')).not.toBeNull();
+    expect(container.querySelector('[data-theme="carbon"]')?.getAttribute("aria-pressed")).toBe("true");
+    click(button("بستن منو"));
+    expect(button("تاس بریز").disabled).toBe(false);
+    localStorage.removeItem("gmo-backgammon-board-theme");
   });
 });

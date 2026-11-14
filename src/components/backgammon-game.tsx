@@ -12,6 +12,13 @@ import styles from "./backgammon-game.module.css";
 
 const fa = (n: number) => n.toLocaleString("fa-IR");
 const names: Record<Side, string> = { light: "سفید", dark: "سیاه" };
+const boardThemes = [
+  { id: "walnut", label: "گردویی" },
+  { id: "carbon", label: "ذغالی" },
+  { id: "navy", label: "سرمه‌ای" },
+  { id: "emerald", label: "یشمی" },
+] as const;
+type BoardTheme = (typeof boardThemes)[number]["id"];
 
 /** Rejection sampling avoids modulo bias; results commit before animation. */
 function randomDie(): number {
@@ -39,6 +46,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   const [movingTo, setMovingTo] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [boardTheme, setBoardTheme] = useState<BoardTheme>("walnut");
   const [toastText, setToastText] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
   const { board, turn, selected, dice, remaining } = state;
@@ -46,6 +54,16 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousPhase = useRef(state.phase);
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("gmo-backgammon-board-theme");
+      if (boardThemes.some(theme => theme.id === saved)) setBoardTheme(saved as BoardTheme);
+    } catch { /* Storage can be unavailable in private browsing. */ }
+  }, []);
+  function chooseBoardTheme(theme: BoardTheme) {
+    setBoardTheme(theme);
+    try { window.localStorage.setItem("gmo-backgammon-board-theme", theme); } catch { /* Keep this session's choice. */ }
+  }
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
   useEffect(() => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -130,7 +148,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   }
 
   const playerName = (side: Side) => lobby.colors.requester === side ? "درخواست‌دهنده" : "حریف";
-  return <main lang="fa" dir="rtl" className={`${styles.page} ${styles.playPage}`}>
+  return <main lang="fa" dir="rtl" data-board-theme={boardTheme} className={`${styles.page} ${styles.playPage}`}>
     <div className={styles.gameToast} data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
     <div className={styles.playArena} dir="ltr">
       <section className={styles.table} aria-label="تخته نرد ۲۴ خانه">
@@ -193,6 +211,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
       <div className={styles.drawerPlayer}><Dices size={30}/><h2>تخته‌نرد</h2><p>{state.target ? `مسابقه تا ${fa(state.target)} امتیاز` : "بازی ساده • بدون دوبل"}</p><small>درخواست‌دهنده: {names[lobby.colors.requester!]} • حریف: {names[lobby.colors.guest!]}</small></div>
       <button className={styles.drawerItem} onClick={()=>{onFullscreen();setMenuOpen(false);}}><Maximize size={20}/><span>نمایش تمام‌صفحه<small>تمرکز روی تخته</small></span></button>
       <button className={styles.drawerItem} aria-label="برگشت حرکت" disabled={locked || !canUndo(state)} onClick={()=>{if(send({type:"undo",revision:state.revision})) setMenuOpen(false);}}><Undo2 size={20}/><span>برگشت حرکت<small>{canUndo(state) ? "برگرداندن آخرین حرکت با همان تاس‌ها" : state.phase === "move" ? "هنوز حرکتی انجام نشده است" : "برگشت پس از پایان نوبت ممکن نیست"}</small></span></button>
+      <section className={styles.boardThemePicker} aria-label="تم تخته"><strong>تم تخته</strong><div className={styles.boardThemeOptions}>{boardThemes.map(theme => <button key={theme.id} type="button" data-theme={theme.id} className={styles.boardThemeOption} aria-pressed={boardTheme === theme.id} onClick={() => chooseBoardTheme(theme.id)}><span className={styles.boardThemeSwatch} aria-hidden="true"/><span>{theme.label}</span>{boardTheme === theme.id && <span aria-hidden="true">✓</span>}</button>)}</div></section>
       <button className={styles.drawerItem} aria-expanded={showHelp} onClick={()=>setShowHelp(value=>!value)}><HelpCircle size={20}/><span>راهنمای بازی<small>انتخاب مهره، تاس و برگشت</small></span></button>
       {showHelp && <div className={styles.drawerHelp}>شماره‌ها از دید بازیکن فعال‌اند؛ از ۲۴ به ۱ برو. هر مقصد فقط یک تاس مصرف می‌کند. مهره‌های زده‌شده و خروج در ستون سمت راست‌اند. باکس تاس را نگه دار؛ پس از رهاکردن، تاس اول در ۵۰۰ میلی‌ثانیه و دومی ۴۰۰ میلی‌ثانیه بعد مشخص می‌شود. برگشت فقط تا پایان نوبت مجاز است.</div>}
       <button className={styles.drawerItem} onClick={onLeave}><LogOut size={20}/><span>بازی جدید و تنظیمات<small>بازی فعلی پایان می‌یابد؛ بازگشت به انتخاب رنگ</small></span></button>
