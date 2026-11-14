@@ -42,6 +42,13 @@ jobs:
       - name: Generate official Cloudflare Workers configuration
         run: npx vinext init --platform=cloudflare --name=gmo-game --cdn-cache=none --data-cache=none --image-optimization=none
 
+      - name: Inspect generated Cloudflare configuration
+        run: |
+          echo "Generated configuration files:"
+          find . -maxdepth 2 -type f \\( -name 'cloudflare.config.ts' -o -name 'vite.config.ts' -o -name 'wrangler.jsonc' -o -name 'wrangler.json' \\) -print
+          echo "Working tree changes:"
+          git status --short
+
       - name: Build the Cloudflare-targeted application
         run: npm run build:vinext
 
@@ -52,7 +59,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add cloudflare.config.ts vite.config.ts package.json package-lock.json tsconfig.json eslint.config.mjs .gitignore
+          for file in cloudflare.config.ts vite.config.ts wrangler.jsonc wrangler.json package.json package-lock.json tsconfig.json eslint.config.mjs .gitignore; do
+            if [ -f "$file" ]; then git add "$file"; fi
+          done
           if git diff --cached --quiet; then
             echo "No generated configuration changes to commit."
           else
