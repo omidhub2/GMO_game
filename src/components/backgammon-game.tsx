@@ -13,6 +13,7 @@ import styles from "./backgammon-game.module.css";
 const fa = (n: number) => n.toLocaleString("fa-IR");
 const names: Record<Side, string> = { light: "سفید", dark: "سیاه" };
 const boardThemes = [
+  { id: "simple", label: "ساده" },
   { id: "walnut", label: "گردویی" },
   { id: "carbon", label: "ذغالی" },
   { id: "navy", label: "سرمه‌ای" },
