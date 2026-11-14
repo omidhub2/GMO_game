@@ -609,3 +609,9 @@
 .offPocket{gap:3px}
 .offPocketMoves button{padding-inline:1px}
 @media(max-width:900px){.playArena,.playPage .playArena{grid-template-columns:minmax(0,1fr) clamp(42px,5vw,52px) 178px;gap:4px}.offPocket .checker{width:24px}.offPocket strong{font-size:14px}.offPocketMoves button{font-size:8px}}
+
+/* Return a little more landscape width to the board. */
+.playArena{grid-template-columns:minmax(0,1fr) clamp(48px,5vw,62px) 188px}
+.rightRail .diceStage{grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr)}
+.rightRail .playerStats{padding-inline:5px}
+@media(max-width:900px){.playArena,.playPage .playArena{grid-template-columns:minmax(0,1fr) clamp(42px,5vw,52px) 158px}.rightRail .diceStage{grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr)}.rightRail .playerStats{padding-inline:4px}}
