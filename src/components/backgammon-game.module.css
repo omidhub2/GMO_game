@@ -570,3 +570,5 @@
   line-height:1.2;white-space:nowrap;text-shadow:0 1px 4px #000;
 }
 @media(max-width:900px){.activeTurnLabel{font-size:8px}}
+
+.rightRail .statsCheckerGroup{grid-row:1/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0}.rightRail .statsCheckerGroup>.checker{grid-row:auto}
