@@ -170,10 +170,9 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
       </div>
       </aside>
     </div>
-    <footer className={styles.playFooter}>
-      <div className={styles.turnStatus}>{rolling && <span className={styles.doubleProgress}>تاس‌ها در حال نمایش</span>}{dice && dice[0] === dice[1] && state.phase !== "opening" && <span className={styles.doubleProgress}>جفت {fa(dice[0])} · {fa(state.usedDice.length)} از ۴ حرکت</span>}</div>
-      <div className={styles.actions}>{state.target && <button disabled={locked || !canDouble(state)} onClick={()=>send({type:"offerDouble",revision:state.revision})}>پیشنهاد دوبل ×{fa(state.cube * 2)}</button>}</div>
-    </footer>
+    {state.target && <footer className={styles.playFooter}>
+      <div className={styles.actions}><button disabled={locked || !canDouble(state)} onClick={()=>send({type:"offerDouble",revision:state.revision})}>پیشنهاد دوبل ×{fa(state.cube * 2)}</button></div>
+    </footer>}
     {state.phase === "double" && <section className={styles.result} aria-label="پاسخ دوبل"><h2>{names[opponent(turn)]}؛ پیشنهاد دوبل ×{fa(state.cube * 2)}</h2><p>با رد، {fa(state.cube)} امتیاز به {names[turn]} می‌رسد.</p><button onClick={()=>send({type:"acceptDouble",revision:state.revision})}>پذیرش دوبل</button><button onClick={()=>send({type:"rejectDouble",revision:state.revision})}>رد دوبل</button></section>}
     {state.result && <section className={styles.result} role="status"><h2>{names[state.result.winner]} برنده شد</h2><p>{state.result.dropped ? "برد با رد دوبل" : ["","برد عادی","مارس","بک‌گمون"][state.result.multiplier]} • {fa(state.result.points)} امتیاز{complete ? " • پایان مسابقه" : ""}</p>{state.target && !complete ? <button onClick={()=>send({type:"nextGame",revision:state.revision})}>دست بعدی مسابقه</button> : <button onClick={onLeave}>بازی جدید</button>}</section>}
     {menuOpen && <BackgammonDrawer onClose={()=>setMenuOpen(false)}>

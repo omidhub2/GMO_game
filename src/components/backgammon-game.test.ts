@@ -86,7 +86,7 @@ describe("Persian manual board interactions", () => {
     const sequence=[[0,3],[3,6],[6,9],[11,14]];
     for(let i=0;i<4;i++) {
       click(point(sequence[i][0])); click(point(sequence[i][1])); settle();
-      expect(container.textContent).toContain(`جفت ۳ · ${["۱","۲","۳","۴"][i]} از ۴ حرکت`);
+      expect(container.querySelector("footer")).toBeNull();
       expect(undoEnabled()).toBe(i!==3);
     }
     expect(button("تاس بریز").disabled).toBe(false);
