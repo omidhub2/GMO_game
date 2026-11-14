@@ -542,5 +542,19 @@
 @keyframes checkerSelectPulse{0%,100%{transform:translateX(-50%) scale(1.08)}50%{transform:translateX(-50%) scale(1.15)}}
 @keyframes checkerMoveLand{0%{transform:translateX(-50%) scale(.82);filter:brightness(1.45)}65%{transform:translateX(-50%) scale(1.15)}100%{transform:translateX(-50%) scale(1);filter:brightness(1)}}
 @media(prefers-reduced-motion:reduce){.checkerStack .selectedChecker,.boardMoving .checkerStack .movedChecker{animation:none}.checkerStack .selectedChecker{transform:translateX(-50%) scale(1.08)}}
+
+/* Give hit checkers a visible home on the central bar. */
+.board{grid-template-columns:minmax(0,1fr) clamp(28px,3.5vw,40px) minmax(0,1fr)}
+.bar{position:relative;isolation:isolate;padding:10px 0}
+.barBrand{writing-mode:vertical-rl;opacity:.5}
+.barHit{position:absolute;z-index:3;left:50%;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;width:100%;padding:2px 0;border:0;background:transparent;color:#ffe5a0;transform:translateX(-50%)}
+.barHitTop{top:20%}.barHitBottom{bottom:20%}
+.barHit b{position:relative;z-index:1;border-radius:7px;background:#161413e8;padding:0 4px;font-size:clamp(10px,1.2vw,15px);line-height:1.4;font-weight:800;letter-spacing:0}
+.barHit .checker{width:min(88%,36px);height:auto;box-shadow:0 3px 7px #000b}
+.barHit:disabled{opacity:1;cursor:default}
+.barHitSelected .checker{outline:2px solid #f0b90b;outline-offset:2px;filter:brightness(1.15)}
+.rightRail .turnPromptRolling .checker{animation:turnCheckerRoll 1.2s ease-in-out infinite;transform-origin:center}
+@keyframes turnCheckerRoll{0%,100%{transform:scale(1)}50%{transform:scale(1.12);filter:brightness(1.22);box-shadow:0 5px 12px #000c,0 0 16px #f0b90b99}}
+@media(prefers-reduced-motion:reduce){.rightRail .turnPromptRolling .checker{animation:none;outline:2px solid #f0b90b}}
 .setupPage .colorChoices{align-items:stretch}
 .setupPage .colorChoices button{flex:1 1 0;box-sizing:border-box}

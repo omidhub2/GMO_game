@@ -134,7 +134,11 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
         <div className={`${styles.board} ${moving ? styles.boardMoving : ""}`} dir="ltr">
           <div className={`${styles.half} ${styles.topLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(12+i,true))}</div>
           <div className={`${styles.half} ${styles.topRight}`}>{Array.from({length:6},(_,i)=>renderPoint(18+i,true))}</div>
-          <div className={styles.bar} aria-hidden="true"><span>GMO</span><span>ARENA</span></div>
+          <div className={styles.bar} aria-label="مهره‌های زده‌شده در وسط تخته">
+            <span className={styles.barBrand} aria-hidden="true">GMO</span>
+            {(["dark", "light"] as Side[]).map(side => board.bar[side] > 0 && <button key={side} type="button" className={`${styles.barHit} ${side === "dark" ? styles.barHitTop : styles.barHitBottom} ${selected === "bar" && turn === side ? styles.barHitSelected : ""}`} disabled={locked || state.phase !== "move" || turn !== side} aria-label={`${fa(board.bar[side])} مهرهٔ زده‌شدهٔ ${names[side]}؛ انتخاب برای ورود`} aria-pressed={selected === "bar" && turn === side} onClick={() => select(selected === "bar" ? null : "bar")}><b>{fa(board.bar[side])}</b><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/></button>)}
+            <span className={styles.barBrand} aria-hidden="true">ARENA</span>
+          </div>
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}</div>
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomRight}`}>{Array.from({length:6},(_,i)=>renderPoint(5-i,false))}</div>
         </div>
@@ -146,7 +150,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
         </div>
         <div className={styles.diceStage} dir="ltr">
           <DiceBox dice={dice} canRoll={!moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
-          <div className={styles.turnPrompt} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
+          <div className={`${styles.turnPrompt} ${state.phase === "roll" ? styles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
             {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
             <span>{state.phase === "opening" ? "تاس شروع را بریز" : state.phase === "roll" ? names[turn] + "، تاس بریز" : names[turn] + " بازی کن"}</span>
           </div>
