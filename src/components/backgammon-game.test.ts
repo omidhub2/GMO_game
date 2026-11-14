@@ -54,8 +54,12 @@ describe("Backgammon dice and turn UI", () => {
     expect(stage!.getAttribute("data-stage")).toBe("settling");
     settle();
 
-    // Re-query after React has committed the updated game state.
+    // Finish the opening player's two legal moves, then click the same stage
+    // while the opponent is allowed to roll.
+    click(point(23)); click(point(20)); settle();
+    click(point(12)); click(point(10)); settle();
     const settledStage = container.querySelector<HTMLButtonElement>("[data-dice-hit-area='full-stage']")!;
+    expect(settledStage.disabled).toBe(false);
     click(settledStage);
     expect(crypto.getRandomValues).toHaveBeenCalledTimes(4);
     settle();
@@ -68,10 +72,10 @@ describe("Backgammon dice and turn UI", () => {
     expect(container.querySelector("[data-active-turn='light']")?.parentElement?.hasAttribute("data-stats-checker-group")).toBe(true);
     expect(container.querySelector("[data-active-turn='dark']")).toBeNull();
 
-    click(point(23)); click(point(18)); settle();
+    click(point(23)); click(point(20)); settle();
     click(point(12)); click(point(10)); settle();
     expect(container.querySelector("[data-active-turn='dark']")?.textContent).toBe("نوبت سیاه است");
-    expect(container.querySelector("[data-active-turn='dark']")?.parentElement?.classList.contains("statsCheckerGroup")).toBe(true);
+    expect(container.querySelector("[data-active-turn='dark']")?.parentElement?.hasAttribute("data-stats-checker-group")).toBe(true);
     expect(container.querySelector("[data-active-turn='light']")).toBeNull();
   });
 
