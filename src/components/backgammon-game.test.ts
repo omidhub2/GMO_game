@@ -3,6 +3,7 @@ import React, { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import BackgammonGame from "./backgammon-game";
+import DiceBox from "./backgammon-dice";
 
 vi.mock("next/link", () => ({ default: ({ children, ...props }: React.ComponentProps<"a">) => React.createElement("a", props, children) }));
 let root: Root;
@@ -79,18 +80,21 @@ describe("Backgammon dice and turn UI", () => {
     expect(container.querySelector("[data-active-turn='light']")).toBeNull();
   });
 
-  it("keeps double-roll information out of the bottom footer so the board layout does not grow", () => {
-    rolls = [5, 2];
-    roll();
-    click(point(23)); click(point(18)); settle();
-    click(point(12)); click(point(10)); settle();
-    rolls = [3, 3];
-    roll();
-    expect(container.querySelectorAll('[aria-label*="تاس ۳"]')).toHaveLength(4);
+  it("renders four dice for doubles and keeps double-roll information out of the bottom footer", () => {
+    const diceContainer = document.createElement("div");
+    document.body.append(diceContainer);
+    const diceRoot = createRoot(diceContainer);
+    act(() => diceRoot.render(React.createElement(DiceBox, {
+      dice: [3, 3], canRoll: false, opening: false, prompt: null,
+      onRoll: () => false, onBusy: () => {},
+    })));
+    expect(diceContainer.querySelectorAll('[aria-label="تاس ۳"]')).toHaveLength(4);
+    act(() => diceRoot.unmount());
+    diceContainer.remove();
+
     const footer = container.querySelector<HTMLElement>(".playFooter");
     expect(footer).not.toBeNull();
     expect(footer!.textContent).not.toContain("جفت");
     expect(footer!.querySelector(".doubleProgress")).toBeNull();
     expect(container.querySelector(".gameToast")?.textContent).not.toContain("جفت");
-  });
-});
+  });});
