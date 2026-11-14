@@ -141,6 +141,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
           </div>
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}</div>
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomRight}`}>{Array.from({length:6},(_,i)=>renderPoint(5-i,false))}</div>
+          {state.phase === "roll" && <div className={styles.rollHologram} aria-hidden="true"><span className={styles.rollHologramHalo}><i className={`${styles.checker} ${turn === "light" ? styles.lightChecker : styles.darkChecker}`}/></span><strong>{names[turn]}، تاس بریز</strong><span className={styles.rollHologramLine}/></div>}
         </div>
       </section>
       <aside className={styles.offLane} dir="rtl" aria-label="فضای خروج مهره‌ها">
