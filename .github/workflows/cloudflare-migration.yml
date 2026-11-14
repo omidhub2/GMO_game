@@ -1,4 +1,4 @@
-name: Prepare Vinext for Cloudflare Workers
+name: GMO Arena Cloudflare build
 
 on:
   push:
@@ -9,71 +9,40 @@ on:
       - "package.json"
       - "package-lock.json"
       - "next.config.*"
+      - "open-next.config.ts"
+      - "wrangler.jsonc"
+      - "prisma/**"
       - "src/**"
       - ".github/workflows/cloudflare-migration.yml"
-      - "wrangler.jsonc"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  prepare-and-build:
+  build-and-check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
-      - name: Check out deployment branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
-      - name: Install locked dependencies
-        run: npm ci
-
-      - name: Upgrade to the current native Cloudflare Vinext integration
-        run: npm install --save-dev vinext@latest @cloudflare/vite-plugin@latest cf @vinext/cloudflare
-
-      - name: Generate official Cloudflare Workers configuration
-        run: npx vinext init --platform=cloudflare --name=gmo-arena --cdn-cache=none --data-cache=none --image-optimization=none --no-prerender --ignore-wrangler-config --force
-
-      - name: Inspect generated Cloudflare configuration
-        run: |
-          echo "Generated configuration files:"
-          for file in cloudflare.config.ts vite.config.ts wrangler.jsonc wrangler.json; do
-            if [ -f "$file" ]; then echo "Found $file"; else echo "Missing $file"; fi
-          done
-          test -f vite.config.ts
-          test -f cloudflare.config.ts
-          echo "Generated Cloudflare config:" 
-          sed -E 's/(connectionString:).*/\\1 "[REDACTED]",/' cloudflare.config.ts
-          echo "Working tree changes:"
-          git status --short
-
-      - name: Build the Cloudflare-targeted application
-        run: npm run build:vinext
-
-      - name: Generate Cloudflare runtime types
-        run: npx cf workers types
-
+      - name: Install dependencies and sync lockfile
+        run: npm install --no-audit --no-fund
+      - name: Generate Prisma Client
+        run: npx prisma generate
+      - name: Validate Prisma schema
+        run: npx prisma validate
       - name: Type check
         run: npm run typecheck
-
-      - name: Commit generated non-secret configuration
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Build Next.js and OpenNext Worker
+        run: npm run cf:build
+      - name: Verify generated Worker entry and assets
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for file in cloudflare.config.ts vite.config.ts wrangler.jsonc wrangler.json package.json package-lock.json tsconfig.json eslint.config.mjs .gitignore; do
-            if [ -f "$file" ]; then git add "$file"; fi
-          done
-          if git diff --cached --quiet; then
-            echo "No generated configuration changes to commit."
-          else
-            git commit -m "Configure Vinext for Cloudflare Workers"
-            git push origin HEAD:fix/cloudflare-deployment
-          fi
+          test -f .open-next/worker.js
+          test -d .open-next/assets
