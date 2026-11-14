@@ -39,6 +39,9 @@ jobs:
       - name: Check Vinext compatibility
         run: npx vinext check
 
+      - name: Install Cloudflare Vite integration
+        run: npm install --save-dev @cloudflare/vite-plugin cf
+
       - name: Generate official Cloudflare Workers configuration
         run: npx vinext init --platform=cloudflare --name=gmo-game --cdn-cache=none --data-cache=none --image-optimization=none --no-prerender --ignore-wrangler-config
 
