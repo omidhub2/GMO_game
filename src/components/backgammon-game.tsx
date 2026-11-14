@@ -32,7 +32,7 @@ export default function BackgammonGame() {
 }
 
 function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: LobbyState; target: number | null; onLeave: () => void; onFullscreen: () => void }) {
-  const [state, setState] = useState(() => newGame(target, lobby.colors.guest ?? "dark"));
+  const [state, setState] = useState(() => newGame(target));
   const current = useRef(state);
   const [rolling, setRolling] = useState(false);
   const [moving, setMoving] = useState(false);
@@ -126,8 +126,10 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   }
 
   const playerName = (side: Side) => lobby.colors.requester === side ? "درخواست‌دهنده" : "حریف";
+  const activeTurn = state.phase === "double" ? opponent(turn) : turn;
+  const showActiveTurn = state.phase !== "opening" && state.phase !== "finished";
   return <main lang="fa" dir="rtl" className={`${styles.page} ${styles.playPage}`}>
-    <div className={styles.gameToast} data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
+    <div className={styles.gameToast} data-game-toast data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
     <div className={styles.playArena} dir="ltr">
       <section className={styles.table} aria-label="تخته نرد ۲۴ خانه">
         <div className={`${styles.board} ${moving ? styles.boardMoving : ""}`} dir="ltr">
@@ -144,17 +146,14 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
           <button className={styles.menuToggle} dir="rtl" disabled={locked} aria-label="باز کردن منوی بازی" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={20}/><span>منو</span></button>
         </div>
         <div className={styles.diceStage} dir="ltr">
-          <DiceBox dice={dice} canRoll={!moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
-          <div className={styles.turnPrompt} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
-            {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
-            <span>{state.phase === "opening" ? "تاس شروع را بریز" : state.phase === "roll" ? names[turn] + "، تاس بریز" : names[turn]}</span>
-          </div>
+          <DiceBox dice={dice} canRoll={!moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}
+            prompt={<><i aria-hidden="true" className={styles.checker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/><span>{state.phase === "opening" ? "تاس شروع را بریز" : state.phase === "roll" ? names[turn] + "، تاس بریز" : names[turn]}</span></>}/>
         </div>
         <div className={styles.statsPair}>
         {(["dark","light"] as Side[]).map(side => {
           const options=side === turn ? destinations.filter(m=>m.to === "off") : [];
           return <section key={side} className={`${styles.playerStats} ${turn === side ? styles.activeStats : ""}`} aria-label={`شمارش مهره ${names[side]}`}>
-            <div className={styles.statsIdentity}><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/><span className={styles.statsName}><strong>{names[side]}</strong><small>{playerName(side)}</small></span></div>
+            <div className={styles.statsIdentity}><span className={styles.statsCheckerGroup} data-stats-checker-group><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/>{showActiveTurn && activeTurn === side && <small className={styles.activeTurnLabel} data-active-turn={side}>نوبت {names[side]} است</small>}</span><span className={styles.statsName}><strong>{names[side]}</strong><small>{playerName(side)}</small></span></div>
             <div className={styles.statsDetails}>
               <button data-bar={side} type="button" disabled={locked || state.phase !== "move" || turn !== side || !board.bar[side]} onClick={() => select("bar")} aria-pressed={selected === "bar" && turn === side} aria-label={`مهره‌های زده شده ${names[side]}: ${fa(board.bar[side])}`} className={`${styles.barSource} ${selected === "bar" && turn === side ? styles.barSelected : ""}`}><span>زده‌شده</span><span className={styles.hitCount}><b>{fa(board.bar[side])}</b></span></button>
               <div className={`${styles.offTray} ${options.length ? styles.offLegal : ""}`} aria-label={`محل خروج ${names[side]}`}><span><span>خارج‌شده</span><b>{fa(board.off[side])}</b></span>{options.map(option=><button key={option.die} disabled={locked} onClick={()=>move(option)}>خروج {fa(option.die)}</button>)}</div>
@@ -165,8 +164,8 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
       </div>
       </aside>
     </div>
-    <footer className={styles.playFooter}>
-      <div className={styles.turnStatus}>{rolling && <span className={styles.doubleProgress}>تاس‌ها در حال نمایش</span>}{dice && dice[0] === dice[1] && state.phase !== "opening" && <span className={styles.doubleProgress}>جفت {fa(dice[0])} · {fa(state.usedDice.length)} از ۴ حرکت</span>}</div>
+    <footer className={styles.playFooter} data-play-footer>
+      <div className={styles.turnStatus}>{rolling && <span className={styles.doubleProgress}>تاس‌ها در حال نمایش</span>}</div>
       <div className={styles.actions}>{state.target && <button disabled={locked || !canDouble(state)} onClick={()=>send({type:"offerDouble",revision:state.revision})}>پیشنهاد دوبل ×{fa(state.cube * 2)}</button>}</div>
     </footer>
     {state.phase === "double" && <section className={styles.result} aria-label="پاسخ دوبل"><h2>{names[opponent(turn)]}؛ پیشنهاد دوبل ×{fa(state.cube * 2)}</h2><p>با رد، {fa(state.cube)} امتیاز به {names[turn]} می‌رسد.</p><button onClick={()=>send({type:"acceptDouble",revision:state.revision})}>پذیرش دوبل</button><button onClick={()=>send({type:"rejectDouble",revision:state.revision})}>رد دوبل</button></section>}

@@ -1,0 +1,49 @@
+name: GMO Arena Cloudflare build
+
+on:
+  push:
+    branches: [fix/cloudflare-deployment]
+  pull_request:
+    branches: [fix/backgammon-dice-turn-ui]
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "next.config.*"
+      - "open-next.config.ts"
+      - "wrangler.jsonc"
+      - "prisma/**"
+      - "src/**"
+      - ".github/workflows/cloudflare-migration.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Prisma CLI validates/generates from the schema only; no live DB is accessed here.
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/gmo_arena
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies and sync lockfile
+        run: npm install --no-audit --no-fund
+      - name: Generate Prisma Client
+        run: npx prisma generate
+      - name: Validate Prisma schema
+        run: npx prisma validate
+      - name: Type check
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Build Next.js and OpenNext Worker
+        run: npm run cf:build
+      - name: Verify generated Worker entry and assets
+        run: |
+          test -f .open-next/worker.js
+          test -d .open-next/assets
