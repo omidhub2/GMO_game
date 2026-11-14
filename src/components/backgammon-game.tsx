@@ -62,6 +62,9 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     } else if (state.phase === "move" && phaseChanged) {
       message = previous === "opening" ? names[turn] + " بازی را شروع می‌کند" : "تاس ریخته شد";
       duration = previous === "opening" ? 3200 : 1400;
+    } else if (state.phase === "roll" && state.message.includes("نوبت منتقل شد")) {
+      message = state.message;
+      duration = 2800;
     } else if (state.phase === "double") {
       message = state.message;
       duration = 3000;
@@ -136,7 +139,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
           <div className={`${styles.half} ${styles.topRight}`}>{Array.from({length:6},(_,i)=>renderPoint(18+i,true))}</div>
           <div className={styles.bar} aria-label="مهره‌های زده‌شده در وسط تخته">
             <span className={styles.barBrand} aria-hidden="true">GMO</span>
-            {(["dark", "light"] as Side[]).map(side => board.bar[side] > 0 && <button key={side} type="button" className={`${styles.barHit} ${side === "dark" ? styles.barHitTop : styles.barHitBottom} ${selected === "bar" && turn === side ? styles.barHitSelected : ""}`} disabled={locked || state.phase !== "move" || turn !== side} aria-label={`${fa(board.bar[side])} مهرهٔ زده‌شدهٔ ${names[side]}؛ انتخاب برای ورود`} aria-pressed={selected === "bar" && turn === side} onClick={() => select(selected === "bar" ? null : "bar")}><b>{fa(board.bar[side])}</b><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/></button>)}
+            {(["dark", "light"] as Side[]).map(side => board.bar[side] > 0 && <button key={side} type="button" className={`${styles.barHit} ${side === "dark" ? styles.barHitTop : styles.barHitBottom} ${selected === "bar" && turn === side ? styles.barHitSelected : ""} ${state.phase === "move" && turn === side ? styles.barEntryCue : ""}`} disabled={locked || state.phase !== "move" || turn !== side} aria-label={`${fa(board.bar[side])} مهرهٔ زده‌شدهٔ ${names[side]}؛ اول این مهره را برای ورود انتخاب کن`} aria-pressed={selected === "bar" && turn === side} onClick={() => select(selected === "bar" ? null : "bar")}><b>{fa(board.bar[side])}</b><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/></button>)}
             <span className={styles.barBrand} aria-hidden="true">ARENA</span>
           </div>
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}</div>
