@@ -1,0 +1,2274 @@
+# GMO ARENA — COMPLETE MASTER DEVELOPMENT PROMPT
+## Professional Gaming, Esports, Tournament, Rewards & Digital Wallet Platform
+### Production-Oriented Cloud-Native Architecture
+
+You are acting as a complete senior engineering team consisting of:
+
+- Principal Software Architect
+- Senior Next.js Engineer
+- Cloudflare Workers Engineer
+- PostgreSQL Database Architect
+- Financial Systems Engineer
+- Cybersecurity Engineer
+- Esports Tournament Systems Engineer
+- UI/UX Product Designer
+- QA and Automation Engineer
+- DevOps and Cloud Infrastructure Engineer
+
+Your mission is to build a complete, professional, scalable gaming and esports platform named **GMO ARENA**.
+
+This is a real software development project, not a landing-page exercise, UI mockup, or simple dashboard.
+
+You must create the actual project files, implement functional application features, design the database, implement backend business logic, integrate the Cloudflare deployment architecture, and provide automated tests and documentation.
+
+Do not merely describe what should be built. Build it.
+
+Do not skip requirements because they are complex. Divide the implementation into verifiable stages and continue until the project is functional.
+
+---
+
+# 1. PROJECT IDENTITY
+
+Product name: GMO ARENA
+
+Exact project directory:
+
+`gmo_arena`
+
+Project type:
+
+Professional Gaming & Esports Platform.
+
+Primary language:
+Persian (Farsi).
+
+Secondary language:
+English.
+
+Primary text direction:
+RTL.
+
+Secondary text direction:
+LTR.
+
+Supported environments:
+
+1. Telegram Mini App.
+2. Desktop web browser.
+3. Mobile web browser.
+4. Responsive PWA-ready experience.
+
+All supported environments must use the same backend, database, account system, wallet, tournament engine, and user data.
+
+Telegram must be treated as an additional access channel, not as the application's backend, database, or hosting provider.
+
+The platform must remain fully usable through a standard web browser even when Telegram is unavailable.
+
+---
+
+# 2. PRODUCT VISION
+
+GMO ARENA is a gaming ecosystem combining:
+
+- Competitive gaming.
+- Esports tournaments.
+- Player rankings.
+- Gaming missions.
+- Achievements.
+- Referral rewards.
+- Digital GMO wallet.
+- Tournament prize distribution.
+- Gaming communities.
+- Player profiles.
+- Competitive statistics.
+- Notifications.
+- Administration and moderation.
+
+The objective is to build an engaging gaming platform where users can play supported games, join competitions, improve their rankings, earn rewards, and participate in a competitive digital economy.
+
+The platform must be designed for future expansion to additional games, tournament formats, reward mechanisms, and external gaming integrations.
+
+Do not hardcode the entire platform around one game.
+
+Build a modular Game Integration Architecture.
+
+---
+
+# 3. VISUAL IDENTITY AND UX DIRECTION
+
+The application must have a distinctive, premium gaming identity.
+
+Use the following products as UX inspiration, without copying their branding, logos, or exact interface:
+
+### Hamster Kombat — Engagement and visual appeal
+
+Use inspiration for:
+
+- Attractive visual presentation.
+- Interactive home experience.
+- Missions and daily activities.
+- Reward collection.
+- Progress indicators.
+- Animated interactions.
+- Engaging user feedback.
+- Gamified navigation.
+
+### Gamercraft — Tournament and wallet experience
+
+Use inspiration for:
+
+- Professional tournament organization.
+- Tournament discovery.
+- Registration and participation.
+- Prize pools.
+- Wallet presentation.
+- Competition structures.
+- Tournament details.
+- Team and player management.
+
+### FACEIT — Competitive experience
+
+Use inspiration for:
+
+- Player profiles.
+- Competitive rankings.
+- Elo rating.
+- Match history.
+- Player statistics.
+- Competitive progression.
+- Leaderboards.
+- Match performance.
+
+### GMO ARENA identity
+
+Do not create a generic admin dashboard.
+
+Create a modern gaming environment with a unique visual identity.
+
+Design characteristics:
+
+- Premium dark gaming interface.
+- Deep charcoal and carbon backgrounds.
+- Controlled neon accents.
+- High-contrast typography.
+- Attractive game artwork.
+- Tournament cards.
+- Competitive ranking components.
+- Animated reward feedback.
+- Clear wallet visualization.
+- Professional statistics.
+- Smooth transitions.
+- Responsive layouts.
+
+Avoid excessive gradients, unnecessary glowing effects, visual clutter, and animations that reduce usability.
+
+Use a consistent design system with reusable components.
+
+Use:
+
+- Tailwind CSS.
+- shadcn/ui where appropriate.
+- Framer Motion.
+- Lucide icons.
+- Responsive design tokens.
+- Reusable typography and spacing scales.
+
+Do not copy another product's exact UI.
+
+---
+
+# 4. PRIMARY NAVIGATION
+
+The main navigation must contain exactly these five primary sections:
+
+1. Home
+2. Games
+3. Tournaments
+4. Wallet
+5. My Account
+
+Persian labels should be used when Persian is selected.
+
+Additional administrative and secondary functions must be placed inside their appropriate sections rather than adding unnecessary primary navigation items.
+
+### Home
+
+Must include:
+
+- Personalized greeting.
+- Player level.
+- GMO wallet summary.
+- Featured games.
+- Featured tournaments.
+- Active tournaments.
+- Daily missions.
+- Weekly missions.
+- Latest rewards.
+- Player ranking summary.
+- Recent activity.
+- Announcements.
+- Recommended competitions.
+- Quick actions.
+
+### Games
+
+Must include:
+
+- Game catalog.
+- Game search.
+- Game categories.
+- Supported platforms.
+- Game descriptions.
+- Game artwork.
+- Competitive availability.
+- Active tournaments per game.
+- Game-specific player statistics.
+- Game integration status.
+- Game details page.
+
+### Tournaments
+
+Must include:
+
+- Tournament discovery.
+- Search and filtering.
+- Upcoming tournaments.
+- Active tournaments.
+- Completed tournaments.
+- Free tournaments.
+- Paid-entry tournaments, where legally and operationally supported.
+- Tournament details.
+- Registration.
+- Team participation.
+- Tournament brackets.
+- Match schedules.
+- Match reporting.
+- Results.
+- Rankings.
+- Prize information.
+- Tournament history.
+
+### Wallet
+
+Must include:
+
+- Total GMO balance.
+- Separate wallet accounts.
+- Transaction history.
+- Deposits.
+- Withdrawals where supported.
+- Internal transfers where permitted.
+- Tournament entry payments.
+- Prize receipts.
+- Mission rewards.
+- Referral rewards.
+- Refunds.
+- Transaction details.
+- Transaction status.
+- Security information.
+
+### My Account
+
+Must include:
+
+- User profile.
+- Avatar.
+- Username.
+- Player ID.
+- Connected Telegram account.
+- Game accounts.
+- Competitive statistics.
+- Elo rating.
+- Level and experience.
+- Achievements.
+- Match history.
+- Tournament history.
+- Missions.
+- Referrals.
+- Account security.
+- Notification preferences.
+- Language settings.
+
+---
+
+# 5. FINAL INFRASTRUCTURE ARCHITECTURE — MANDATORY
+
+The infrastructure strategy is:
+
+COST_STRATEGY = ZERO
+
+GROWTH_POLICY = AUTOMATIC
+
+DEPLOYMENT_TARGET = CLOUD
+
+APPLICATION_RUNTIME = CLOUDFLARE_WORKERS
+
+PRIMARY_DATABASE = MANAGED_POSTGRESQL
+
+TELEGRAM_SUPPORT = ENABLED
+
+VPS_REQUIRED = FALSE
+
+DEDICATED_SERVER_REQUIRED = FALSE
+
+AUTOMATIC_PAID_UPGRADE = FALSE
+
+USER_APPROVAL_REQUIRED_FOR_PAID_UPGRADE = TRUE
+
+The application must be designed from the beginning for deployment to Cloudflare Workers.
+
+Do not initially create a traditional VPS-based backend with the intention of migrating it later.
+
+Do not require a permanently running Node.js server.
+
+### Infrastructure responsibilities
+
+Cloudflare Workers:
+
+- Application runtime.
+- Next.js application execution.
+- Backend API.
+- Authentication logic.
+- Business logic.
+- Tournament operations.
+- Wallet operations.
+- Mission processing.
+- Referral processing.
+- Administrative APIs.
+
+Managed PostgreSQL Cloud:
+
+- Users.
+- Profiles.
+- Accounts.
+- Wallet accounts.
+- Financial ledger.
+- Transactions.
+- Games.
+- Tournaments.
+- Teams.
+- Matches.
+- Rankings.
+- Missions.
+- Rewards.
+- Referrals.
+- Notifications.
+- Administrative records.
+
+Cloudflare DNS/CDN:
+
+- DNS.
+- Content delivery.
+- Domain management.
+- Caching.
+- Security configuration.
+
+Telegram:
+
+- Mini App interface.
+- Bot integration.
+- Telegram authentication.
+- Telegram notifications where supported.
+
+Do not use MongoDB.
+
+Do not use Cloudflare D1 as the primary database.
+
+Do not replace PostgreSQL with SQLite.
+
+PostgreSQL must remain the primary source of truth.
+
+### Important Cloudflare requirements
+
+Use a Cloudflare-compatible Next.js deployment architecture.
+
+Evaluate the current official Cloudflare-supported Next.js deployment adapter before implementation.
+
+Use the officially documented and maintained deployment route where practical, such as OpenNext for Cloudflare, or another verified supported approach.
+
+Do not assume that a package or adapter is compatible merely because it works in a traditional Node.js environment.
+
+Before finalizing the deployment architecture, verify:
+
+- Next.js App Router compatibility.
+- React Server Components.
+- Route Handlers.
+- Server Actions.
+- Middleware or equivalent routing requirements.
+- Authentication libraries.
+- Database connectivity.
+- Prisma compatibility.
+- Node.js compatibility requirements.
+- Runtime limitations.
+- Build output.
+- Production deployment.
+
+If a library requires unsupported Node.js APIs or a persistent server, replace it with a Cloudflare-compatible alternative.
+
+Document all compatibility decisions.
+
+### PostgreSQL connectivity
+
+Use a managed PostgreSQL provider that supports reliable cloud access.
+
+Evaluate Cloudflare Hyperdrive when appropriate.
+
+Hyperdrive can be used for PostgreSQL connection pooling and connectivity optimization.
+
+Choose a PostgreSQL driver and ORM configuration that is verified to work in Cloudflare Workers.
+
+Prisma may be used only with a compatible driver adapter and verified runtime configuration.
+
+If Prisma is not compatible with a required feature, choose a suitable PostgreSQL client or query layer rather than compromising database correctness.
+
+Critical financial operations must use actual PostgreSQL transactions.
+
+Do not simulate transactional guarantees in application memory.
+
+Do not rely on a database connection remaining open between requests.
+
+Use connection pooling or provider-supported serverless connection mechanisms.
+
+---
+
+# 6. ZERO-COST AND AUTOMATIC-GROWTH POLICY
+
+The initial goal is to operate using free-tier services wherever practical.
+
+The system must never assume that free-tier services provide unlimited resources.
+
+### Automatic growth
+
+Scale application capacity within the limits of the selected cloud services.
+
+Use:
+
+- Serverless execution.
+- Stateless application design.
+- Efficient database access.
+- Connection pooling.
+- Caching.
+- Pagination.
+- Batch processing.
+- Background queues when appropriate.
+- Optimized asset delivery.
+
+### Cost protection
+
+No automatic paid upgrade is allowed.
+
+Do not automatically:
+
+- Upgrade Cloudflare plans.
+- Purchase additional storage.
+- Activate paid database plans.
+- Enable paid external APIs.
+- Create paid cloud resources.
+- Purchase domains.
+- Activate paid integrations.
+
+Before any paid upgrade, require explicit administrator approval.
+
+### Resource monitoring
+
+Implement an infrastructure usage monitoring module.
+
+Track, where measurable:
+
+- Workers requests.
+- Workers CPU usage.
+- Database storage.
+- Database connections.
+- Database query performance.
+- Database storage usage.
+- Queue operations.
+- Object storage usage.
+- API request volume.
+- Error rates.
+- External service usage.
+
+Provide configurable thresholds.
+
+The admin dashboard should display:
+
+- Current infrastructure status.
+- Usage indicators.
+- Quota warnings.
+- Estimated costs where available.
+- Service health.
+- Capacity warnings.
+
+### Safe degradation
+
+When approaching a free-tier limit:
+
+1. Notify administrators.
+2. Reduce unnecessary background processing.
+3. Apply appropriate rate limits.
+4. Cache eligible public content.
+5. Delay nonessential operations.
+6. Disable optional resource-intensive functionality if necessary.
+7. Preserve critical account and financial operations whenever the infrastructure remains available.
+
+Do not silently discard financial operations.
+
+Do not promise unlimited free hosting.
+
+The application must distinguish between:
+
+- Application scaling.
+- Provider quota limitations.
+- Paid infrastructure upgrades.
+
+Automatic growth means automatic scaling within permitted service limits, not automatic spending.
+
+---
+
+# 7. TECHNOLOGY STACK
+
+Use a modular, production-oriented stack.
+
+Preferred stack:
+
+Frontend:
+- Next.js.
+- React.
+- TypeScript.
+- Next.js App Router.
+- Tailwind CSS.
+- shadcn/ui.
+- Framer Motion.
+- Lucide.
+
+Backend:
+- Next.js Route Handlers.
+- Server Actions where appropriate.
+- Server-side application services.
+- Server-side authentication.
+- Cloudflare Workers runtime.
+
+Database:
+- Managed PostgreSQL.
+- Prisma or another verified compatible data-access layer.
+- Zod for validation.
+
+Telegram:
+- Telegram Mini Apps SDK.
+- Telegram Bot API.
+
+Testing:
+- Vitest.
+- Playwright.
+- Integration tests.
+- Database tests.
+
+Deployment:
+- Cloudflare Workers.
+- Cloudflare-compatible build and deployment tooling.
+- PostgreSQL cloud provider.
+
+Do not introduce a separate Laravel, Django, Express, or NestJS backend.
+
+Do not introduce unnecessary infrastructure.
+
+Redis is optional and must not be a mandatory dependency in the initial zero-cost architecture.
+
+If Redis is later required, provide a provider-independent adapter.
+
+---
+
+# 8. APPLICATION ARCHITECTURE
+
+Use a clean modular architecture.
+
+Separate:
+
+- UI components.
+- Application services.
+- Domain logic.
+- Database access.
+- External integrations.
+- Authentication.
+- Authorization.
+- Background processing.
+- Validation.
+- Configuration.
+
+Suggested structure:
+
+src/
+  app/
+    [locale]/
+      page.tsx
+      games/
+      tournaments/
+      wallet/
+      account/
+      admin/
+    api/
+  components/
+    ui/
+    layout/
+    home/
+    games/
+    tournaments/
+    wallet/
+    profile/
+    admin/
+  modules/
+    auth/
+    users/
+    games/
+    tournaments/
+    teams/
+    matches/
+    rankings/
+    wallet/
+    ledger/
+    missions/
+    rewards/
+    referrals/
+    notifications/
+    telegram/
+    administration/
+    infrastructure/
+  server/
+    services/
+    repositories/
+    security/
+    database/
+  lib/
+    validation/
+    utils/
+    config/
+  styles/
+  types/
+
+prisma/
+  schema.prisma
+  migrations/
+
+tests/
+  unit/
+  integration/
+  e2e/
+
+scripts/
+
+docs/
+
+cloudflare/
+
+The structure may be adjusted when justified by technical requirements, but responsibilities must remain modular.
+
+Avoid oversized files.
+
+Avoid placing business logic directly inside React components.
+
+Use typed service interfaces.
+
+Use dependency boundaries between business logic and external providers.
+
+---
+
+# 9. DATABASE DESIGN
+
+Design a normalized PostgreSQL schema.
+
+Use appropriate:
+
+- Primary keys.
+- Foreign keys.
+- Unique constraints.
+- Check constraints.
+- Indexes.
+- Composite indexes.
+- Transactions.
+- Referential integrity.
+- Timestamps.
+- Soft deletion only where justified.
+
+Use UUID identifiers where appropriate.
+
+All timestamps must be stored consistently in UTC.
+
+The application must display dates in the user's configured timezone.
+
+### Core database entities
+
+Users:
+- id
+- username
+- email where applicable
+- phone where applicable
+- password hash if password authentication is enabled
+- avatar
+- status
+- created_at
+- updated_at
+
+UserProfiles:
+- user_id
+- display_name
+- bio
+- country where voluntarily provided
+- preferred_language
+- player_level
+- experience_points
+
+ExternalAccounts:
+- user_id
+- provider
+- provider_user_id
+- metadata
+- connected_at
+
+Games:
+- id
+- name
+- slug
+- description
+- artwork
+- platform
+- status
+- integration_type
+
+GameAccounts:
+- user_id
+- game_id
+- external_player_id
+- username
+- verification_status
+
+Tournaments:
+- id
+- game_id
+- title
+- slug
+- description
+- format
+- status
+- registration_start
+- registration_end
+- tournament_start
+- tournament_end
+- maximum_participants
+- entry_fee
+- prize_pool
+- rules
+- created_by
+
+TournamentParticipants:
+- tournament_id
+- user_id or team_id
+- registration_status
+- seed
+- final_position
+
+Teams:
+- id
+- name
+- logo
+- owner_id
+- created_at
+
+TeamMembers:
+- team_id
+- user_id
+- role
+- joined_at
+
+Matches:
+- id
+- tournament_id
+- round
+- match_number
+- participant_a
+- participant_b
+- score_a
+- score_b
+- winner_id
+- status
+- scheduled_at
+- completed_at
+
+Rankings:
+- user_id
+- game_id
+- rating
+- wins
+- losses
+- draws
+- matches_played
+- last_updated
+
+WalletAccounts:
+- id
+- user_id
+- account_type
+- currency
+- status
+- created_at
+
+LedgerTransactions:
+- id
+- reference
+- transaction_type
+- status
+- idempotency_key
+- metadata
+- created_at
+
+LedgerEntries:
+- id
+- transaction_id
+- wallet_account_id
+- amount
+- entry_direction
+- created_at
+
+WalletReservations:
+- id
+- wallet_account_id
+- tournament_id
+- amount
+- status
+- created_at
+
+Deposits:
+- id
+- user_id
+- amount
+- currency
+- provider
+- external_reference
+- status
+- verified_at
+
+Withdrawals:
+- id
+- user_id
+- amount
+- currency
+- provider
+- external_reference
+- status
+- created_at
+
+Missions:
+- id
+- title
+- description
+- mission_type
+- reward_amount
+- requirements
+- start_at
+- end_at
+- status
+
+UserMissions:
+- user_id
+- mission_id
+- progress
+- status
+- completed_at
+- claimed_at
+
+Rewards:
+- id
+- user_id
+- reward_type
+- amount
+- source
+- reference
+- status
+
+Referrals:
+- id
+- inviter_id
+- invited_user_id
+- referral_code
+- status
+- reward_status
+
+Achievements:
+- id
+- title
+- description
+- icon
+- requirements
+
+UserAchievements:
+- user_id
+- achievement_id
+- unlocked_at
+
+Notifications:
+- id
+- user_id
+- title
+- message
+- type
+- read_at
+- created_at
+
+AuditLogs:
+- id
+- actor_id
+- action
+- resource_type
+- resource_id
+- metadata
+- created_at
+
+AdminRoles:
+- id
+- name
+- permissions
+
+AdminUsers:
+- user_id
+- role_id
+
+SystemSettings:
+- key
+- value
+- updated_at
+
+InfrastructureUsage:
+- id
+- service
+- metric
+- value
+- measured_at
+
+You may add additional entities where required.
+
+Do not create redundant tables without a clear reason.
+
+Do not store calculated wallet balances as an independently editable source of truth.
+
+---
+
+# 10. GMO WALLET — CRITICAL FINANCIAL SYSTEM
+
+The GMO wallet is one of the most important parts of the platform.
+
+Implement three independent wallet accounts per user.
+
+### Account 1: BALANCE
+
+Purpose:
+
+- Deposits.
+- Purchases.
+- Eligible payments.
+- Tournament entry payments.
+- Other approved spending operations.
+
+### Account 2: REWARDS
+
+Purpose:
+
+- Daily mission rewards.
+- Weekly mission rewards.
+- Referral rewards.
+- Promotional rewards.
+- Achievements.
+- Gifts.
+
+### Account 3: PRIZE
+
+Purpose:
+
+- Tournament winnings.
+- Competition prizes.
+- Approved prize distributions.
+
+Each account must have its own:
+
+- Balance calculation.
+- Transaction history.
+- Incoming entries.
+- Outgoing entries.
+- Restrictions.
+- Status.
+
+The total GMO balance must be calculated from the three accounts.
+
+Do not treat the three accounts as interchangeable.
+
+### Spending policies
+
+Implement configurable policies for:
+
+- Which wallet account can be used for each operation.
+- Spending priority.
+- Whether transfers between accounts are allowed.
+- Whether rewards can be used for tournament entry.
+- Whether prizes can be withdrawn.
+- Whether certain rewards are restricted.
+
+These rules must be configurable by administrators.
+
+### Ledger architecture
+
+Use an immutable financial ledger.
+
+Implement double-entry accounting.
+
+Every financial transaction must create balanced ledger entries.
+
+Do not directly modify wallet balances.
+
+Balances must be derived from ledger entries or maintained through a rigorously synchronized projection that can always be reconstructed from the immutable ledger.
+
+Use database transactions for all financial mutations.
+
+Implement:
+
+- Atomic operations.
+- Idempotency keys.
+- Concurrency protection.
+- Row-level locking where necessary.
+- Transaction reversals.
+- Refunds.
+- Reservations.
+- Audit records.
+- Reconciliation.
+
+Never delete a completed financial transaction.
+
+Corrections must be represented by reversal transactions.
+
+### Tournament payment
+
+When a user registers for a paid tournament:
+
+1. Validate eligibility.
+2. Validate tournament availability.
+3. Validate wallet funds.
+4. Reserve or debit funds atomically according to the tournament policy.
+5. Prevent duplicate registrations.
+6. Confirm registration only after successful financial processing.
+7. Release reservations if registration fails or is cancelled.
+8. Apply the configured refund policy.
+
+### Prize distribution
+
+Prize distribution must:
+
+- Validate the final tournament results.
+- Prevent duplicate prize payments.
+- Use idempotency.
+- Create ledger entries.
+- Record prize references.
+- Support administrator review.
+- Maintain an audit trail.
+
+Never distribute prizes based solely on an unverified client-side request.
+
+---
+
+# 11. DEPOSITS AND CRYPTO INTEGRATION
+
+Build a provider-independent deposit architecture.
+
+Do not assume that every payment provider is available or legally permitted.
+
+Use adapters for external payment integrations.
+
+### Crypto deposits
+
+If crypto deposits are enabled:
+
+- Support configurable networks.
+- Support configurable assets.
+- Validate transaction hashes.
+- Verify destination addresses.
+- Verify network identity.
+- Verify token contract addresses where applicable.
+- Verify transferred amounts.
+- Verify confirmation thresholds.
+- Verify transaction status.
+- Verify event logs or transfer indexes where relevant.
+- Prevent duplicate transaction processing.
+- Support manual review.
+- Record all verification results.
+
+Never trust a transaction hash submitted by the frontend without independent server-side verification.
+
+Never store private keys or seed phrases in the database.
+
+Never expose private keys through environment variables or application logs.
+
+Use secure provider credentials and secret management where applicable.
+
+### Telegram payment compliance
+
+Before enabling any payment or crypto feature inside Telegram Mini Apps:
+
+- Verify current Telegram payment policies.
+- Verify applicable digital goods and services rules.
+- Review Telegram Stars requirements.
+- Review TON and TON Connect rules.
+- Review restrictions on external payment systems.
+- Document which payment methods are allowed for the specific product and deployment.
+
+Do not assume that TRON, TRC20, or external crypto payments are automatically permitted inside Telegram.
+
+Keep noncompliant or unverified payment methods disabled in Telegram deployments.
+
+Do not fake payment confirmation.
+
+---
+
+# 12. TELEGRAM MINI APP INTEGRATION
+
+Telegram integration must be implemented securely.
+
+Features:
+
+- Bot connection.
+- Mini App launch.
+- Telegram authentication.
+- Telegram user linking.
+- Telegram notifications.
+- Deep links.
+- Referral links.
+- Game and tournament entry links.
+
+### Authentication security
+
+Validate Telegram initData on the server.
+
+Requirements:
+
+- Validate HMAC according to Telegram's official specification.
+- Verify auth_date freshness.
+- Reject expired authentication data.
+- Reject invalid signatures.
+- Prevent replay where appropriate.
+- Create a secure application session.
+- Use HTTP-only secure cookies where applicable.
+- Apply appropriate SameSite settings.
+- Never trust initDataUnsafe for authentication.
+- Never trust a user ID supplied by the frontend.
+- Never expose the bot token to the browser.
+
+Telegram authentication must be an adapter in the main authentication system.
+
+The same account must be usable through web and Telegram.
+
+Provide account linking and unlinking with proper security checks.
+
+---
+
+# 13. GAME INTEGRATION ARCHITECTURE
+
+Build a modular system for connecting games.
+
+Each game integration must follow a common interface.
+
+A game integration may support:
+
+- Player identity verification.
+- Match data retrieval.
+- Match result verification.
+- Player statistics.
+- Game-specific ranking.
+- External API communication.
+
+Use separate adapters for different games.
+
+Do not assume every game has an official public API.
+
+If no official API is available:
+
+- Mark the integration as unsupported or manual.
+- Provide an administrator-controlled result verification workflow.
+- Do not invent game data.
+- Do not claim automatic result verification.
+
+Create an extensible architecture so new games can be added without changing the tournament engine.
+
+---
+
+# 14. TOURNAMENT ENGINE
+
+Build a reusable tournament engine.
+
+Required tournament formats:
+
+1. Single Elimination.
+2. Double Elimination.
+3. Round Robin.
+4. League.
+5. Points Based.
+
+Each tournament must have:
+
+- Registration period.
+- Participant limits.
+- Eligibility rules.
+- Team or individual mode.
+- Tournament status.
+- Match scheduling.
+- Bracket generation.
+- Match reporting.
+- Result verification.
+- Dispute handling.
+- Final ranking.
+- Prize distribution.
+
+### Tournament states
+
+Possible states:
+
+- DRAFT
+- PUBLISHED
+- REGISTRATION_OPEN
+- REGISTRATION_CLOSED
+- READY
+- IN_PROGRESS
+- COMPLETED
+- CANCELLED
+- DISPUTED
+
+Implement valid state transitions.
+
+Do not allow invalid state changes.
+
+### Match workflow
+
+1. Create match.
+2. Assign participants.
+3. Schedule match.
+4. Notify participants.
+5. Receive result submission.
+6. Validate or review result.
+7. Confirm winner.
+8. Update bracket.
+9. Update ranking.
+10. Complete tournament when appropriate.
+
+Prevent conflicting simultaneous result submissions.
+
+Support administrator intervention and audit logs.
+
+### Bracket generation
+
+Build tested algorithms for each tournament format.
+
+Support:
+
+- Seeding.
+- Byes.
+- Participant limits.
+- Automatic progression.
+- Match dependencies.
+- Final rounds.
+- Third-place matches where configured.
+
+Bracket logic must be independent from the UI.
+
+---
+
+# 15. COMPETITIVE RANKING AND ELO
+
+Build a competitive ranking system.
+
+Each game may have its own rating configuration.
+
+Implement Elo as the initial rating algorithm.
+
+Make the rating system configurable.
+
+Support:
+
+- Initial rating.
+- K-factor.
+- Win/loss calculation.
+- Draws where supported.
+- Match history.
+- Rating changes.
+- Leaderboards.
+- Seasonal rankings.
+- Player progression.
+
+Rating changes must be calculated server-side.
+
+Prevent duplicate rating updates.
+
+Store rating history so rankings can be audited and reconstructed.
+
+Do not mix mission XP with competitive Elo.
+
+Player level and competitive rating are separate systems.
+
+---
+
+# 16. MISSIONS, REWARDS AND ACHIEVEMENTS
+
+Build a complete gamification system.
+
+### Daily missions
+
+Examples:
+
+- Complete profile.
+- Participate in a match.
+- Join a tournament.
+- Complete an eligible activity.
+- Log in.
+
+### Weekly missions
+
+Examples:
+
+- Play a required number of matches.
+- Complete multiple daily missions.
+- Participate in competitions.
+- Achieve specific competitive goals.
+
+### Achievements
+
+Examples:
+
+- First tournament.
+- First victory.
+- Tournament champion.
+- Match streak.
+- Ranking milestone.
+- Referral milestone.
+
+### Rewards
+
+Rewards may include:
+
+- GMO.
+- XP.
+- Badges.
+- Achievements.
+- Promotional benefits.
+
+All reward operations must be server-validated and idempotent.
+
+Users must not be able to claim the same reward multiple times.
+
+Mission requirements must be configurable.
+
+Do not hardcode all missions into frontend components.
+
+---
+
+# 17. REFERRAL SYSTEM
+
+Implement a secure referral system.
+
+Features:
+
+- Unique referral code.
+- Referral link.
+- Invited user tracking.
+- Referral status.
+- Eligibility verification.
+- Reward conditions.
+- Referral history.
+- Anti-abuse checks.
+
+Do not reward a referral merely because a user opened a link.
+
+Support configurable requirements such as:
+
+- Account completion.
+- Verified account.
+- First eligible activity.
+- Minimum participation requirement.
+
+Prevent self-referrals and obvious duplicate-account abuse.
+
+Referral rewards must use the GMO ledger.
+
+---
+
+# 18. PLAYER PROFILES
+
+Each player profile must include:
+
+- Avatar.
+- Username.
+- Player ID.
+- Player level.
+- XP.
+- Competitive Elo.
+- Game-specific rankings.
+- Matches played.
+- Wins.
+- Losses.
+- Win rate.
+- Tournament history.
+- Achievements.
+- Recent activity.
+- Game accounts.
+- Team membership.
+
+Only expose public profile information that is explicitly permitted by user privacy settings.
+
+Sensitive financial data must never be publicly visible.
+
+---
+
+# 19. ADMINISTRATION PANEL
+
+Build a professional administration system.
+
+Admin sections:
+
+- Dashboard.
+- Users.
+- User moderation.
+- Games.
+- Game integrations.
+- Tournaments.
+- Tournament matches.
+- Tournament disputes.
+- Wallet overview.
+- Transactions.
+- Deposits.
+- Withdrawals.
+- Prize distribution.
+- Missions.
+- Rewards.
+- Referrals.
+- Achievements.
+- Notifications.
+- Content management.
+- Infrastructure usage.
+- System settings.
+- Audit logs.
+- Admin roles.
+
+### RBAC
+
+Implement role-based access control.
+
+Example roles:
+
+- SUPER_ADMIN
+- ADMIN
+- FINANCE_ADMIN
+- TOURNAMENT_MANAGER
+- MODERATOR
+- SUPPORT
+
+Permissions must be checked server-side.
+
+Hiding a frontend button is not authorization.
+
+All sensitive administrative operations must be logged.
+
+Financial operations must require appropriate permissions.
+
+Support review and approval workflows.
+
+---
+
+# 20. SECURITY REQUIREMENTS
+
+Security is mandatory.
+
+Implement:
+
+- Secure authentication.
+- Server-side authorization.
+- Password hashing where password authentication is used.
+- Session security.
+- CSRF protection where applicable.
+- Input validation.
+- Output encoding.
+- SQL injection protection.
+- Rate limiting.
+- Brute-force protection.
+- Secure cookie configuration.
+- Content Security Policy where practical.
+- Secure HTTP headers.
+- Secret management.
+- Audit logging.
+- File upload validation.
+- Access control.
+- Webhook verification.
+- Idempotency.
+- Abuse prevention.
+
+Never:
+
+- Expose secrets in client-side code.
+- Trust user-supplied wallet balances.
+- Trust client-side tournament results.
+- Trust frontend authorization.
+- Trust Telegram initDataUnsafe for authentication.
+- Log passwords, tokens, private keys, or seed phrases.
+- Store raw payment credentials unnecessarily.
+- Execute financial operations without database transactions.
+
+Use environment variables for configuration and secrets.
+
+Do not commit secrets to Git.
+
+---
+
+# 21. API DESIGN
+
+Create versioned APIs.
+
+Use consistent response structures.
+
+Validate requests with Zod or equivalent server-side validation.
+
+Provide APIs for:
+
+Authentication:
+- Register.
+- Login.
+- Logout.
+- Session.
+- Telegram authentication.
+- Account linking.
+
+Users:
+- Profile.
+- Settings.
+- Game accounts.
+- Statistics.
+
+Games:
+- Catalog.
+- Details.
+- Search.
+- Integration status.
+
+Tournaments:
+- Discover.
+- Details.
+- Register.
+- Cancel registration.
+- Participants.
+- Brackets.
+- Matches.
+- Results.
+- Disputes.
+
+Wallet:
+- Summary.
+- Accounts.
+- History.
+- Deposits.
+- Withdrawals.
+- Reservations.
+- Transaction details.
+
+Missions:
+- Available missions.
+- Progress.
+- Claim reward.
+
+Referrals:
+- Referral code.
+- Referral history.
+- Referral status.
+
+Rankings:
+- Leaderboards.
+- Player rankings.
+- Rating history.
+
+Notifications:
+- List.
+- Read.
+- Preferences.
+
+Administration:
+- User management.
+- Tournament management.
+- Financial review.
+- Mission management.
+- System settings.
+- Audit logs.
+- Infrastructure monitoring.
+
+Do not expose internal administrative APIs to regular users.
+
+---
+
+# 22. PERFORMANCE AND SCALABILITY
+
+Optimize for serverless execution.
+
+Requirements:
+
+- Stateless request handling.
+- Efficient PostgreSQL queries.
+- Connection pooling.
+- Appropriate database indexes.
+- Pagination.
+- Lazy loading.
+- Image optimization.
+- Caching of public data.
+- Request deduplication where appropriate.
+- Background processing for noncritical work.
+- Efficient API response sizes.
+- Avoid N+1 database queries.
+- Avoid unnecessary client-side JavaScript.
+- Avoid oversized bundles.
+
+Use caching only where correctness permits.
+
+Never publicly cache:
+
+- Personal financial data.
+- Private profiles.
+- Authentication responses.
+- Sensitive account information.
+- User-specific wallet summaries.
+
+Critical financial state must always be read from authoritative database records.
+
+---
+
+# 23. USER EXPERIENCE AND ACCESSIBILITY
+
+Build responsive layouts for:
+
+- Small mobile screens.
+- Large mobile screens.
+- Tablets.
+- Desktop.
+- Telegram Mini App viewport.
+
+Requirements:
+
+- Full RTL support.
+- Correct Persian typography.
+- Correct number and currency formatting.
+- Keyboard accessibility.
+- Clear loading states.
+- Empty states.
+- Error states.
+- Success feedback.
+- Confirmation dialogs for dangerous operations.
+- Accessible contrast.
+- Reduced-motion support.
+- Touch-friendly controls.
+
+Do not use fake data in production screens.
+
+Seed data may be used in development and must be clearly identified as demo data.
+
+---
+
+# 24. NOTIFICATIONS
+
+Implement an extensible notification service.
+
+Supported notification categories:
+
+- Tournament registration.
+- Match schedule.
+- Match result.
+- Tournament progression.
+- Prize received.
+- Mission completed.
+- Reward claimed.
+- Referral progress.
+- Wallet transaction.
+- Security alert.
+- Administrative announcement.
+
+Notification channels:
+
+- In-app notifications.
+- Telegram bot notifications where configured.
+- Future email or push notification adapters.
+
+Do not make Telegram notifications mandatory for the application to function.
+
+Avoid duplicate notifications.
+
+Use background processing where appropriate.
+
+---
+
+# 25. TESTING REQUIREMENTS
+
+Implement automated tests.
+
+### Unit tests
+
+Test:
+
+- Wallet calculations.
+- Ledger balancing.
+- Transaction idempotency.
+- Reward eligibility.
+- Referral rules.
+- Elo calculation.
+- Tournament bracket algorithms.
+- Tournament state transitions.
+- Permission checks.
+- Input validation.
+
+### Integration tests
+
+Test:
+
+- PostgreSQL operations.
+- Authentication.
+- Wallet transactions.
+- Tournament registration.
+- Match result processing.
+- Prize distribution.
+- Mission completion.
+- Telegram authentication verification.
+
+### End-to-end tests
+
+Test:
+
+- User registration.
+- Login.
+- Dashboard navigation.
+- Game discovery.
+- Tournament registration.
+- Wallet history.
+- Mission claiming.
+- Player profile.
+- Administrative workflows.
+
+Critical financial logic must have dedicated test coverage.
+
+Never mark tests as passed unless they were actually executed.
+
+---
+
+# 26. DEVELOPMENT AND DEPLOYMENT
+
+The project must support:
+
+- Local development.
+- Cloudflare Workers development environment.
+- PostgreSQL cloud connection.
+- Staging deployment.
+- Production deployment.
+- Database migrations.
+- Rollback procedures.
+- Environment validation.
+
+Provide:
+
+- README.md
+- ARCHITECTURE.md
+- DATABASE.md
+- SECURITY.md
+- DEPLOYMENT.md
+- CLOUDFLARE.md
+- TELEGRAM.md
+- WALLET_LEDGER.md
+- API.md
+- TESTING.md
+
+Create:
+
+- package.json
+- TypeScript configuration.
+- Next.js configuration.
+- Tailwind configuration.
+- Cloudflare configuration.
+- Database schema.
+- Migration files.
+- Environment example.
+- Test configuration.
+- Deployment scripts.
+
+Use the current stable compatible package versions.
+
+Do not blindly install the latest version of every package.
+
+Check compatibility before selecting versions.
+
+### Environment protection
+
+An existing `.env` file may already contain important credentials.
+
+Before modifying any configuration:
+
+1. Inspect the project directory.
+2. Detect existing files.
+3. Preserve the existing `.env`.
+4. Never print secret values.
+5. Never delete or overwrite the existing `.env`.
+6. Add only missing configuration keys with explicit care.
+7. Keep credentials and local configuration in the ignored `.env`; never add secret values to source control.
+8. Validate required environment variables without displaying their values.
+
+Never assume that a real database or Telegram credential exists.
+
+If credentials are unavailable, create the integration architecture, validation, documentation, and tests without pretending that the external service is connected.
+
+---
+
+# 27. INITIAL GAME AND TOURNAMENT CONTENT
+
+Create a flexible seed system for development.
+
+Seed examples must be clearly marked as demo content.
+
+Do not claim that a game integration is operational unless it has been implemented and verified.
+
+Build the system so an administrator can:
+
+- Add a game.
+- Edit game information.
+- Upload artwork.
+- Configure supported platforms.
+- Enable or disable a game.
+- Configure game integration.
+- Create tournaments.
+- Configure tournament formats.
+- Set registration rules.
+- Configure entry fees.
+- Configure prize distribution.
+- Publish or cancel tournaments.
+
+---
+
+# 28. DEVELOPMENT EXECUTION PLAN
+
+Do not attempt to build everything as one unverified code dump.
+
+Work in the following phases.
+
+## PHASE 0 — PROJECT INSPECTION AND ARCHITECTURE VALIDATION
+
+- Inspect the entire project directory.
+- Identify existing files.
+- Preserve `.env`.
+- Confirm the actual runtime and package manager.
+- Verify current Cloudflare Workers and Next.js deployment compatibility.
+- Verify PostgreSQL driver and ORM compatibility.
+- Select the deployment adapter.
+- Identify any incompatible dependencies.
+- Produce the initial architecture plan.
+- Do not begin irreversible changes before inspecting existing files.
+
+## PHASE 1 — FOUNDATION
+
+- Create the project structure.
+- Configure Next.js.
+- Configure TypeScript.
+- Configure Tailwind.
+- Configure Cloudflare deployment.
+- Configure localization.
+- Configure RTL.
+- Create the design system.
+- Create common UI components.
+- Create application layouts.
+- Create environment validation.
+
+Deliver a functioning initial application build.
+
+## PHASE 2 — DATABASE AND AUTHENTICATION
+
+- Design PostgreSQL schema.
+- Create migrations.
+- Implement data access.
+- Implement user accounts.
+- Implement sessions.
+- Implement authorization.
+- Implement Telegram authentication.
+- Add integration tests.
+
+## PHASE 3 — CORE GAMING EXPERIENCE
+
+- Home.
+- Game catalog.
+- Game details.
+- Player profile.
+- Account settings.
+- Game account linking.
+
+## PHASE 4 — TOURNAMENT ENGINE
+
+- Tournament creation.
+- Registration.
+- Participants.
+- Teams.
+- Bracket algorithms.
+- Match workflow.
+- Results.
+- Disputes.
+- Tournament history.
+
+## PHASE 5 — GMO WALLET
+
+- Three wallet accounts.
+- Immutable ledger.
+- Double-entry transactions.
+- Reservations.
+- Payments.
+- Refunds.
+- Transaction history.
+- Prize distribution.
+- Financial administration.
+- Financial tests.
+
+Do not simplify the ledger implementation.
+
+## PHASE 6 — RANKING AND GAMIFICATION
+
+- Elo.
+- Leaderboards.
+- Player progression.
+- Missions.
+- Rewards.
+- Achievements.
+- Referral system.
+
+## PHASE 7 — ADMINISTRATION
+
+- Admin dashboard.
+- RBAC.
+- User moderation.
+- Tournament management.
+- Financial review.
+- System settings.
+- Audit logs.
+- Infrastructure monitoring.
+
+## PHASE 8 — POLISH AND QUALITY
+
+- Responsive design.
+- Accessibility.
+- Performance.
+- Security checks.
+- Unit tests.
+- Integration tests.
+- E2E tests.
+- Error handling.
+- Loading and empty states.
+
+## PHASE 9 — CLOUD DEPLOYMENT
+
+- Configure Cloudflare Workers.
+- Configure PostgreSQL Cloud.
+- Configure environment variables.
+- Configure domain.
+- Configure DNS.
+- Apply database migrations.
+- Verify production build.
+- Verify health endpoints.
+- Verify Telegram Mini App.
+- Verify critical financial flows.
+- Document deployment and rollback.
+
+Do not claim successful production deployment without actual deployment and verification.
+
+---
+
+# 29. CODING RULES
+
+Follow these rules throughout development:
+
+1. Write clean, maintainable TypeScript.
+2. Avoid `any` unless technically unavoidable and documented.
+3. Avoid duplicated business logic.
+4. Keep UI and domain logic separate.
+5. Use reusable components.
+6. Use typed interfaces.
+7. Validate all external input.
+8. Use server-side authorization.
+9. Use database transactions for critical operations.
+10. Do not use mock financial operations.
+11. Do not invent API credentials.
+12. Do not invent game integrations.
+13. Do not create fake payment confirmations.
+14. Do not use hardcoded production secrets.
+15. Do not silently remove required features.
+16. Do not create unnecessary backend services.
+17. Do not require a VPS.
+18. Do not use MongoDB.
+19. Do not use D1 as the primary database.
+20. Do not automatically activate paid infrastructure.
+
+If a technical requirement cannot be implemented because of a genuine provider or runtime limitation:
+
+- Explain the limitation.
+- Identify the affected feature.
+- Propose a compatible solution.
+- Preserve the intended architecture.
+- Document the decision.
+
+Do not hide limitations.
+
+---
+
+# 30. DEFINITION OF DONE
+
+The project is not complete merely because the homepage renders.
+
+The minimum completion criteria are:
+
+- Functional Next.js application.
+- Cloudflare Workers-compatible architecture.
+- PostgreSQL integration.
+- Database migrations.
+- Secure authentication.
+- Telegram Mini App authentication.
+- Five primary navigation sections.
+- Responsive Persian RTL UI.
+- Functional game catalog.
+- Tournament creation and registration.
+- Working tournament algorithms.
+- Match workflow.
+- Competitive Elo.
+- Three-account GMO wallet.
+- Immutable double-entry ledger.
+- Transaction idempotency.
+- Mission and reward system.
+- Referral system.
+- Player profiles.
+- Administrative panel.
+- RBAC.
+- Audit logs.
+- Infrastructure usage monitoring.
+- Automated tests.
+- Deployment documentation.
+- Environment protection.
+- Successful production build in the intended runtime.
+
+A feature that only has a visual frontend but no functioning backend must be marked incomplete.
+
+---
+
+# 31. FINAL INSTRUCTIONS
+
+Start by inspecting the project directory.
+
+The exact project name is:
+
+`gmo_arena`
+
+Preserve all existing user files, especially `.env`.
+
+Do not ask the user to manually create files that you can create yourself.
+
+Do not stop after writing a plan.
+
+Start implementing the project.
+
+Work phase by phase.
+
+After each phase:
+
+- Summarize created files.
+- Explain implemented functionality.
+- Run the relevant tests.
+- Report actual test results.
+- Identify incomplete work.
+- Continue to the next phase.
+
+Do not claim a feature works until it has been tested.
+
+Do not claim deployment is successful without verification.
+
+Maintain an implementation checklist in:
+
+`docs/IMPLEMENTATION_STATUS.md`
+
+Keep it updated throughout development.
+
+The final objective is a real, extensible, secure, cloud-native gaming platform.
+
+**GMO ARENA must be built as a serious esports product, not as a generic template or a superficial demo.**
+
+# 32. REFERENCE PLATFORMS AND DESIGN BENCHMARKS
+
+GMO ARENA must use the following platforms as product, UX, interaction, and feature-design references.
+
+Do not copy their branding, logos, source code, or exact visual layouts.
+
+Study their publicly available interfaces and documented product features. Use their strongest design principles to create an independent GMO ARENA experience.
+
+## 1. Hamster Kombat — Engagement and Gamification Reference
+
+Reference:
+https://hamsterkombatgame.io/
+
+Study:
+- Engaging home screen.
+- Daily missions.
+- Reward collection.
+- Referral mechanics.
+- Progress visualization.
+- Interactive cards.
+- Micro-animations.
+- User engagement loops.
+- Telegram Mini App experience.
+
+Apply these principles to:
+- Home.
+- Missions.
+- Rewards.
+- Referrals.
+- Daily activities.
+- User progression.
+
+## 2. Gamercraft — Tournament and Gaming Economy Reference
+
+Reference:
+https://www.gamercraft.com/
+
+Study:
+- Tournament discovery.
+- Competition registration.
+- Player divisions.
+- Tournament scoring.
+- Prize structures.
+- Competitive rewards.
+- Player fairness.
+- Anti-cheat concepts.
+- Gaming economy presentation.
+
+Apply these principles to:
+- Tournaments.
+- Tournament details.
+- Registration.
+- Match results.
+- Prize distribution.
+- Wallet.
+- Competitive divisions.
+
+## 3. FACEIT — Professional Esports Reference
+
+Reference:
+https://www.faceit.com/
+
+Study:
+- Competitive player profiles.
+- Elo and ranking.
+- Player statistics.
+- Match history.
+- Tournament brackets.
+- Matchmaking presentation.
+- Competitive progression.
+- Leaderboards.
+- Game-specific competitive experiences.
+
+Apply these principles to:
+- Player profiles.
+- Rankings.
+- Elo.
+- Match history.
+- Game pages.
+- Competitive statistics.
+- Tournament interfaces.
+
+## 4. Discord — Gaming Community Reference
+
+Reference:
+https://discord.com/
+
+Study:
+- Gaming communities.
+- Team organization.
+- Clan structures.
+- Roles and permissions.
+- Community membership.
+- Communication channels.
+- Event coordination.
+- Moderation experience.
+
+Apply these principles to future GMO ARENA community capabilities.
+
+Do not introduce expensive real-time infrastructure into the initial version. Build modular interfaces and architecture that can support future community features.
+
+## 5. Steam — Gaming Identity and Library Reference
+
+Reference:
+https://store.steampowered.com/
+
+Study:
+- Game library organization.
+- Game discovery.
+- Player identity.
+- Achievement systems.
+- Game profiles.
+- Activity history.
+- Gaming artwork presentation.
+
+Apply these principles to:
+- Games catalog.
+- Player profiles.
+- Achievements.
+- Game-specific statistics.
+- Gaming identity.
+
+## 6. INDEPENDENT GMO ARENA DESIGN SYSTEM
+
+The final interface must not look like a copy of any individual reference platform.
+
+Create a coherent product identity combining:
+
+- Hamster Kombat's engagement.
+- Gamercraft's tournament and reward organization.
+- FACEIT's professional competition experience.
+- Discord's community organization.
+- Steam's gaming identity.
+
+The visual identity must remain unmistakably GMO ARENA.
+
+Create an independent design system including:
+- Color tokens.
+- Typography.
+- RTL and LTR layouts.
+- Component library.
+- Navigation.
+- Tournament cards.
+- Player cards.
+- Wallet components.
+- Ranking components.
+- Mission components.
+- Game cards.
+- Empty states.
+- Loading states.
+- Responsive behavior.
+- Motion and interaction rules.
+
+## 7. UI/UX RESEARCH BEFORE IMPLEMENTATION
+
+Before designing the main pages:
+
+1. Review the reference platforms.
+2. Identify useful patterns from each.
+3. Document which patterns belong to which GMO ARENA modules.
+4. Create a visual design direction.
+5. Establish reusable design tokens.
+6. Build consistent page layouts.
+7. Verify desktop, mobile, and Telegram Mini App responsiveness.
+
+Create:
+
+docs/DESIGN_REFERENCES.md
+
+This document must explain:
+- Each reference platform.
+- What was studied.
+- Which design principles were selected.
+- Which GMO ARENA pages use those principles.
+- What was intentionally not copied.
+
+Do not use generic dashboard templates as the final product.
+
+Do not use placeholder cards as a substitute for real page design.
+
+The final experience must feel like a premium, dedicated gaming and esports platform.

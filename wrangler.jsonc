@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gmo-arena",
+  "main": ".vinext/server/worker.js",
+  "compatibility_date": "2026-11-04",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".vinext/assets",
+    "binding": "ASSETS"
+  },
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "${HYPERDRIVE_ID}",
+      "localConnectionString": "postgresql://postgres:postgres@127.0.0.1:5432/gmo_arena"
+    }
+  ]
+}

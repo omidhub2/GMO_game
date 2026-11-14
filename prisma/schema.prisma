@@ -1,0 +1,829 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum TournamentStatus {
+  DRAFT
+  PUBLISHED
+  REGISTRATION_OPEN
+  REGISTRATION_CLOSED
+  READY
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum TournamentFormat {
+  SINGLE_ELIMINATION
+  DOUBLE_ELIMINATION
+  ROUND_ROBIN
+  LEAGUE
+  POINTS_BASED
+}
+
+enum ParticipantStatus {
+  REGISTERED
+  CONFIRMED
+  WITHDRAWN
+  DISQUALIFIED
+}
+
+enum WalletAccountType {
+  BALANCE
+  REWARDS
+  PRIZE
+  SYSTEM
+}
+
+enum LedgerTransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+  TOURNAMENT_ENTRY
+  TOURNAMENT_REFUND
+  PRIZE
+  MISSION_REWARD
+  REFERRAL_REWARD
+  REVERSAL
+  ADJUSTMENT
+}
+
+enum LedgerTransactionStatus {
+  PENDING
+  COMPLETED
+  REVERSED
+  FAILED
+}
+
+enum EntryDirection {
+  DEBIT
+  CREDIT
+}
+
+enum MissionStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum UserMissionStatus {
+  IN_PROGRESS
+  COMPLETED
+  CLAIMED
+  EXPIRED
+}
+
+enum ReservationStatus {
+  RESERVED
+  CAPTURED
+  RELEASED
+  EXPIRED
+}
+
+enum PaymentRequestStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REJECTED
+}
+
+enum TeamMemberRole {
+  OWNER
+  CAPTAIN
+  MEMBER
+}
+
+enum SportingEventStatus {
+  DRAFT
+  SCHEDULED
+  LIVE
+  COMPLETED
+  POSTPONED
+  CANCELLED
+}
+
+enum PredictionMarketStatus {
+  DRAFT
+  OPEN
+  LOCKED
+  SETTLED
+  VOIDED
+}
+
+enum PredictionStatus {
+  ACTIVE
+  CORRECT
+  INCORRECT
+  VOIDED
+}
+
+model User {
+  id                 String                  @id @default(uuid()) @db.Uuid
+  username           String                  @unique @db.VarChar(32)
+  email              String?                 @unique @db.VarChar(320)
+  phone              String?                 @unique @db.VarChar(32)
+  depositAddress     String?                 @map("deposit_address") @db.VarChar(64)
+  passwordHash       String?                 @map("password_hash") @db.VarChar(255)
+  avatarUrl          String?                 @map("avatar_url") @db.VarChar(2048)
+  status             UserStatus              @default(ACTIVE)
+  createdAt          DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime                @updatedAt @map("updated_at") @db.Timestamptz(6)
+  profile            UserProfile?
+  externalAccounts   ExternalAccount[]
+  gameAccounts       GameAccount[]
+  participants       TournamentParticipant[]
+  walletAccounts     WalletAccount[]
+  userMissions       UserMission[]
+  ledgerTransactions LedgerTransaction[]     @relation("TransactionActor")
+  auditLogs          AuditLog[]
+  sessions           Session[]
+  teamsOwned         Team[]                  @relation("TeamOwner")
+  teamMemberships    TeamMember[]
+  tournamentsCreated Tournament[]            @relation("TournamentCreator")
+  rankings           Ranking[]
+  ratingHistory      RatingHistory[]
+  referralsSent      Referral[]              @relation("ReferralInviter")
+  referralReceived   Referral?               @relation("ReferralInvitee")
+  deposits           Deposit[]
+  depositIntents     DepositIntent[]
+  withdrawals        Withdrawal[]
+  walletReservations WalletReservation[]
+  rewards            Reward[]
+  achievements       UserAchievement[]
+  adminRoles         AdminUser[]
+  notifications      Notification[]
+  sportsPredictions  SportsPrediction[]
+  predictions        Prediction[]
+
+  @@index([status, createdAt])
+  @@map("users")
+}
+
+model UserProfile {
+  userId          String  @id @map("user_id") @db.Uuid
+  displayName     String? @map("display_name") @db.VarChar(64)
+  bio             String? @db.VarChar(500)
+  country         String? @db.Char(2)
+  preferredLocale String  @default("fa") @map("preferred_locale") @db.VarChar(8)
+  timezone        String  @default("UTC") @db.VarChar(64)
+  playerLevel     Int     @default(1) @map("player_level")
+  experience      Int     @default(0)
+  isPublic        Boolean @default(true) @map("is_public")
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model ExternalAccount {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  provider       String   @db.VarChar(32)
+  providerUserId String   @map("provider_user_id") @db.VarChar(128)
+  metadata       Json     @default("{}")
+  connectedAt    DateTime @default(now()) @map("connected_at") @db.Timestamptz(6)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+  @@index([userId, provider])
+  @@map("external_accounts")
+}
+
+model Game {
+  id              String          @id @default(uuid()) @db.Uuid
+  name            String          @db.VarChar(100)
+  slug            String          @unique @db.VarChar(120)
+  description     String          @db.Text
+  artworkUrl      String?         @map("artwork_url") @db.VarChar(2048)
+  platforms       String[]        @default([])
+  category        String          @db.VarChar(50)
+  integrationType String          @default("MANUAL") @map("integration_type") @db.VarChar(32)
+  isEnabled       Boolean         @default(false) @map("is_enabled")
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
+  tournaments     Tournament[]
+  gameAccounts    GameAccount[]
+  rankings        Ranking[]
+  ratingHistory   RatingHistory[]
+
+  @@index([isEnabled, category])
+  @@map("games")
+}
+
+model GameAccount {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  gameId           String    @map("game_id") @db.Uuid
+  externalPlayerId String?   @map("external_player_id") @db.VarChar(128)
+  username         String    @db.VarChar(64)
+  verifiedAt       DateTime? @map("verified_at") @db.Timestamptz(6)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game             Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameId])
+  @@map("game_accounts")
+}
+
+model Tournament {
+  id                   String                  @id @default(uuid()) @db.Uuid
+  gameId               String                  @map("game_id") @db.Uuid
+  title                String                  @db.VarChar(160)
+  slug                 String                  @unique @db.VarChar(180)
+  description          String                  @db.Text
+  format               TournamentFormat
+  status               TournamentStatus        @default(DRAFT)
+  registrationStartsAt DateTime                @map("registration_starts_at") @db.Timestamptz(6)
+  registrationEndsAt   DateTime                @map("registration_ends_at") @db.Timestamptz(6)
+  startsAt             DateTime                @map("starts_at") @db.Timestamptz(6)
+  endsAt               DateTime?               @map("ends_at") @db.Timestamptz(6)
+  maxParticipants      Int                     @map("max_participants")
+  entryFee             BigInt                  @default(0) @map("entry_fee")
+  prizePool            BigInt                  @default(0) @map("prize_pool")
+  currency             String                  @default("GMO") @db.VarChar(8)
+  rules                String                  @default("") @db.Text
+  demoContent          Boolean                 @default(false) @map("demo_content")
+  createdById          String?                 @map("created_by_id") @db.Uuid
+  createdAt            DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime                @updatedAt @map("updated_at") @db.Timestamptz(6)
+  game                 Game                    @relation(fields: [gameId], references: [id], onDelete: Restrict)
+  createdBy            User?                   @relation("TournamentCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  participants         TournamentParticipant[]
+  matches              TournamentMatch[]
+  walletReservations   WalletReservation[]
+
+  @@index([status, startsAt])
+  @@index([gameId, status])
+  @@index([createdById, createdAt])
+  @@map("tournaments")
+}
+
+model TournamentParticipant {
+  id            String            @id @default(uuid()) @db.Uuid
+  tournamentId  String            @map("tournament_id") @db.Uuid
+  userId        String?           @map("user_id") @db.Uuid
+  teamId        String?           @map("team_id") @db.Uuid
+  status        ParticipantStatus @default(REGISTERED)
+  seed          Int?
+  finalPosition Int?              @map("final_position")
+  registeredAt  DateTime          @default(now()) @map("registered_at") @db.Timestamptz(6)
+  tournament    Tournament        @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  user          User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team          Team?             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  matchSlotsA   TournamentMatch[] @relation("MatchParticipantA")
+  matchSlotsB   TournamentMatch[] @relation("MatchParticipantB")
+  matchesWon    TournamentMatch[] @relation("MatchWinner")
+
+  @@unique([tournamentId, userId])
+  @@unique([tournamentId, teamId])
+  @@index([userId, registeredAt])
+  @@index([tournamentId, status])
+  @@map("tournament_participants")
+}
+
+model WalletAccount {
+  id           String              @id @default(uuid()) @db.Uuid
+  userId       String?             @map("user_id") @db.Uuid
+  accountType  WalletAccountType   @map("account_type")
+  currency     String              @default("GMO") @db.VarChar(8)
+  isActive     Boolean             @default(true) @map("is_active")
+  createdAt    DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  user         User?               @relation(fields: [userId], references: [id], onDelete: Restrict)
+  entries      LedgerEntry[]
+  reservations WalletReservation[]
+
+  @@unique([userId, accountType, currency])
+  @@index([userId, isActive])
+  @@index([accountType, currency, isActive])
+  @@map("wallet_accounts")
+}
+
+model LedgerTransaction {
+  id             String                  @id @default(uuid()) @db.Uuid
+  reference      String                  @unique @db.VarChar(100)
+  idempotencyKey String                  @unique @map("idempotency_key") @db.VarChar(128)
+  type           LedgerTransactionType
+  status         LedgerTransactionStatus @default(COMPLETED)
+  description    String                  @db.VarChar(500)
+  metadata       Json                    @default("{}")
+  actorId        String?                 @map("actor_id") @db.Uuid
+  createdAt      DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  actor          User?                   @relation("TransactionActor", fields: [actorId], references: [id], onDelete: SetNull)
+  entries        LedgerEntry[]
+  deposit        Deposit?
+  withdrawal     Withdrawal?
+  reward         Reward?
+
+  @@index([createdAt, type])
+  @@index([actorId, createdAt])
+  @@map("ledger_transactions")
+}
+
+model LedgerEntry {
+  id            String            @id @default(uuid()) @db.Uuid
+  transactionId String            @map("transaction_id") @db.Uuid
+  accountId     String            @map("account_id") @db.Uuid
+  amount        BigInt
+  direction     EntryDirection
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  transaction   LedgerTransaction @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  account       WalletAccount     @relation(fields: [accountId], references: [id], onDelete: Restrict)
+
+  @@index([accountId, createdAt])
+  @@index([transactionId])
+  @@map("ledger_entries")
+}
+
+model Mission {
+  id           String        @id @default(uuid()) @db.Uuid
+  slug         String        @unique @db.VarChar(120)
+  title        String        @db.VarChar(140)
+  description  String        @db.VarChar(500)
+  missionType  String        @map("mission_type") @db.VarChar(40)
+  reward       BigInt        @default(0)
+  requirements Json          @default("{}")
+  startsAt     DateTime      @map("starts_at") @db.Timestamptz(6)
+  endsAt       DateTime?     @map("ends_at") @db.Timestamptz(6)
+  status       MissionStatus @default(ACTIVE)
+  userMissions UserMission[]
+
+  @@index([status, startsAt, endsAt])
+  @@map("missions")
+}
+
+model UserMission {
+  id          String            @id @default(uuid()) @db.Uuid
+  userId      String            @map("user_id") @db.Uuid
+  missionId   String            @map("mission_id") @db.Uuid
+  progress    Int               @default(0)
+  status      UserMissionStatus @default(IN_PROGRESS)
+  completedAt DateTime?         @map("completed_at") @db.Timestamptz(6)
+  claimedAt   DateTime?         @map("claimed_at") @db.Timestamptz(6)
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mission     Mission           @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, missionId])
+  @@index([userId, status])
+  @@map("user_missions")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid()) @db.Uuid
+  actorId      String?  @map("actor_id") @db.Uuid
+  action       String   @db.VarChar(100)
+  resourceType String   @map("resource_type") @db.VarChar(64)
+  resourceId   String?  @map("resource_id") @db.VarChar(128)
+  metadata     Json     @default("{}")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  actor        User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId, createdAt])
+  @@index([resourceType, resourceId])
+  @@map("audit_logs")
+}
+
+model TournamentMatch {
+  id             String                 @id @default(uuid()) @db.Uuid
+  tournamentId   String                 @map("tournament_id") @db.Uuid
+  round          Int
+  matchNumber    Int                    @map("match_number")
+  participantAId String?                @map("participant_a") @db.Uuid
+  participantBId String?                @map("participant_b") @db.Uuid
+  scoreA         Int?                   @map("score_a")
+  scoreB         Int?                   @map("score_b")
+  winnerId       String?                @map("winner_id") @db.Uuid
+  status         String                 @default("PENDING") @db.VarChar(24)
+  scheduledAt    DateTime?              @map("scheduled_at") @db.Timestamptz(6)
+  completedAt    DateTime?              @map("completed_at") @db.Timestamptz(6)
+  tournament     Tournament             @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  participantA   TournamentParticipant? @relation("MatchParticipantA", fields: [participantAId], references: [id], onDelete: SetNull)
+  participantB   TournamentParticipant? @relation("MatchParticipantB", fields: [participantBId], references: [id], onDelete: SetNull)
+  winner         TournamentParticipant? @relation("MatchWinner", fields: [winnerId], references: [id], onDelete: SetNull)
+
+  @@unique([tournamentId, round, matchNumber])
+  @@index([tournamentId, status])
+  @@map("tournament_matches")
+}
+
+model Ranking {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  gameId        String   @map("game_id") @db.Uuid
+  rating        Int      @default(1000)
+  wins          Int      @default(0)
+  losses        Int      @default(0)
+  draws         Int      @default(0)
+  matchesPlayed Int      @default(0) @map("matches_played")
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game          Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameId])
+  @@index([gameId, rating(sort: Desc)])
+  @@map("rankings")
+}
+
+model RatingHistory {
+  id             String   @id @default(uuid()) @db.Uuid
+  matchReference String   @map("match_reference") @db.VarChar(128)
+  userId         String   @map("user_id") @db.Uuid
+  gameId         String   @map("game_id") @db.Uuid
+  previousRating Int      @map("previous_rating")
+  newRating      Int      @map("new_rating")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  game           Game     @relation(fields: [gameId], references: [id], onDelete: Restrict)
+
+  @@unique([matchReference, userId])
+  @@index([gameId, createdAt])
+  @@index([userId, createdAt])
+  @@map("rating_history")
+}
+
+model Referral {
+  id            String   @id @default(uuid()) @db.Uuid
+  inviterId     String   @map("inviter_id") @db.Uuid
+  invitedUserId String   @unique @map("invited_user_id") @db.Uuid
+  referralCode  String   @map("referral_code") @db.VarChar(32)
+  status        String   @default("PENDING") @db.VarChar(24)
+  rewardStatus  String   @default("LOCKED") @map("reward_status") @db.VarChar(24)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  inviter       User     @relation("ReferralInviter", fields: [inviterId], references: [id], onDelete: Restrict)
+  invitedUser   User     @relation("ReferralInvitee", fields: [invitedUserId], references: [id], onDelete: Restrict)
+
+  @@unique([inviterId, referralCode])
+  @@index([inviterId, createdAt])
+  @@map("referrals")
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  title     String    @db.VarChar(160)
+  message   String    @db.VarChar(1000)
+  type      String    @db.VarChar(32)
+  readAt    DateTime? @map("read_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+model Session {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash") @db.VarChar(128)
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz(6)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  lastSeenAt DateTime? @map("last_seen_at") @db.Timestamptz(6)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model Team {
+  id           String                  @id @default(uuid()) @db.Uuid
+  name         String                  @db.VarChar(80)
+  slug         String                  @unique @db.VarChar(100)
+  logoUrl      String?                 @map("logo_url") @db.VarChar(2048)
+  description  String                  @default("") @db.VarChar(500)
+  ownerId      String                  @map("owner_id") @db.Uuid
+  createdAt    DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime                @updatedAt @map("updated_at") @db.Timestamptz(6)
+  owner        User                    @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  members      TeamMember[]
+  participants TournamentParticipant[]
+
+  @@index([ownerId, createdAt])
+  @@map("teams")
+}
+
+model TeamMember {
+  teamId   String         @map("team_id") @db.Uuid
+  userId   String         @map("user_id") @db.Uuid
+  role     TeamMemberRole @default(MEMBER)
+  joinedAt DateTime       @default(now()) @map("joined_at") @db.Timestamptz(6)
+  team     Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([teamId, userId])
+  @@index([userId, joinedAt])
+  @@map("team_members")
+}
+
+model WalletReservation {
+  id             String            @id @default(uuid()) @db.Uuid
+  accountId      String            @map("account_id") @db.Uuid
+  userId         String            @map("user_id") @db.Uuid
+  tournamentId   String            @map("tournament_id") @db.Uuid
+  amount         BigInt
+  status         ReservationStatus @default(RESERVED)
+  idempotencyKey String            @unique @map("idempotency_key") @db.VarChar(128)
+  expiresAt      DateTime?         @map("expires_at") @db.Timestamptz(6)
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  account        WalletAccount     @relation(fields: [accountId], references: [id], onDelete: Restrict)
+  user           User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  tournament     Tournament        @relation(fields: [tournamentId], references: [id], onDelete: Restrict)
+
+  @@index([accountId, status])
+  @@index([tournamentId, status])
+  @@map("wallet_reservations")
+}
+
+model Deposit {
+  id                String               @id @default(uuid()) @db.Uuid
+  userId            String               @map("user_id") @db.Uuid
+  transactionId     String?              @unique @map("transaction_id") @db.Uuid
+  amount            BigInt
+  currency          String               @default("GMO") @db.VarChar(8)
+  provider          String               @db.VarChar(40)
+  externalReference String?              @map("external_reference") @db.VarChar(160)
+  status            PaymentRequestStatus @default(PENDING)
+  createdAt         DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  verifiedAt        DateTime?            @map("verified_at") @db.Timestamptz(6)
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Restrict)
+  transaction       LedgerTransaction?   @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+
+  @@unique([provider, externalReference])
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+  @@map("deposits")
+}
+
+model Withdrawal {
+  id                String               @id @default(uuid()) @db.Uuid
+  userId            String               @map("user_id") @db.Uuid
+  transactionId     String?              @unique @map("transaction_id") @db.Uuid
+  amount            BigInt
+  currency          String               @default("GMO") @db.VarChar(8)
+  provider          String               @db.VarChar(40)
+  externalReference String?              @map("external_reference") @db.VarChar(160)
+  requestKey        String?              @unique @map("request_key") @db.VarChar(160)
+  payoutTxHash      String?              @unique @map("payout_tx_hash") @db.VarChar(64)
+  payoutAmount      BigInt?              @map("payout_amount")
+  status            PaymentRequestStatus @default(PENDING)
+  createdAt         DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  processedAt       DateTime?            @map("processed_at") @db.Timestamptz(6)
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Restrict)
+  transaction       LedgerTransaction?   @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+
+  @@index([provider, externalReference])
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+  @@map("withdrawals")
+}
+
+model DepositIntent {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  requestedAmount BigInt   @map("requested_amount")
+  expectedAmount  BigInt   @unique @map("expected_amount")
+  gmoAmount       BigInt   @map("gmo_amount")
+  address         String   @db.VarChar(64)
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt       DateTime @map("expires_at") @db.Timestamptz(6)
+  txHash          String?  @unique @map("tx_hash") @db.VarChar(64)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, createdAt])
+  @@map("deposit_intents")
+}
+
+model Reward {
+  id            String               @id @default(uuid()) @db.Uuid
+  userId        String               @map("user_id") @db.Uuid
+  transactionId String?              @unique @map("transaction_id") @db.Uuid
+  rewardType    String               @map("reward_type") @db.VarChar(40)
+  amount        BigInt
+  source        String               @db.VarChar(80)
+  reference     String               @unique @db.VarChar(128)
+  status        PaymentRequestStatus @default(PENDING)
+  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Restrict)
+  transaction   LedgerTransaction?   @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+  @@map("rewards")
+}
+
+model Achievement {
+  id           String            @id @default(uuid()) @db.Uuid
+  slug         String            @unique @db.VarChar(120)
+  title        String            @db.VarChar(140)
+  description  String            @db.VarChar(500)
+  icon         String?           @db.VarChar(120)
+  requirements Json              @default("{}")
+  isActive     Boolean           @default(true) @map("is_active")
+  createdAt    DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  users        UserAchievement[]
+
+  @@index([isActive, createdAt])
+  @@map("achievements")
+}
+
+model UserAchievement {
+  userId        String      @map("user_id") @db.Uuid
+  achievementId String      @map("achievement_id") @db.Uuid
+  unlockedAt    DateTime    @default(now()) @map("unlocked_at") @db.Timestamptz(6)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@id([userId, achievementId])
+  @@index([achievementId, unlockedAt])
+  @@map("user_achievements")
+}
+
+model AdminRole {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String      @unique @db.VarChar(64)
+  permissions Json        @default("[]")
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  users       AdminUser[]
+
+  @@map("admin_roles")
+}
+
+model AdminUser {
+  userId    String    @map("user_id") @db.Uuid
+  roleId    String    @map("role_id") @db.Uuid
+  grantedAt DateTime  @default(now()) @map("granted_at") @db.Timestamptz(6)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      AdminRole @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@id([userId, roleId])
+  @@index([roleId, grantedAt])
+  @@map("admin_users")
+}
+
+model SystemSetting {
+  key       String   @id @db.VarChar(120)
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("system_settings")
+}
+
+model InfrastructureUsage {
+  id         String   @id @default(uuid()) @db.Uuid
+  service    String   @db.VarChar(80)
+  metric     String   @db.VarChar(100)
+  value      Decimal  @db.Decimal(24, 8)
+  unit       String?  @db.VarChar(32)
+  measuredAt DateTime @default(now()) @map("measured_at") @db.Timestamptz(6)
+
+  @@index([service, metric, measuredAt])
+  @@map("infrastructure_usage")
+}
+
+model SportingEvent {
+  id          String              @id @default(uuid()) @db.Uuid
+  sport       String              @db.VarChar(60)
+  competition String              @db.VarChar(120)
+  season      String?             @db.VarChar(40)
+  stage       String?             @db.VarChar(80)
+  name        String              @db.VarChar(180)
+  slug        String              @unique @db.VarChar(200)
+  description String              @default("") @db.Text
+  startsAt    DateTime            @map("starts_at") @db.Timestamptz(6)
+  endsAt      DateTime?           @map("ends_at") @db.Timestamptz(6)
+  status      SportingEventStatus @default(DRAFT)
+  isDemo      Boolean             @default(false) @map("is_demo")
+  metadata    Json                @default("{}")
+  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  fixtures    SportingFixture[]
+
+  @@index([sport, startsAt])
+  @@index([competition, season])
+  @@index([status, startsAt])
+  @@map("sporting_events")
+}
+
+model SportingFixture {
+  id           String              @id @default(uuid()) @db.Uuid
+  eventId      String              @map("event_id") @db.Uuid
+  externalId   String?             @map("external_id") @db.VarChar(128)
+  name         String              @db.VarChar(180)
+  stage        String?             @db.VarChar(80)
+  round        String?             @db.VarChar(80)
+  venue        String?             @db.VarChar(160)
+  startsAt     DateTime            @map("starts_at") @db.Timestamptz(6)
+  status       SportingEventStatus @default(SCHEDULED)
+  participantA String?             @map("participant_a") @db.VarChar(120)
+  participantB String?             @map("participant_b") @db.VarChar(120)
+  scoreA       Int?                @map("score_a")
+  scoreB       Int?                @map("score_b")
+  winner       String?             @db.VarChar(120)
+  result       Json                @default("{}")
+  metadata     Json                @default("{}")
+  createdAt    DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  event        SportingEvent       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  markets      PredictionMarket[]
+
+  @@unique([eventId, externalId])
+  @@index([eventId, startsAt])
+  @@index([status, startsAt])
+  @@map("sporting_fixtures")
+}
+
+model PredictionMarket {
+  id                String                 @id @default(uuid()) @db.Uuid
+  fixtureId         String                 @map("fixture_id") @db.Uuid
+  slug              String                 @db.VarChar(120)
+  title             String                 @db.VarChar(180)
+  description       String                 @default("") @db.VarChar(500)
+  marketType        String                 @map("market_type") @db.VarChar(60)
+  status            PredictionMarketStatus @default(DRAFT)
+  lockAt            DateTime               @map("lock_at") @db.Timestamptz(6)
+  settledAt         DateTime?              @map("settled_at") @db.Timestamptz(6)
+  winningOptionId   String?                @map("winning_option_id") @db.Uuid
+  isDemo            Boolean                @default(false) @map("is_demo")
+  metadata          Json                   @default("{}")
+  createdAt         DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  fixture           SportingFixture        @relation(fields: [fixtureId], references: [id], onDelete: Cascade)
+  options           PredictionOption[]
+  predictions       Prediction[]
+  sportsPredictions SportsPrediction[]
+  winningOption     PredictionOption?      @relation("MarketWinningOption", fields: [winningOptionId, id], references: [id, marketId], onDelete: Restrict)
+
+  @@unique([id, fixtureId])
+  @@unique([fixtureId, slug])
+  @@index([status, lockAt])
+  @@map("prediction_markets")
+}
+
+model PredictionOption {
+  id                String             @id @default(uuid()) @db.Uuid
+  marketId          String             @map("market_id") @db.Uuid
+  slug              String             @db.VarChar(80)
+  label             String             @db.VarChar(120)
+  sortOrder         Int                @default(0) @map("sort_order")
+  metadata          Json               @default("{}")
+  market            PredictionMarket   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  predictions       Prediction[]
+  sportsPredictions SportsPrediction[]
+  winningFor        PredictionMarket[] @relation("MarketWinningOption")
+
+  @@unique([marketId, slug])
+  @@unique([id, marketId])
+  @@index([marketId, sortOrder])
+  @@map("prediction_options")
+}
+
+model Prediction {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @map("user_id") @db.Uuid
+  marketId  String           @map("market_id") @db.Uuid
+  optionId  String           @map("option_id") @db.Uuid
+  status    PredictionStatus @default(ACTIVE)
+  placedAt  DateTime         @default(now()) @map("placed_at") @db.Timestamptz(6)
+  settledAt DateTime?        @map("settled_at") @db.Timestamptz(6)
+  metadata  Json             @default("{}")
+  user      User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  market    PredictionMarket @relation(fields: [marketId], references: [id], onDelete: Restrict)
+  option    PredictionOption @relation(fields: [optionId, marketId], references: [id, marketId], onDelete: Restrict)
+
+  @@unique([userId, marketId])
+  @@index([marketId, optionId, status])
+  @@index([userId, placedAt])
+  @@map("predictions")
+}
+
+model SportsPrediction {
+  id              String           @id @default(uuid()) @db.Uuid
+  userId          String           @map("user_id") @db.Uuid
+  marketId        String           @map("market_id") @db.Uuid
+  optionId        String           @map("option_id") @db.Uuid
+  amount          BigInt           @default(0)
+  potentialPayout BigInt           @default(0) @map("potential_payout")
+  status          PredictionStatus @default(ACTIVE)
+  idempotencyKey  String           @unique @map("idempotency_key") @db.VarChar(128)
+  placedAt        DateTime         @default(now()) @map("placed_at") @db.Timestamptz(6)
+  settledAt       DateTime?        @map("settled_at") @db.Timestamptz(6)
+  user            User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  market          PredictionMarket @relation(fields: [marketId], references: [id], onDelete: Restrict)
+  option          PredictionOption @relation(fields: [optionId, marketId], references: [id, marketId], onDelete: Restrict)
+
+  @@index([marketId, optionId, status])
+  @@index([userId, placedAt])
+  @@map("sports_predictions")
+}
