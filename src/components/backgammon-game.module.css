@@ -642,3 +642,11 @@
 .rightRail .hitCount{flex:none;min-width:23px;min-height:26px;padding:0 2px}
 .rightRail .hitCount b,.rightRail .offTray b{font-size:20px;font-weight:800;line-height:1}
 @media(max-width:900px){.rightRail .barSource>span:first-child,.rightRail .offTray>span>span{font-size:11px}.rightRail .hitCount b,.rightRail .offTray b{font-size:18px}}
+
+/* Remove the surrounding table frame and center counts in the card's free space. */
+.table{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.board{border:0;border-radius:0;box-shadow:none}
+.rightRail .barSource{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center}
+.rightRail .barSource .hitCount{justify-self:center}
+.rightRail .offTray>span{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;width:100%}
+.rightRail .offTray b{justify-self:center}
