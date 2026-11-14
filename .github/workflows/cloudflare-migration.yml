@@ -36,14 +36,11 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Check Vinext compatibility
-        run: npx vinext check
-
-      - name: Install Cloudflare Vite integration
-        run: npm install --save-dev @cloudflare/vite-plugin cf
+      - name: Upgrade to the current native Cloudflare Vinext integration
+        run: npm install --save-dev vinext@latest @cloudflare/vite-plugin@latest cf @vinext/cloudflare
 
       - name: Generate official Cloudflare Workers configuration
-        run: npx vinext init --platform=cloudflare --name=gmo-game --cdn-cache=none --data-cache=none --image-optimization=none --no-prerender --ignore-wrangler-config
+        run: npx vinext init --platform=cloudflare --name=gmo-arena --cdn-cache=none --data-cache=none --image-optimization=none --no-prerender --ignore-wrangler-config --force
 
       - name: Inspect generated Cloudflare configuration
         run: |
@@ -52,6 +49,9 @@ jobs:
             if [ -f "$file" ]; then echo "Found $file"; else echo "Missing $file"; fi
           done
           test -f vite.config.ts
+          test -f cloudflare.config.ts
+          echo "Generated Cloudflare config:" 
+          sed -E 's/(connectionString:).*/\\1 "[REDACTED]",/' cloudflare.config.ts
           echo "Working tree changes:"
           git status --short
 
