@@ -2,25 +2,25 @@ import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-const sourcePath = path.resolve(process.cwd(), "src/app/page.tsx");
+const pagePath = path.resolve(process.cwd(), "src/app/page.tsx");
+const menuPath = path.resolve(process.cwd(), "src/components/game-menu.tsx");
 
-describe("GMO ARENA homepage source", () => {
-  it("provides the five required primary navigation sections in Persian", async () => {
-    const source = await readFile(sourcePath, "utf8");
-    for (const label of ["خانه", "بازی‌ها", "مسابقات", "کیف پول", "حساب من"]) {
-      expect(source).toContain(`label: "${label}"`);
+describe("GMO ARENA home menu", () => {
+  it("routes the homepage to the current game menu component", async () => {
+    const source = await readFile(pagePath, "utf8");
+    expect(source).toContain('@/components/game-menu');
+  });
+
+  it("exposes the four current player hub modes", async () => {
+    const source = await readFile(menuPath, "utf8");
+    for (const label of ['label: "PLAY"', 'label: "COMPETE"', 'label: "PREDICT"', 'label: "WALLET"']) {
+      expect(source).toContain(label);
     }
   });
 
-  it("clearly identifies the current dashboard data as demonstrative", async () => {
-    const source = await readFile(sourcePath, "utf8");
-    expect(source).toContain("اطلاعات این صفحه در حال حاضر نمایشی است");
-  });
-
-  it("includes the dashboard's core competitive and engagement areas", async () => {
-    const source = await readFile(sourcePath, "utf8");
-    for (const text of ["موجودی کل GMO", "رتبهٔ جهانی", "مسابقات پیشنهادی", "مأموریت‌های امروز"]) {
-      expect(source).toContain(text);
-    }
+  it("clearly marks the fallback wallet as demonstrative", async () => {
+    const source = await readFile(menuPath, "utf8");
+    expect(source).toContain("demo: true");
+    expect(source).toContain("Demo wallet. These tokens are for preview only.");
   });
 });
