@@ -556,5 +556,19 @@
 .rightRail .turnPromptRolling .checker{animation:turnCheckerRoll 1.2s ease-in-out infinite;transform-origin:center}
 @keyframes turnCheckerRoll{0%,100%{transform:scale(1)}50%{transform:scale(1.12);filter:brightness(1.22);box-shadow:0 5px 12px #000c,0 0 16px #f0b90b99}}
 @media(prefers-reduced-motion:reduce){.rightRail .turnPromptRolling .checker{animation:none;outline:2px solid #f0b90b}}
+
+/* The drawer follows the menu button on the physical right edge. */
+.drawer{position:fixed;inset:0 0 0 auto;box-sizing:border-box;width:min(380px,86vw);height:100dvh;max-height:100dvh;padding:clamp(12px,2.5vw,22px);border:0;border-left:1px solid #f0b90b6b;border-radius:16px 0 0 16px;background:linear-gradient(155deg,#292723 0%,#19191b 42%,#0d0d0f 100%);box-shadow:-18px 0 70px #000b,inset 1px 0 #ffffff12;color:#f4e9cf;animation:drawerFromRight .26s cubic-bezier(.2,.8,.2,1);overflow-y:auto;overscroll-behavior:contain}
+.drawer::backdrop{background:#050507ba;backdrop-filter:blur(4px)}
+.drawer header{padding-bottom:14px;border-bottom-color:#f0b90b40}
+.drawerPlayer{padding:16px 0}
+.drawerItem{min-height:58px;padding:9px 8px}
+.drawerResume{margin-top:16px}
+@keyframes drawerFromRight{from{transform:translateX(100%);opacity:.9}to{transform:translateX(0);opacity:1}}
+@media(orientation:portrait) and (max-width:900px){
+  .drawer{--drawer-width:min(380px,86dvh);inset:auto auto auto auto;top:calc(100dvh - var(--drawer-width));left:100dvw;width:var(--drawer-width);max-width:none;height:100dvw;max-height:100dvw;border-radius:16px 0 0 16px;transform-origin:top left;transform:rotate(90deg);animation:drawerFromRightRotated .26s cubic-bezier(.2,.8,.2,1)}
+  @keyframes drawerFromRightRotated{from{transform:rotate(90deg) translateX(100%);opacity:.9}to{transform:rotate(90deg);opacity:1}}
+}
+@media(prefers-reduced-motion:reduce){.drawer{animation:none}}
 .setupPage .colorChoices{align-items:stretch}
 .setupPage .colorChoices button{flex:1 1 0;box-sizing:border-box}
