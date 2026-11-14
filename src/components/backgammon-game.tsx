@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Menu, Maximize, LogOut, HelpCircle, Dices } from "lucide-react";
-import { canDouble, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
+import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2 } from "lucide-react";
+import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
 import type { LobbyState } from "@/modules/games/domain/backgammon-lobby";
 import BackgammonSetup from "./backgammon-setup";
 import BackgammonDrawer from "./backgammon-drawer";
@@ -174,6 +174,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     {menuOpen && <BackgammonDrawer onClose={()=>setMenuOpen(false)}>
       <div className={styles.drawerPlayer}><Dices size={30}/><h2>تخته‌نرد</h2><p>{state.target ? `مسابقه تا ${fa(state.target)} امتیاز` : "بازی ساده • بدون دوبل"}</p><small>درخواست‌دهنده: {names[lobby.colors.requester!]} • حریف: {names[lobby.colors.guest!]}</small></div>
       <button className={styles.drawerItem} onClick={()=>{onFullscreen();setMenuOpen(false);}}><Maximize size={20}/><span>نمایش تمام‌صفحه<small>تمرکز روی تخته</small></span></button>
+      <button className={styles.drawerItem} aria-label="برگشت حرکت" disabled={locked || !canUndo(state)} onClick={()=>{if(send({type:"undo",revision:state.revision})) setMenuOpen(false);}}><Undo2 size={20}/><span>برگشت حرکت<small>{canUndo(state) ? "برگرداندن آخرین حرکت با همان تاس‌ها" : state.phase === "move" ? "هنوز حرکتی انجام نشده است" : "برگشت پس از پایان نوبت ممکن نیست"}</small></span></button>
       <button className={styles.drawerItem} aria-expanded={showHelp} onClick={()=>setShowHelp(value=>!value)}><HelpCircle size={20}/><span>راهنمای بازی<small>انتخاب مهره، تاس و برگشت</small></span></button>
       {showHelp && <div className={styles.drawerHelp}>شماره‌ها از دید بازیکن فعال‌اند؛ از ۲۴ به ۱ برو. هر مقصد فقط یک تاس مصرف می‌کند. مهره‌های زده‌شده و خروج در ستون سمت راست‌اند. باکس تاس را نگه دار؛ پس از رهاکردن، تاس اول در ۵۰۰ میلی‌ثانیه و دومی ۴۰۰ میلی‌ثانیه بعد مشخص می‌شود. برگشت فقط تا پایان نوبت مجاز است.</div>}
       <button className={styles.drawerItem} onClick={onLeave}><LogOut size={20}/><span>بازی جدید و تنظیمات<small>بازی فعلی پایان می‌یابد؛ بازگشت به انتخاب رنگ</small></span></button>
