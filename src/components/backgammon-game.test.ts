@@ -15,16 +15,26 @@ function button(text: string) {
 function point(index: number) { return container.querySelector<HTMLButtonElement>(`[data-point="${index}"]`)!; }
 function click(el: HTMLElement) { act(() => el.click()); }
 function settle() { act(() => vi.advanceTimersByTime(1100)); }
-function roll() { click(button("تاس شروع")); settle(); }
-function status() { return container.querySelector('[role="status"]')!.textContent; }
+function roll() { click(button("تاس بریز")); settle(); }
 function start(mode?: string) {
   if (mode) { click(button("ساده؛ بدون دوبل")); click(button(`مسابقه تا ${Number(mode).toLocaleString("fa-IR")} امتیاز`)); }
-  click(button("انتخاب سفید")); click(button("تأیید انتخاب")); click(button("تأیید رنگ سیاه"));
+  click(button("انتخاب سیاه")); click(button("انتخاب سفید")); click(button("ورود به بازی"));
+}
+function undoButton() {
+  click(button("باز کردن منوی بازی"));
+  return button("برگشت حرکت");
+}
+function undoEnabled() {
+  const enabled = !undoButton().disabled;
+  click(button("بستن منو"));
+  return enabled;
 }
 
 beforeEach(() => {
   vi.useFakeTimers(); rolls=[5,2];
   Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
+  Object.defineProperty(HTMLDialogElement.prototype,"showModal",{configurable:true,value:function(this:HTMLDialogElement){this.open=true;}});
+  Object.defineProperty(HTMLDialogElement.prototype,"close",{configurable:true,value:function(this:HTMLDialogElement){this.open=false;}});
   vi.spyOn(crypto,"getRandomValues").mockImplementation((array) => { (array as Uint8Array)[0]=(rolls.shift() ?? 3)-1; return array; });
   container=document.createElement("div"); document.body.append(container); root=createRoot(container);
   act(() => root.render(React.createElement(BackgammonGame)));
@@ -35,8 +45,8 @@ afterEach(() => { act(() => root.unmount()); container.remove(); vi.restoreAllMo
 describe("Persian manual board interactions", () => {
   it("waits after dice animation with zero selected checkers and no automatic move", () => {
     const before=[...container.querySelectorAll("[data-point]")].map(p=>p.getAttribute("aria-label"));
-    click(button("تاس شروع")); expect(point(23).disabled).toBe(true);
-    settle(); expect(status()).toBe("یک مهره انتخاب کن");
+    click(button("تاس بریز")); expect(point(23).disabled).toBe(true);
+    settle();
     expect(container.querySelectorAll('[aria-pressed="true"]')).toHaveLength(0);
     expect([...container.querySelectorAll("[data-point]")].map(p=>p.getAttribute("aria-label"))).toEqual(before);
     expect(button("تاس بریز").disabled).toBe(true);
@@ -45,42 +55,47 @@ describe("Persian manual board interactions", () => {
     rolls=[3,2]; roll(); click(point(23));
     expect(point(20).getAttribute("aria-label")).toContain("مقصد مجاز با تاس ۳");
     expect(point(21).getAttribute("aria-label")).toContain("مقصد مجاز با تاس ۲");
-    expect(container.querySelector('[aria-label="راهنمای حرکت"]')!.textContent).toContain("خانه ۲۱ • تاس ۳");
     click(point(0)); expect(container.querySelectorAll('[aria-pressed="true"]')).toHaveLength(0);
-    expect(button("برگشت").disabled).toBe(true);
+    expect(undoEnabled()).toBe(false);
     click(point(23)); click(point(23)); expect(point(23).getAttribute("aria-pressed")).toBe("false");
     click(point(23)); click(point(12)); expect(point(12).getAttribute("aria-pressed")).toBe("true");
   });
   it("uses one die per destination, undoes exactly and commits the second move", () => {
     rolls=[3,2]; roll(); const start=point(23).getAttribute("aria-label");
     click(point(23)); click(point(20)); settle();
-    expect(button("برگشت").disabled).toBe(false);
-    expect(container.querySelectorAll('[aria-label$="مصرف شده"]')).toHaveLength(1);
-    click(button("برگشت")); expect(point(23).getAttribute("aria-label")).toBe(start);
+    expect(undoEnabled()).toBe(true);
+    expect(container.querySelectorAll('[data-die-used-mark]')).toHaveLength(1);
+    expect(point(20).getAttribute("aria-label")).toContain("۱ مهره سفید");
+    click(undoButton()); expect(point(23).getAttribute("aria-label")).toBe(start);
     expect(container.querySelectorAll('[aria-pressed="true"]')).toHaveLength(0);
     click(point(23)); click(point(20)); settle(); click(point(12)); click(point(10)); settle();
-    expect(button("برگشت").disabled).toBe(true); expect(button("تاس بریز").disabled).toBe(false);
-    expect(status()).toContain("نوبت سیاه");
+    expect(undoEnabled()).toBe(false); expect(button("تاس بریز").disabled).toBe(false);
+    expect(container.querySelector('[data-visible="true"][dir="rtl"]')?.textContent).toContain("تاس بریز");
   });
   it("blocks rapid repeated roll and move clicks during display", () => {
-    rolls=[3,2,6,6]; const rollButton=button("تاس شروع");
+    rolls=[3,2,6,6]; const rollButton=button("تاس بریز");
     act(() => { rollButton.click(); rollButton.click(); rollButton.click(); }); settle();
     expect(rolls).toEqual([6,6]); click(point(23)); const dest=point(20);
     act(() => { dest.click(); dest.click(); dest.click(); }); settle();
-    expect(container.querySelectorAll('[aria-label$="مصرف شده"]')).toHaveLength(1);
+    expect(undoEnabled()).toBe(true);
     expect(point(20).getAttribute("aria-label")).toContain("۱ مهره سفید");
   });
   it("renders four double markers and requires all four manual moves", () => {
     rolls=[3,2,3,3]; roll(); click(point(23)); click(point(20)); settle(); click(point(12)); click(point(10)); settle();
     click(button("تاس بریز")); settle();
-    expect(container.querySelectorAll('[aria-label="تاس ۳ باقی مانده"]')).toHaveLength(4);
+    expect(container.querySelectorAll('[aria-label="تاس ۳"]')).toHaveLength(2);
     const sequence=[[0,3],[3,6],[6,9],[11,14]];
     for(let i=0;i<4;i++) {
       click(point(sequence[i][0])); click(point(sequence[i][1])); settle();
-      expect(container.textContent).toContain(`جفت ۳ — ${["۱","۲","۳","۴"][i]} حرکت از چهار حرکت مصرف شده`);
-      expect(button("برگشت").disabled).toBe(i===3);
+      if (i < 3) {
+        const marks = [...container.querySelectorAll('[data-die-used-mark]')];
+        expect(marks.reduce((total, mark) => total + Number(mark.getAttribute('data-used-count')), 0)).toBe(i + 1);
+        expect(marks[0].textContent).toContain('۳');
+      }
+      expect(container.querySelector("footer")).toBeNull();
+      expect(undoEnabled()).toBe(i!==3);
     }
-    expect(status()).toContain("نوبت سفید");
+    expect(button("تاس بریز").disabled).toBe(false);
   });
   it("exposes match selection, cube ownership and accepting/rejecting doubles", () => {
     act(() => root.render(React.createElement(BackgammonGame,{key:"match"})));
@@ -89,5 +104,14 @@ describe("Persian manual board interactions", () => {
     click(button("پیشنهاد دوبل ×۲")); expect(container.textContent).toContain("سفید؛ پیشنهاد دوبل ×۲");
     click(button("پذیرش دوبل")); expect(container.textContent).toContain("مالک: سفید");
     expect(button("پیشنهاد دوبل ×۴").disabled).toBe(true);
+  });
+  it("changes the board theme from the menu without changing the game turn", () => {
+    click(button("باز کردن منوی بازی"));
+    click(container.querySelector<HTMLButtonElement>('[data-theme="carbon"]')!);
+    expect(container.querySelector('[data-board-theme="carbon"]')).not.toBeNull();
+    expect(container.querySelector('[data-theme="carbon"]')?.getAttribute("aria-pressed")).toBe("true");
+    click(button("بستن منو"));
+    expect(button("تاس بریز").disabled).toBe(false);
+    localStorage.removeItem("gmo-backgammon-board-theme");
   });
 });

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Menu, Maximize, LogOut, HelpCircle, Dices } from "lucide-react";
-import { canDouble, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
+import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2 } from "lucide-react";
+import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
 import type { LobbyState } from "@/modules/games/domain/backgammon-lobby";
 import BackgammonSetup from "./backgammon-setup";
 import BackgammonDrawer from "./backgammon-drawer";
@@ -12,6 +12,14 @@ import styles from "./backgammon-game.module.css";
 
 const fa = (n: number) => n.toLocaleString("fa-IR");
 const names: Record<Side, string> = { light: "سفید", dark: "سیاه" };
+const boardThemes = [
+  { id: "simple", label: "ساده" },
+  { id: "walnut", label: "گردویی" },
+  { id: "carbon", label: "ذغالی" },
+  { id: "navy", label: "سرمه‌ای" },
+  { id: "emerald", label: "یشمی" },
+] as const;
+type BoardTheme = (typeof boardThemes)[number]["id"];
 
 /** Rejection sampling avoids modulo bias; results commit before animation. */
 function randomDie(): number {
@@ -36,8 +44,10 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   const current = useRef(state);
   const [rolling, setRolling] = useState(false);
   const [moving, setMoving] = useState(false);
+  const [movingTo, setMovingTo] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [boardTheme, setBoardTheme] = useState<BoardTheme>("walnut");
   const [toastText, setToastText] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
   const { board, turn, selected, dice, remaining } = state;
@@ -45,6 +55,16 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousPhase = useRef(state.phase);
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("gmo-backgammon-board-theme");
+      if (boardThemes.some(theme => theme.id === saved)) setBoardTheme(saved as BoardTheme);
+    } catch { /* Storage can be unavailable in private browsing. */ }
+  }, []);
+  function chooseBoardTheme(theme: BoardTheme) {
+    setBoardTheme(theme);
+    try { window.localStorage.setItem("gmo-backgammon-board-theme", theme); } catch { /* Keep this session's choice. */ }
+  }
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
   useEffect(() => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -61,6 +81,9 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     } else if (state.phase === "move" && phaseChanged) {
       message = previous === "opening" ? names[turn] + " بازی را شروع می‌کند" : "تاس ریخته شد";
       duration = previous === "opening" ? 3200 : 1400;
+    } else if (state.phase === "roll" && state.message.includes("نوبت منتقل شد")) {
+      message = state.message;
+      duration = 2800;
     } else if (state.phase === "double") {
       message = state.message;
       duration = 3000;
@@ -91,9 +114,9 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     if (next === current.current) return false;
     current.current = next; setState(next); return true;
   }
-  function animateMove() {
-    busy.current = true; setMoving(true);
-    timer.current = setTimeout(() => { busy.current = false; setMoving(false); }, 180);
+  function animateMove(destination: Move["to"]) {
+    busy.current = true; setMoving(true); setMovingTo(typeof destination === "number" ? destination : null);
+    timer.current = setTimeout(() => { busy.current = false; setMoving(false); setMovingTo(null); }, 240);
   }
   function roll() {
     if (!["opening", "roll"].includes(current.current.phase) || state.revision !== current.current.revision) return false;
@@ -102,7 +125,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     current.current=next; setState(next); return true;
   }
   function move(move: Move) {
-    if (send({ type: "move", move, revision: state.revision })) animateMove();
+    if (send({ type: "move", move, revision: state.revision })) animateMove(move.to);
   }
   function select(from: Source | null) { send({ type: "select", from, revision: state.revision }); }
   function clickPoint(index: number) {
@@ -120,34 +143,49 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
       aria-label={`خانه ${fa(number)}${point ? `، ${fa(point.count)} مهره ${names[point.side]}` : "، خالی"}${options.length ? `؛ مقصد مجاز با تاس ${options.map(m => fa(m.die)).join(" یا ")}${options[0].hit ? "، زدن" : ""}` : ""}`}
       aria-pressed={selected === index} onClick={() => clickPoint(index)}
       className={`${styles.point} ${upper ? styles.upperPoint : styles.lowerPoint} ${index % 2 ? styles.goldPoint : ""} ${selected === index ? styles.selectedPoint : ""} ${options.length ? styles.legalPoint : ""}`}>
-      <span className={styles.checkerStack}>{point && Array.from({ length: Math.min(point.count, 5) }, (_, i) => <i key={i} aria-hidden="true" className={`${styles.checker} ${point.side === "light" ? styles.lightChecker : styles.darkChecker} ${upper ? styles.stackTop : styles.stackBottom}`} style={{ "--stack": `${i}` } as React.CSSProperties}>{point.count > 5 && i === 4 ? <b>{fa(point.count)}</b> : null}</i>)}</span>
+      <span className={styles.checkerStack}>{point && Array.from({ length: Math.min(point.count, 5) }, (_, i) => <i key={i} aria-hidden="true" className={`${styles.checker} ${point.side === "light" ? styles.lightChecker : styles.darkChecker} ${upper ? styles.stackTop : styles.stackBottom} ${i === Math.min(point.count, 5) - 1 && selected === index ? styles.selectedChecker : ""} ${i === Math.min(point.count, 5) - 1 && movingTo === index ? styles.movedChecker : ""}`} style={{ "--stack": `${i}` } as React.CSSProperties}>{point.count > 5 && i === 4 ? <b>{fa(point.count)}</b> : null}</i>)}</span>
       {options.length > 0 && <span className={styles.moveBadge}>{options.map(m => fa(m.die)).join(" / ")}{options[0].hit ? " × زدن" : ""}</span>}
     </button>;
   }
 
   const playerName = (side: Side) => lobby.colors.requester === side ? "درخواست‌دهنده" : "حریف";
-  return <main lang="fa" dir="rtl" className={`${styles.page} ${styles.playPage}`}>
+  return <main lang="fa" dir="rtl" data-board-theme={boardTheme} className={`${styles.page} ${styles.playPage}`}>
     <div className={styles.gameToast} data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
     <div className={styles.playArena} dir="ltr">
       <section className={styles.table} aria-label="تخته نرد ۲۴ خانه">
         <div className={`${styles.board} ${moving ? styles.boardMoving : ""}`} dir="ltr">
           <div className={`${styles.half} ${styles.topLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(12+i,true))}</div>
           <div className={`${styles.half} ${styles.topRight}`}>{Array.from({length:6},(_,i)=>renderPoint(18+i,true))}</div>
-          <div className={styles.bar} aria-hidden="true"><span>GMO</span><span>ARENA</span></div>
+          <div className={styles.bar} aria-label="مهره‌های زده‌شده در وسط تخته">
+            <span className={styles.barBrand} aria-hidden="true">GMO</span>
+            {(["dark", "light"] as Side[]).map(side => board.bar[side] > 0 && <button key={side} type="button" className={`${styles.barHit} ${side === "dark" ? styles.barHitTop : styles.barHitBottom} ${selected === "bar" && turn === side ? styles.barHitSelected : ""} ${state.phase === "move" && turn === side ? styles.barEntryCue : ""}`} disabled={locked || state.phase !== "move" || turn !== side} aria-label={`${fa(board.bar[side])} مهرهٔ زده‌شدهٔ ${names[side]}؛ اول این مهره را برای ورود انتخاب کن`} aria-pressed={selected === "bar" && turn === side} onClick={() => select(selected === "bar" ? null : "bar")}><b>{fa(board.bar[side])}</b><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/></button>)}
+            <span className={styles.barBrand} aria-hidden="true">ARENA</span>
+          </div>
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}</div>
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomRight}`}>{Array.from({length:6},(_,i)=>renderPoint(5-i,false))}</div>
+          {state.phase === "roll" && <div className={styles.rollHologram} aria-hidden="true"><span className={styles.rollHologramHalo}><i className={`${styles.checker} ${turn === "light" ? styles.lightChecker : styles.darkChecker}`}/></span><strong>تاس بریز</strong><span className={styles.rollHologramLine}/></div>}
         </div>
       </section>
+      <aside className={styles.offLane} dir="rtl" aria-label="فضای خروج مهره‌ها">
+        {(["dark", "light"] as Side[]).map(side => {
+          const options = side === turn ? destinations.filter(option => option.to === "off") : [];
+          return <div key={side} className={`${styles.offPocket} ${options.length ? styles.offPocketLegal : ""}`} aria-label={`خروج ${names[side]}: ${fa(board.off[side])} از ۱۵ مهره`}>
+            <i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/>
+            <strong>{fa(board.off[side])}<small> / ۱۵</small></strong>
+            {options.length > 0 && <div className={styles.offPocketMoves}>{options.map(option => <button key={option.die} type="button" disabled={locked} aria-label={`خروج مهرهٔ ${names[side]} با تاس ${fa(option.die)}`} onClick={() => move(option)}>تاس {fa(option.die)}</button>)}</div>}
+          </div>;
+        })}
+      </aside>
       <aside className={styles.rightRail} dir="rtl" aria-label="شمارش مهره‌ها در سمت راست">
         <div className={styles.railControls} dir="ltr">
           <span className={styles.playBrand} dir="ltr">GMO<span>ARENA</span></span>
           <button className={styles.menuToggle} dir="rtl" disabled={locked} aria-label="باز کردن منوی بازی" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={20}/><span>منو</span></button>
         </div>
         <div className={styles.diceStage} dir="ltr">
-          <DiceBox dice={dice} canRoll={!moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
-          <div className={styles.turnPrompt} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
+          <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={!moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
+          <div className={`${styles.turnPrompt} ${state.phase === "roll" ? styles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
             {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
-            <span>{state.phase === "opening" ? "تاس شروع را بریز" : state.phase === "roll" ? names[turn] + "، تاس بریز" : names[turn]}</span>
+            <span>{state.phase === "move" ? "بازی کن" : "تاس بریز"}</span>
           </div>
         </div>
         <div className={styles.statsPair}>
@@ -156,8 +194,8 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
           return <section key={side} className={`${styles.playerStats} ${turn === side ? styles.activeStats : ""}`} aria-label={`شمارش مهره ${names[side]}`}>
             <div className={styles.statsIdentity}><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/><span className={styles.statsName}><strong>{names[side]}</strong><small>{playerName(side)}</small></span></div>
             <div className={styles.statsDetails}>
-              <button data-bar={side} type="button" disabled={locked || state.phase !== "move" || turn !== side || !board.bar[side]} onClick={() => select("bar")} aria-pressed={selected === "bar" && turn === side} aria-label={`مهره‌های زده شده ${names[side]}: ${fa(board.bar[side])}`} className={`${styles.barSource} ${selected === "bar" && turn === side ? styles.barSelected : ""}`}><span>زده‌شده</span><span className={styles.hitCount}><b>{fa(board.bar[side])}</b></span></button>
-              <div className={`${styles.offTray} ${options.length ? styles.offLegal : ""}`} aria-label={`محل خروج ${names[side]}`}><span><span>خارج‌شده</span><b>{fa(board.off[side])}</b></span>{options.map(option=><button key={option.die} disabled={locked} onClick={()=>move(option)}>خروج {fa(option.die)}</button>)}</div>
+              <button data-bar={side} type="button" disabled={locked || state.phase !== "move" || turn !== side || !board.bar[side]} onClick={() => select("bar")} aria-pressed={selected === "bar" && turn === side} aria-label={`مهره‌های زده شده ${names[side]}: ${fa(board.bar[side])}`} className={`${styles.barSource} ${selected === "bar" && turn === side ? styles.barSelected : ""}`}><span>زده‌شده:</span><span className={styles.hitCount}><b>{fa(board.bar[side])}</b></span></button>
+              <div className={`${styles.offTray} ${options.length ? styles.offLegal : ""}`} aria-label={`محل خروج ${names[side]}`}><span><span>خارج‌شده:</span><b>{fa(board.off[side])}</b></span></div>
             </div>
           </section>;
         })}
@@ -165,15 +203,16 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
       </div>
       </aside>
     </div>
-    <footer className={styles.playFooter}>
-      <div className={styles.turnStatus}>{rolling && <span className={styles.doubleProgress}>تاس‌ها در حال نمایش</span>}{dice && dice[0] === dice[1] && state.phase !== "opening" && <span className={styles.doubleProgress}>جفت {fa(dice[0])} · {fa(state.usedDice.length)} از ۴ حرکت</span>}</div>
-      <div className={styles.actions}>{state.target && <button disabled={locked || !canDouble(state)} onClick={()=>send({type:"offerDouble",revision:state.revision})}>پیشنهاد دوبل ×{fa(state.cube * 2)}</button>}</div>
-    </footer>
+    {state.target && <footer className={styles.playFooter}>
+      <div className={styles.actions}><button disabled={locked || !canDouble(state)} onClick={()=>send({type:"offerDouble",revision:state.revision})}>پیشنهاد دوبل ×{fa(state.cube * 2)}</button></div>
+    </footer>}
     {state.phase === "double" && <section className={styles.result} aria-label="پاسخ دوبل"><h2>{names[opponent(turn)]}؛ پیشنهاد دوبل ×{fa(state.cube * 2)}</h2><p>با رد، {fa(state.cube)} امتیاز به {names[turn]} می‌رسد.</p><button onClick={()=>send({type:"acceptDouble",revision:state.revision})}>پذیرش دوبل</button><button onClick={()=>send({type:"rejectDouble",revision:state.revision})}>رد دوبل</button></section>}
     {state.result && <section className={styles.result} role="status"><h2>{names[state.result.winner]} برنده شد</h2><p>{state.result.dropped ? "برد با رد دوبل" : ["","برد عادی","مارس","بک‌گمون"][state.result.multiplier]} • {fa(state.result.points)} امتیاز{complete ? " • پایان مسابقه" : ""}</p>{state.target && !complete ? <button onClick={()=>send({type:"nextGame",revision:state.revision})}>دست بعدی مسابقه</button> : <button onClick={onLeave}>بازی جدید</button>}</section>}
     {menuOpen && <BackgammonDrawer onClose={()=>setMenuOpen(false)}>
       <div className={styles.drawerPlayer}><Dices size={30}/><h2>تخته‌نرد</h2><p>{state.target ? `مسابقه تا ${fa(state.target)} امتیاز` : "بازی ساده • بدون دوبل"}</p><small>درخواست‌دهنده: {names[lobby.colors.requester!]} • حریف: {names[lobby.colors.guest!]}</small></div>
       <button className={styles.drawerItem} onClick={()=>{onFullscreen();setMenuOpen(false);}}><Maximize size={20}/><span>نمایش تمام‌صفحه<small>تمرکز روی تخته</small></span></button>
+      <button className={styles.drawerItem} aria-label="برگشت حرکت" disabled={locked || !canUndo(state)} onClick={()=>{if(send({type:"undo",revision:state.revision})) setMenuOpen(false);}}><Undo2 size={20}/><span>برگشت حرکت<small>{canUndo(state) ? "برگرداندن آخرین حرکت با همان تاس‌ها" : state.phase === "move" ? "هنوز حرکتی انجام نشده است" : "برگشت پس از پایان نوبت ممکن نیست"}</small></span></button>
+      <section className={styles.boardThemePicker} aria-label="تم تخته"><strong>تم تخته</strong><div className={styles.boardThemeOptions}>{boardThemes.map(theme => <button key={theme.id} type="button" data-theme={theme.id} className={styles.boardThemeOption} aria-pressed={boardTheme === theme.id} onClick={() => chooseBoardTheme(theme.id)}><span className={styles.boardThemeSwatch} aria-hidden="true"/><span>{theme.label}</span>{boardTheme === theme.id && <span aria-hidden="true">✓</span>}</button>)}</div></section>
       <button className={styles.drawerItem} aria-expanded={showHelp} onClick={()=>setShowHelp(value=>!value)}><HelpCircle size={20}/><span>راهنمای بازی<small>انتخاب مهره، تاس و برگشت</small></span></button>
       {showHelp && <div className={styles.drawerHelp}>شماره‌ها از دید بازیکن فعال‌اند؛ از ۲۴ به ۱ برو. هر مقصد فقط یک تاس مصرف می‌کند. مهره‌های زده‌شده و خروج در ستون سمت راست‌اند. باکس تاس را نگه دار؛ پس از رهاکردن، تاس اول در ۵۰۰ میلی‌ثانیه و دومی ۴۰۰ میلی‌ثانیه بعد مشخص می‌شود. برگشت فقط تا پایان نوبت مجاز است.</div>}
       <button className={styles.drawerItem} onClick={onLeave}><LogOut size={20}/><span>بازی جدید و تنظیمات<small>بازی فعلی پایان می‌یابد؛ بازگشت به انتخاب رنگ</small></span></button>

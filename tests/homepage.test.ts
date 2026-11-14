@@ -1,26 +1,26 @@
-import { describe, expect, it } from "vitest";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { describe, expect, it, vi } from "vitest";
+import HomePage from "../src/app/page";
 
-const sourcePath = path.resolve(process.cwd(), "src/app/page.tsx");
+vi.mock("next/link", () => ({ default: ({ children, ...props }: React.ComponentProps<"a">) => React.createElement("a", props, children) }));
 
-describe("GMO ARENA homepage source", () => {
-  it("provides the five required primary navigation sections in Persian", async () => {
-    const source = await readFile(sourcePath, "utf8");
-    for (const label of ["خانه", "بازی‌ها", "مسابقات", "کیف پول", "حساب من"]) {
-      expect(source).toContain(`label: "${label}"`);
-    }
+describe("GMO Arena homepage", () => {
+  it("renders the current lobby and its four game modes", () => {
+    const html = renderToStaticMarkup(React.createElement(HomePage));
+    for (const label of ["PLAY", "COMPETE", "PREDICT", "WALLET"]) expect(html).toContain(label);
+    expect(html).toContain('aria-label="Choose your game mode"');
+    expect(html).toContain('href="/games"');
+    expect(html).toContain('href="/account"');
   });
-
-  it("clearly identifies the current dashboard data as demonstrative", async () => {
-    const source = await readFile(sourcePath, "utf8");
-    expect(source).toContain("اطلاعات این صفحه در حال حاضر نمایشی است");
+  it("marks the initial preview wallet as a demo", () => {
+    const html = renderToStaticMarkup(React.createElement(HomePage));
+    expect(html).toContain("Demo");
+    expect(html).toContain('aria-label="Open wallet"');
   });
-
-  it("includes the dashboard's core competitive and engagement areas", async () => {
-    const source = await readFile(sourcePath, "utf8");
-    for (const text of ["موجودی کل GMO", "رتبهٔ جهانی", "مسابقات پیشنهادی", "مأموریت‌های امروز"]) {
-      expect(source).toContain(text);
-    }
+  it("marks unreleased predictions and offers invitations", () => {
+    const html = renderToStaticMarkup(React.createElement(HomePage));
+    expect(html).toContain("Coming soon");
+    expect(html).toContain("INVITE YOUR SQUAD");
   });
 });
