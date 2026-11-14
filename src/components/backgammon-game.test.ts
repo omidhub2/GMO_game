@@ -54,8 +54,9 @@ describe("Backgammon dice and turn UI", () => {
     expect(stage!.getAttribute("data-stage")).toBe("settling");
     settle();
 
-    // A click on the open part of the same box is also a valid roll gesture.
-    click(stage!);
+    // Re-query after React has committed the updated game state.
+    const settledStage = container.querySelector<HTMLButtonElement>("[data-dice-hit-area='full-stage']")!;
+    click(settledStage);
     expect(crypto.getRandomValues).toHaveBeenCalledTimes(4);
     settle();
   });
@@ -64,10 +65,10 @@ describe("Backgammon dice and turn UI", () => {
     rolls = [3, 2];
     roll();
     expect(container.querySelector("[data-active-turn='light']")?.textContent).toBe("نوبت سفید است");
-    expect(container.querySelector("[data-active-turn='light']")?.parentElement?.classList.contains("statsCheckerGroup")).toBe(true);
+    expect(container.querySelector("[data-active-turn='light']")?.parentElement?.hasAttribute("data-stats-checker-group")).toBe(true);
     expect(container.querySelector("[data-active-turn='dark']")).toBeNull();
 
-    click(point(23)); click(point(20)); settle();
+    click(point(23)); click(point(18)); settle();
     click(point(12)); click(point(10)); settle();
     expect(container.querySelector("[data-active-turn='dark']")?.textContent).toBe("نوبت سیاه است");
     expect(container.querySelector("[data-active-turn='dark']")?.parentElement?.classList.contains("statsCheckerGroup")).toBe(true);
@@ -77,7 +78,7 @@ describe("Backgammon dice and turn UI", () => {
   it("keeps double-roll information out of the bottom footer so the board layout does not grow", () => {
     rolls = [5, 2];
     roll();
-    click(point(23)); click(point(20)); settle();
+    click(point(23)); click(point(18)); settle();
     click(point(12)); click(point(10)); settle();
     rolls = [3, 3];
     roll();
