@@ -22,6 +22,9 @@ jobs:
   build-and-check:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      # Prisma CLI validates/generates from the schema only; no live DB is accessed here.
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/gmo_arena
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
