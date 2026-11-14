@@ -36,6 +36,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   const current = useRef(state);
   const [rolling, setRolling] = useState(false);
   const [moving, setMoving] = useState(false);
+  const [movingTo, setMovingTo] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [toastText, setToastText] = useState("");
@@ -91,9 +92,9 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     if (next === current.current) return false;
     current.current = next; setState(next); return true;
   }
-  function animateMove() {
-    busy.current = true; setMoving(true);
-    timer.current = setTimeout(() => { busy.current = false; setMoving(false); }, 180);
+  function animateMove(destination: Move["to"]) {
+    busy.current = true; setMoving(true); setMovingTo(typeof destination === "number" ? destination : null);
+    timer.current = setTimeout(() => { busy.current = false; setMoving(false); setMovingTo(null); }, 240);
   }
   function roll() {
     if (!["opening", "roll"].includes(current.current.phase) || state.revision !== current.current.revision) return false;
@@ -102,7 +103,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     current.current=next; setState(next); return true;
   }
   function move(move: Move) {
-    if (send({ type: "move", move, revision: state.revision })) animateMove();
+    if (send({ type: "move", move, revision: state.revision })) animateMove(move.to);
   }
   function select(from: Source | null) { send({ type: "select", from, revision: state.revision }); }
   function clickPoint(index: number) {
@@ -120,7 +121,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
       aria-label={`خانه ${fa(number)}${point ? `، ${fa(point.count)} مهره ${names[point.side]}` : "، خالی"}${options.length ? `؛ مقصد مجاز با تاس ${options.map(m => fa(m.die)).join(" یا ")}${options[0].hit ? "، زدن" : ""}` : ""}`}
       aria-pressed={selected === index} onClick={() => clickPoint(index)}
       className={`${styles.point} ${upper ? styles.upperPoint : styles.lowerPoint} ${index % 2 ? styles.goldPoint : ""} ${selected === index ? styles.selectedPoint : ""} ${options.length ? styles.legalPoint : ""}`}>
-      <span className={styles.checkerStack}>{point && Array.from({ length: Math.min(point.count, 5) }, (_, i) => <i key={i} aria-hidden="true" className={`${styles.checker} ${point.side === "light" ? styles.lightChecker : styles.darkChecker} ${upper ? styles.stackTop : styles.stackBottom}`} style={{ "--stack": `${i}` } as React.CSSProperties}>{point.count > 5 && i === 4 ? <b>{fa(point.count)}</b> : null}</i>)}</span>
+      <span className={styles.checkerStack}>{point && Array.from({ length: Math.min(point.count, 5) }, (_, i) => <i key={i} aria-hidden="true" className={`${styles.checker} ${point.side === "light" ? styles.lightChecker : styles.darkChecker} ${upper ? styles.stackTop : styles.stackBottom} ${i === Math.min(point.count, 5) - 1 && selected === index ? styles.selectedChecker : ""} ${i === Math.min(point.count, 5) - 1 && movingTo === index ? styles.movedChecker : ""}`} style={{ "--stack": `${i}` } as React.CSSProperties}>{point.count > 5 && i === 4 ? <b>{fa(point.count)}</b> : null}</i>)}</span>
       {options.length > 0 && <span className={styles.moveBadge}>{options.map(m => fa(m.die)).join(" / ")}{options[0].hit ? " × زدن" : ""}</span>}
     </button>;
   }

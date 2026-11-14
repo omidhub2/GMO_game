@@ -536,5 +536,11 @@
 .checkerStack .checker{width:var(--piece-size);height:var(--piece-size);box-sizing:border-box;box-shadow:0 2px 3px #0009,inset 0 2px 3px #fff6,inset 0 -3px 5px #0009}
 .checkerStack .stackTop{top:calc(var(--piece-inset) + var(--stack)*(var(--piece-size) + var(--piece-gap)))}
 .checkerStack .stackBottom{bottom:calc(var(--piece-inset) + var(--stack)*(var(--piece-size) + var(--piece-gap)))}
+.selectedPoint .checkerStack .checker:not(.selectedChecker){filter:none;outline:0}
+.checkerStack .selectedChecker{z-index:12;outline:2px solid #f0b90b;outline-offset:2px;filter:brightness(1.14);animation:checkerSelectPulse 1.25s ease-in-out infinite;box-shadow:0 4px 8px #000b,0 0 0 3px #f0b90b45,0 0 18px #f0b90b99}
+.boardMoving .checkerStack .movedChecker{z-index:13;animation:checkerMoveLand .24s cubic-bezier(.18,.9,.35,1.2)}
+@keyframes checkerSelectPulse{0%,100%{transform:translateX(-50%) scale(1.08)}50%{transform:translateX(-50%) scale(1.15)}}
+@keyframes checkerMoveLand{0%{transform:translateX(-50%) scale(.82);filter:brightness(1.45)}65%{transform:translateX(-50%) scale(1.15)}100%{transform:translateX(-50%) scale(1);filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){.checkerStack .selectedChecker,.boardMoving .checkerStack .movedChecker{animation:none}.checkerStack .selectedChecker{transform:translateX(-50%) scale(1.08)}}
 .setupPage .colorChoices{align-items:stretch}
 .setupPage .colorChoices button{flex:1 1 0;box-sizing:border-box}
