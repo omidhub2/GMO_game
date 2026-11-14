@@ -58,6 +58,7 @@ describe("Persian manual board interactions", () => {
   it("shows the active player turn directly beneath their checker and follows turn changes", () => {
     rolls=[3,2]; roll();
     expect(container.querySelector("[data-active-turn='light']")?.textContent).toBe("نوبت سفید است");
+    expect(container.querySelector("[data-active-turn='light']")?.parentElement?.classList.contains("statsCheckerGroup")).toBe(true);
     expect(container.querySelector("[data-active-turn='dark']")).toBeNull();
     click(point(23)); click(point(20)); settle();
     click(point(12)); click(point(10)); settle();
