@@ -129,7 +129,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   const activeTurn = state.phase === "double" ? opponent(turn) : turn;
   const showActiveTurn = state.phase !== "opening" && state.phase !== "finished";
   return <main lang="fa" dir="rtl" className={`${styles.page} ${styles.playPage}`}>
-    <div className={styles.gameToast} data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
+    <div className={styles.gameToast} data-game-toast data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
     <div className={styles.playArena} dir="ltr">
       <section className={styles.table} aria-label="تخته نرد ۲۴ خانه">
         <div className={`${styles.board} ${moving ? styles.boardMoving : ""}`} dir="ltr">
@@ -164,7 +164,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
       </div>
       </aside>
     </div>
-    <footer className={styles.playFooter}>
+    <footer className={styles.playFooter} data-play-footer>
       <div className={styles.turnStatus}>{rolling && <span className={styles.doubleProgress}>تاس‌ها در حال نمایش</span>}</div>
       <div className={styles.actions}>{state.target && <button disabled={locked || !canDouble(state)} onClick={()=>send({type:"offerDouble",revision:state.revision})}>پیشنهاد دوبل ×{fa(state.cube * 2)}</button>}</div>
     </footer>
