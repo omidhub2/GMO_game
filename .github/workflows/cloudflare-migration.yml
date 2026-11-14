@@ -48,7 +48,6 @@ jobs:
           for file in cloudflare.config.ts vite.config.ts wrangler.jsonc wrangler.json; do
             if [ -f "$file" ]; then echo "Found $file"; else echo "Missing $file"; fi
           done
-          test -f cloudflare.config.ts
           test -f vite.config.ts
           echo "Working tree changes:"
           git status --short
