@@ -622,3 +622,10 @@
 @keyframes barEntryPulse{50%{filter:brightness(1.25);box-shadow:0 0 16px #f0b90bbd}}
 @keyframes barEntryPoint{50%{transform:translateX(-5px)}}
 @media(prefers-reduced-motion:reduce){.barEntryCue .checker,.barEntryCue::after{animation:none}}
+
+/* Make the active white or black checker the focal point of the roll cue. */
+.rollHologram{min-height:clamp(112px,18vh,154px)}
+.rollHologramHalo{width:clamp(58px,7vw,72px)}
+.rollHologramHalo .checker{width:84%}
+.rightRail .turnPromptRolling .checker{width:min(62px,100%)}
+@media(max-height:450px){.rollHologram{min-height:100px}.rollHologramHalo{width:50px}}
