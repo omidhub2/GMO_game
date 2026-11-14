@@ -92,9 +92,9 @@ describe("Backgammon dice and turn UI", () => {
     act(() => diceRoot.unmount());
     diceContainer.remove();
 
-    const footer = container.querySelector<HTMLElement>(".playFooter");
+    const footer = container.querySelector<HTMLElement>("[data-play-footer]");
     expect(footer).not.toBeNull();
     expect(footer!.textContent).not.toContain("جفت");
     expect(footer!.querySelector(".doubleProgress")).toBeNull();
-    expect(container.querySelector(".gameToast")?.textContent).not.toContain("جفت");
+    expect(container.querySelector("[data-game-toast]")?.textContent).not.toContain("جفت");
   });});
