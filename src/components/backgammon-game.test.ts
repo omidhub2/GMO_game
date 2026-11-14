@@ -15,7 +15,7 @@ function button(text: string) {
 function point(index: number) { return container.querySelector<HTMLButtonElement>(`[data-point="${index}"]`)!; }
 function click(el: HTMLElement) { act(() => el.click()); }
 function settle() { act(() => vi.advanceTimersByTime(1100)); }
-function roll() { click(button("تاس شروع")); settle(); }
+function roll() { click(button("تاس بریز")); settle(); }
 function status() { return container.querySelector('[role="status"]')!.textContent; }
 function start(mode?: string) {
   if (mode) { click(button("ساده؛ بدون دوبل")); click(button(`مسابقه تا ${Number(mode).toLocaleString("fa-IR")} امتیاز`)); }
@@ -37,7 +37,7 @@ afterEach(() => { act(() => root.unmount()); container.remove(); vi.restoreAllMo
 describe("Persian manual board interactions", () => {
   it("waits after dice animation with zero selected checkers and no automatic move", () => {
     const before=[...container.querySelectorAll("[data-point]")].map(p=>p.getAttribute("aria-label"));
-    click(button("تاس شروع")); expect(point(23).disabled).toBe(true);
+    click(button("تاس بریز")); expect(point(23).disabled).toBe(true);
     settle(); expect(status()).toBe("یک مهره انتخاب کن");
     expect(container.querySelectorAll('[aria-pressed="true"]')).toHaveLength(0);
     expect([...container.querySelectorAll("[data-point]")].map(p=>p.getAttribute("aria-label"))).toEqual(before);
@@ -87,7 +87,7 @@ describe("Persian manual board interactions", () => {
     expect(status()).toContain("نوبت سیاه");
   });
   it("blocks rapid repeated roll and move clicks during display", () => {
-    rolls=[3,2,6,6]; const rollButton=button("تاس شروع");
+    rolls=[3,2,6,6]; const rollButton=button("تاس بریز");
     act(() => { rollButton.click(); rollButton.click(); rollButton.click(); }); settle();
     expect(rolls).toEqual([6,6]); click(point(23)); const dest=point(20);
     act(() => { dest.click(); dest.click(); dest.click(); }); settle();
