@@ -629,3 +629,7 @@
 .rollHologramHalo .checker{width:84%}
 .rightRail .turnPromptRolling .checker{width:min(62px,100%)}
 @media(max-height:450px){.rollHologram{min-height:100px}.rollHologramHalo{width:50px}}
+
+/* Charcoal edge around the board, matching the game background. */
+.table{border-color:#252527;box-shadow:0 14px 40px #0007,inset 0 1px #ffffff12,inset 0 -3px 9px #0009}
+.board{border-color:#252527}
