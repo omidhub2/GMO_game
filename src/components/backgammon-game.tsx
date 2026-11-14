@@ -175,8 +175,8 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
           return <section key={side} className={`${styles.playerStats} ${turn === side ? styles.activeStats : ""}`} aria-label={`شمارش مهره ${names[side]}`}>
             <div className={styles.statsIdentity}><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/><span className={styles.statsName}><strong>{names[side]}</strong><small>{playerName(side)}</small></span></div>
             <div className={styles.statsDetails}>
-              <button data-bar={side} type="button" disabled={locked || state.phase !== "move" || turn !== side || !board.bar[side]} onClick={() => select("bar")} aria-pressed={selected === "bar" && turn === side} aria-label={`مهره‌های زده شده ${names[side]}: ${fa(board.bar[side])}`} className={`${styles.barSource} ${selected === "bar" && turn === side ? styles.barSelected : ""}`}><span>زده‌شده</span><span className={styles.hitCount}><b>{fa(board.bar[side])}</b></span></button>
-              <div className={`${styles.offTray} ${options.length ? styles.offLegal : ""}`} aria-label={`محل خروج ${names[side]}`}><span><span>خارج‌شده</span><b>{fa(board.off[side])}</b></span>{options.map(option=><button key={option.die} disabled={locked} onClick={()=>move(option)}>خروج {fa(option.die)}</button>)}</div>
+              <button data-bar={side} type="button" disabled={locked || state.phase !== "move" || turn !== side || !board.bar[side]} onClick={() => select("bar")} aria-pressed={selected === "bar" && turn === side} aria-label={`مهره‌های زده شده ${names[side]}: ${fa(board.bar[side])}`} className={`${styles.barSource} ${selected === "bar" && turn === side ? styles.barSelected : ""}`}><span>زده‌شده:</span><span className={styles.hitCount}><b>{fa(board.bar[side])}</b></span></button>
+              <div className={`${styles.offTray} ${options.length ? styles.offLegal : ""}`} aria-label={`محل خروج ${names[side]}`}><span><span>خارج‌شده:</span><b>{fa(board.off[side])}</b></span></div>
             </div>
           </section>;
         })}

@@ -633,3 +633,12 @@
 /* Charcoal edge around the board, matching the game background. */
 .table{border-color:#252527;box-shadow:0 14px 40px #0007,inset 0 1px #ffffff12,inset 0 -3px 9px #0009}
 .board{border-color:#252527}
+
+/* Put hit and borne-off counts directly beside their labels. */
+.rightRail .playerStats{grid-template-columns:var(--turn-checker-size) minmax(0,1fr);column-gap:3px}
+.rightRail .barSource,.rightRail .offTray{justify-content:flex-start;gap:4px;padding-inline:4px;overflow:hidden}
+.rightRail .barSource>span:first-child,.rightRail .offTray>span>span{font-size:12px;font-weight:700}
+.rightRail .offTray>span{justify-content:flex-start;gap:4px;white-space:nowrap}
+.rightRail .hitCount{flex:none;min-width:23px;min-height:26px;padding:0 2px}
+.rightRail .hitCount b,.rightRail .offTray b{font-size:20px;font-weight:800;line-height:1}
+@media(max-width:900px){.rightRail .barSource>span:first-child,.rightRail .offTray>span>span{font-size:11px}.rightRail .hitCount b,.rightRail .offTray b{font-size:18px}}
