@@ -20,7 +20,7 @@
     "dev:vinext": "vinext dev",
     "build:vinext": "vinext build",
     "preview": "npm run build:vinext && wrangler dev",
-    "deploy": "npm run build:vinext && wrangler deploy",
+    "deploy": "npm run build:vinext && npx @vinext/cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "telegram:setup": "node scripts/telegram-setup.mjs",
     "wallet:check": "node scripts/wallet-check.mjs"
