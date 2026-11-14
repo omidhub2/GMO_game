@@ -63,20 +63,25 @@ describe("Backgammon dice and turn UI", () => {
   it("shows the current player's turn directly beneath that player's checker and follows the turn", () => {
     rolls = [3, 2];
     roll();
-    expect(container.querySelector("[data-active-turn='dark']")?.textContent).toBe("نوبت سیاه است");
-    expect(container.querySelector("[data-active-turn='dark']")?.parentElement?.classList.contains("statsCheckerGroup")).toBe(true);
-    expect(container.querySelector("[data-active-turn='light']")).toBeNull();
-
-    click(point(0)); click(point(3)); settle();
-    click(point(0)); click(point(2)); settle();
     expect(container.querySelector("[data-active-turn='light']")?.textContent).toBe("نوبت سفید است");
     expect(container.querySelector("[data-active-turn='light']")?.parentElement?.classList.contains("statsCheckerGroup")).toBe(true);
     expect(container.querySelector("[data-active-turn='dark']")).toBeNull();
+
+    click(point(23)); click(point(20)); settle();
+    click(point(12)); click(point(10)); settle();
+    expect(container.querySelector("[data-active-turn='dark']")?.textContent).toBe("نوبت سیاه است");
+    expect(container.querySelector("[data-active-turn='dark']")?.parentElement?.classList.contains("statsCheckerGroup")).toBe(true);
+    expect(container.querySelector("[data-active-turn='light']")).toBeNull();
   });
 
   it("keeps double-roll information out of the bottom footer so the board layout does not grow", () => {
+    rolls = [5, 2];
+    roll();
+    click(point(23)); click(point(20)); settle();
+    click(point(12)); click(point(10)); settle();
     rolls = [3, 3];
     roll();
+    expect(container.querySelectorAll('[aria-label="تاس ۳ باقی مانده"]')).toHaveLength(4);
     const footer = container.querySelector<HTMLElement>(".playFooter");
     expect(footer).not.toBeNull();
     expect(footer!.textContent).not.toContain("جفت");
