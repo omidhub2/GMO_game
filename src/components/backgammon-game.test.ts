@@ -87,7 +87,11 @@ describe("Persian manual board interactions", () => {
     const sequence=[[0,3],[3,6],[6,9],[11,14]];
     for(let i=0;i<4;i++) {
       click(point(sequence[i][0])); click(point(sequence[i][1])); settle();
-      if (i < 3) expect(container.querySelectorAll('[data-die-used-mark]')).toHaveLength(i + 1);
+      if (i < 3) {
+        const marks = [...container.querySelectorAll('[data-die-used-mark]')];
+        expect(marks.reduce((total, mark) => total + Number(mark.getAttribute('data-used-count')), 0)).toBe(i + 1);
+        expect(marks[0].textContent).toContain('۳');
+      }
       expect(container.querySelector("footer")).toBeNull();
       expect(undoEnabled()).toBe(i!==3);
     }

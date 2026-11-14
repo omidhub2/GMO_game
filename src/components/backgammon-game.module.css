@@ -573,7 +573,8 @@
 
 /* Keep spent-die checks above the cube so every pip remains legible. */
 .dieScene{position:relative}
-.dieUsedMarks{position:absolute;z-index:8;top:-17px;left:50%;display:flex;gap:2px;transform:translateX(-50%);pointer-events:none}
-.dieUsedMark{display:grid;place-items:center;width:15px;height:15px;border:1px solid #17130a;border-radius:50%;background:#f0b90b;color:#17130a;box-shadow:0 2px 5px #000b}
+.dieUsedMark{position:absolute;z-index:8;top:-20px;left:50%;display:flex;align-items:center;justify-content:center;gap:1px;min-width:29px;height:20px;padding:0 2px;box-sizing:border-box;border:1px solid #17130a;border-radius:10px;background:#f0b90b;color:#17130a;box-shadow:0 2px 5px #000b;transform:translateX(-50%);pointer-events:none;white-space:nowrap;line-height:1}
+.dieUsedMark b{font-size:12px}.dieUsedMark small{font-size:10px;font-weight:800}
+.checkerStack .checker b{inset:auto 1px auto auto;top:50%;z-index:5;min-width:17px;height:17px;display:grid;place-items:center;padding:0 2px;border:1px solid #f0b90b;border-radius:50%;background:#17130a;color:#ffe4a0;font-size:12px;line-height:1;box-shadow:0 2px 5px #000b;transform:translateY(-50%)}
 .setupPage .colorChoices{align-items:stretch}
 .setupPage .colorChoices button{flex:1 1 0;box-sizing:border-box}
