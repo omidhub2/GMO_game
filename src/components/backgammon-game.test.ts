@@ -19,7 +19,9 @@ function roll() { click(button("تاس شروع")); settle(); }
 function status() { return container.querySelector('[role="status"]')!.textContent; }
 function start(mode?: string) {
   if (mode) { click(button("ساده؛ بدون دوبل")); click(button(`مسابقه تا ${Number(mode).toLocaleString("fa-IR")} امتیاز`)); }
-  click(button("انتخاب سفید")); click(button("تأیید انتخاب")); click(button("تأیید رنگ سیاه"));
+  click(button("انتخاب سفید"));
+  click(button("تأیید سیاه"));
+  click(button("ورود به بازی"));
 }
 
 beforeEach(() => {
