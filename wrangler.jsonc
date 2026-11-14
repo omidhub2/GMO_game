@@ -1,23 +1,15 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "gmo-arena",
-  "main": ".vinext/server/worker.js",
+  "name": "gmo-game",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-04",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
-  "observability": {
-    "enabled": true
-  },
-  "assets": {
-    "directory": ".vinext/assets",
-    "binding": "ASSETS"
-  },
-  "hyperdrive": [
-    {
-      "binding": "HYPERDRIVE",
-      "id": "31c412d866ba41a3a4140c839d218329",
-      "localConnectionString": "postgresql://postgres:postgres@127.0.0.1:5432/gmo_arena"
-    }
-  ]
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "gmo-game" }],
+  "hyperdrive": [{
+    "binding": "HYPERDRIVE",
+    "id": "31c412d866ba41a3a4140c839d218329",
+    "localConnectionString": "postgresql://postgres:postgres@127.0.0.1:5432/gmo_arena"
+  }]
 }
