@@ -54,7 +54,7 @@ export default function DiceBox({ dice, canRoll, opening, prompt, onRoll, onBusy
     onPointerCancel={cancel} onLostPointerCapture={cancel} onBlur={cancel}
     onKeyDown={event => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); if (!event.repeat) begin(); } }}
     onKeyUp={event => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); release(); } }}
-    onClick={event => { if (event.detail === 0 && stage.current === "idle" && canRoll) { begin(); release(); } }}>
+    onClick={() => { if (stage.current === "idle" && canRoll) { begin(); release(); } }}>
     <span className={styles.diceContent} dir="ltr">
       <span className={styles.centerDice}>
         {dice || spinning ? <><Die value={visual === "holding" || visual === "settling" ? 1 : dice?.[0] ?? 1} spinning={visual === "holding" || visual === "settling"} hidden={visual === "holding" || visual === "settling"} second={false}/><Die value={spinning ? 1 : dice?.[1] ?? 1} spinning={spinning} hidden={spinning} second/></> : <><Die value={2} spinning={false} hidden={false} second={false} preview/><Die value={5} spinning={false} hidden={false} second preview/></>}
