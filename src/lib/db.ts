@@ -1,31 +1,28 @@
 import "server-only";
-import { env } from "cloudflare:workers";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 function createPrismaClient(connectionString: string): PrismaClient {
-  // Hyperdrive owns the connection pool. A Worker request must not reuse a
-  // module-scoped pg socket/client across requests.
   const adapter = new PrismaPg({ connectionString, maxUses: 1 });
   return new PrismaClient({ adapter });
 }
 
 /**
- * Cloudflare Workers (Vinext): use the HYPERDRIVE binding injected by
- * cloudflare:workers. Local Node.js tooling keeps using DATABASE_URL.
- *
- * A fresh client is created for each Worker invocation because Workers
- * cannot safely reuse a live pg socket across requests. Node.js keeps the
- * existing process-level singleton for local development and scripts.
+ * Cloudflare Workers resolve this application's own HYPERDRIVE binding
+ * from the OpenNext request context. Local Node tooling uses DATABASE_URL.
+ * No HomeNoh/Khaneno database configuration is referenced.
  */
 export function getPrisma(connectionString?: string): PrismaClient {
   if (connectionString) return createPrismaClient(connectionString);
 
-  const hyperdriveConnectionString = env.HYPERDRIVE?.connectionString;
-  if (hyperdriveConnectionString) {
-    return createPrismaClient(hyperdriveConnectionString);
+  try {
+    const connection = getCloudflareContext().env.HYPERDRIVE?.connectionString;
+    if (connection) return createPrismaClient(connection);
+  } catch {
+    // No Cloudflare request context: use the local Node.js configuration.
   }
 
   if (globalForPrisma.prisma) return globalForPrisma.prisma;
@@ -33,7 +30,7 @@ export function getPrisma(connectionString?: string): PrismaClient {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
     throw new Error(
-      "Database is not configured: HYPERDRIVE binding or DATABASE_URL is required.",
+      "Database is not configured: GMO Arena HYPERDRIVE binding or DATABASE_URL is required.",
     );
   }
 
