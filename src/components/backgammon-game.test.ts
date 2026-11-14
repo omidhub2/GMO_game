@@ -41,6 +41,27 @@ describe("Persian manual board interactions", () => {
     expect([...container.querySelectorAll("[data-point]")].map(p=>p.getAttribute("aria-label"))).toEqual(before);
     expect(button("تاس بریز").disabled).toBe(true);
   });
+  it("rolls when the adjacent checker/turn prompt inside the dice stage is clicked", () => {
+    rolls=[3,2]; roll();
+    click(point(23)); click(point(20)); settle();
+    click(point(12)); click(point(10)); settle();
+    const promptChecker=container.querySelector<HTMLElement>("[data-turn-prompt] .checker");
+    expect(promptChecker).not.toBeNull();
+    expect(promptChecker!.closest("button[data-dice-hit-area='full-stage']")).not.toBeNull();
+    click(promptChecker!);
+    expect(crypto.getRandomValues).toHaveBeenCalledTimes(4);
+    expect(button("تاس بریز").getAttribute("data-stage")).toBe("settling");
+    settle();
+  });
+  it("shows the active player turn directly beneath their checker and follows turn changes", () => {
+    rolls=[3,2]; roll();
+    expect(container.querySelector("[data-active-turn='light']")?.textContent).toBe("نوبت سفید است");
+    expect(container.querySelector("[data-active-turn='dark']")).toBeNull();
+    click(point(23)); click(point(20)); settle();
+    click(point(12)); click(point(10)); settle();
+    expect(container.querySelector("[data-active-turn='dark']")?.textContent).toBe("نوبت سیاه است");
+    expect(container.querySelector("[data-active-turn='light']")).toBeNull();
+  });
   it("shows every selected checker destination, supports cancellation and blocks invalid moves", () => {
     rolls=[3,2]; roll(); click(point(23));
     expect(point(20).getAttribute("aria-label")).toContain("مقصد مجاز با تاس ۳");
@@ -77,7 +98,7 @@ describe("Persian manual board interactions", () => {
     const sequence=[[0,3],[3,6],[6,9],[11,14]];
     for(let i=0;i<4;i++) {
       click(point(sequence[i][0])); click(point(sequence[i][1])); settle();
-      expect(container.textContent).toContain(`جفت ۳ — ${["۱","۲","۳","۴"][i]} حرکت از چهار حرکت مصرف شده`);
+      expect(container.querySelector(".playFooter")?.textContent).not.toContain("جفت");
       expect(button("برگشت").disabled).toBe(i===3);
     }
     expect(status()).toContain("نوبت سفید");
