@@ -40,17 +40,24 @@ jobs:
         run: npx vinext check
 
       - name: Generate official Cloudflare Workers configuration
-        run: npx vinext init --platform=cloudflare --name=gmo-game --cdn-cache=none --data-cache=none --image-optimization=none
+        run: npx vinext init --platform=cloudflare --name=gmo-game --cdn-cache=none --data-cache=none --image-optimization=none --no-prerender --ignore-wrangler-config
 
       - name: Inspect generated Cloudflare configuration
         run: |
           echo "Generated configuration files:"
-          find . -maxdepth 2 -type f \\( -name 'cloudflare.config.ts' -o -name 'vite.config.ts' -o -name 'wrangler.jsonc' -o -name 'wrangler.json' \\) -print
+          for file in cloudflare.config.ts vite.config.ts wrangler.jsonc wrangler.json; do
+            if [ -f "$file" ]; then echo "Found $file"; else echo "Missing $file"; fi
+          done
+          test -f cloudflare.config.ts
+          test -f vite.config.ts
           echo "Working tree changes:"
           git status --short
 
       - name: Build the Cloudflare-targeted application
         run: npm run build:vinext
+
+      - name: Generate Cloudflare runtime types
+        run: npx cf workers types
 
       - name: Type check
         run: npm run typecheck
