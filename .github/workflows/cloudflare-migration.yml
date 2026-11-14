@@ -1,0 +1,61 @@
+name: Prepare Vinext for Cloudflare Workers
+
+on:
+  push:
+    branches: [fix/cloudflare-deployment]
+  pull_request:
+    branches: [fix/backgammon-dice-turn-ui]
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "next.config.*"
+      - "src/**"
+      - ".github/workflows/cloudflare-migration.yml"
+      - "wrangler.jsonc"
+
+permissions:
+  contents: write
+
+jobs:
+  prepare-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out deployment branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Vinext compatibility
+        run: npx vinext check
+
+      - name: Generate official Cloudflare Workers configuration
+        run: npx vinext init --platform=cloudflare --name=gmo-game --cdn-cache=none --data-cache=none --image-optimization=none
+
+      - name: Build the Cloudflare-targeted application
+        run: npm run build:vinext
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Commit generated non-secret configuration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add cloudflare.config.ts vite.config.ts package.json package-lock.json tsconfig.json eslint.config.mjs .gitignore
+          if git diff --cached --quiet; then
+            echo "No generated configuration changes to commit."
+          else
+            git commit -m "Configure Vinext for Cloudflare Workers"
+            git push origin HEAD:fix/cloudflare-deployment
+          fi
