@@ -13,8 +13,8 @@ export function Die({ value, spinning, hidden, second, preview = false }: { valu
 }
 
 type Visual = "idle" | "holding" | "settling" | "first";
-export default function DiceBox({ dice, canRoll, opening, onRoll, onBusy }: {
-  dice: [number, number] | null; canRoll: boolean; opening: boolean;
+export default function DiceBox({ dice, canRoll, opening, prompt, onRoll, onBusy }: {
+  dice: [number, number] | null; canRoll: boolean; opening: boolean; prompt?: React.ReactNode;
   onRoll: () => boolean; onBusy: (busy: boolean) => void;
 }) {
   const [visual, setVisual] = useState<Visual>("idle");
@@ -41,7 +41,7 @@ export default function DiceBox({ dice, canRoll, opening, onRoll, onBusy }: {
       setTimeout(() => { stage.current = "idle"; setVisual("idle"); onBusy(false); }, 900)];
   }
   const spinning = visual !== "idle";
-  return <button type="button" data-dice-box data-pattern={pattern} data-stage={visual}
+  return <button type="button" data-dice-box data-dice-hit-area="full-stage" data-pattern={pattern} data-stage={visual}
     className={`${styles.diceBox} ${spinning ? styles.diceBoxActive : ""}`}
     aria-label={opening ? "تاس شروع" : "تاس بریز"}
     disabled={!canRoll && !spinning}
@@ -60,5 +60,6 @@ export default function DiceBox({ dice, canRoll, opening, onRoll, onBusy }: {
         {dice || spinning ? <><Die value={visual === "holding" || visual === "settling" ? 1 : dice?.[0] ?? 1} spinning={visual === "holding" || visual === "settling"} hidden={visual === "holding" || visual === "settling"} second={false}/><Die value={spinning ? 1 : dice?.[1] ?? 1} spinning={spinning} hidden={spinning} second/></> : <><Die value={2} spinning={false} hidden={false} second={false} preview/><Die value={5} spinning={false} hidden={false} second preview/></>}
       </span>
     </span>
+    <span className={styles.turnPrompt} data-turn-prompt data-visible={opening ? "false" : "true"} role="status" aria-live="polite" dir="rtl">{prompt}</span>
   </button>;
 }
