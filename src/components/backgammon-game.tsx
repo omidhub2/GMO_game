@@ -144,7 +144,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
           </div>
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}</div>
           <div className={`${styles.half} ${styles.bottomHalf} ${styles.bottomRight}`}>{Array.from({length:6},(_,i)=>renderPoint(5-i,false))}</div>
-          {state.phase === "roll" && <div className={styles.rollHologram} aria-hidden="true"><span className={styles.rollHologramHalo}><i className={`${styles.checker} ${turn === "light" ? styles.lightChecker : styles.darkChecker}`}/></span><strong>{names[turn]}، تاس بریز</strong><span className={styles.rollHologramLine}/></div>}
+          {state.phase === "roll" && <div className={styles.rollHologram} aria-hidden="true"><span className={styles.rollHologramHalo}><i className={`${styles.checker} ${turn === "light" ? styles.lightChecker : styles.darkChecker}`}/></span><strong>تاس بریز</strong><span className={styles.rollHologramLine}/></div>}
         </div>
       </section>
       <aside className={styles.offLane} dir="rtl" aria-label="فضای خروج مهره‌ها">
@@ -166,7 +166,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
           <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={!moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
           <div className={`${styles.turnPrompt} ${state.phase === "roll" ? styles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
             {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
-            <span>{state.phase === "opening" ? "تاس شروع را بریز" : state.phase === "roll" ? names[turn] + "، تاس بریز" : names[turn] + " بازی کن"}</span>
+            <span>{state.phase === "move" ? "بازی کن" : "تاس بریز"}</span>
           </div>
         </div>
         <div className={styles.statsPair}>
