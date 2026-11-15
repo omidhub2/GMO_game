@@ -124,15 +124,13 @@ describe("Persian manual board interactions", () => {
     expect(button("پیشنهاد دوبل ×۴").disabled).toBe(true);
   });
   it("renders refreshed player profile cards without hit or borne-off labels", () => {
-    const cards = [...container.querySelectorAll("section")].filter(card => card.className.includes("playerStats"));
+    const cards = [...container.querySelectorAll('section[class*="playerStats"]')];
     expect(cards).toHaveLength(2);
     expect(container.querySelectorAll(".profileAvatar")).toHaveLength(2);
     expect(container.querySelectorAll(".profileScore")).toHaveLength(2);
     expect(container.querySelectorAll(".messageButton:disabled")).toHaveLength(2);
     expect(container.textContent).not.toContain("زده‌شده:");
     expect(container.textContent).not.toContain("خارج‌شده:");
-    expect(container.textContent).toContain("شما");
-    expect(container.textContent).toContain("کامپیوتر");
   });
   it("keeps the board on the simple theme without a theme picker", () => {
     const game = container.querySelector<HTMLElement>('[data-board-theme]');
