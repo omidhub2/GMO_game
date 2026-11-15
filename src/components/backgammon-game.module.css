@@ -496,3 +496,36 @@
 .onlineLobby .onlineError{color:#ffb8ad}
 @media(max-width:480px){.playModeChoices{grid-template-columns:1fr}
 .playModeChoices label{min-height:68px}}
+
+/* Telegram WebApp responsive canvas: reserve stable grid tracks and let
+   the board take the remaining width on narrow and short devices. */
+.gameShell{
+  width:100vw;width:100dvw;
+  height:var(--tg-viewport-height,100dvh);
+  min-width:0;min-height:0;
+}
+.playPage{min-width:0;min-height:0}
+.playArena{
+  min-width:0;min-height:0;
+  grid-template-columns:minmax(0,1fr) clamp(38px,5vw,62px) clamp(132px,22vw,188px);
+  grid-template-rows:minmax(0,1fr);
+  gap:clamp(3px,.9vw,8px);
+  overflow:hidden;
+}
+.playArena>.table,.playArena>.offLane,.playArena>.rightRail{
+  min-width:0;min-height:0;height:100%;
+}
+.offLane{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr))}
+.offPocket{min-width:0;min-height:0;overflow:hidden}
+@media(max-width:900px){
+  .playArena,.playPage .playArena{
+    grid-template-columns:minmax(0,1fr) clamp(36px,7vw,52px) clamp(124px,24vw,164px);
+    gap:clamp(3px,.8vw,6px);
+  }
+}
+@media(max-width:360px){
+  .playArena,.playPage .playArena{
+    grid-template-columns:minmax(0,1fr) 34px 122px;
+    gap:3px;
+  }
+}
