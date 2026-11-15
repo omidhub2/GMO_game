@@ -264,7 +264,8 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
                 <button type="button" data-player-message className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}؛ قابلیت پیام‌رسانی هنوز فعال نیست`} disabled title="پیام‌رسانی به‌زودی">
                   <MessageCircle size={15} strokeWidth={1.8}/>
                 </button>
-              </div>            </div>
+              </div>
+            </div>
             <div className={playerRailStyles.profileMeta} dir="ltr">
               <span className={playerRailStyles.profileMetaItem} data-player-country aria-label="کشور بازیکن مشخص نشده"><Flag size={12}/><small>—</small></span>
               <span className={playerRailStyles.profileMetaItem} data-player-timer aria-label="زمان باقی‌مانده در این نسخه موجود نیست"><Clock3 size={12}/><small>—:—</small></span>
