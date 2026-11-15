@@ -245,7 +245,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
     <div className={gameLayoutStyles.playArena} dir="ltr">
       <section className={boardStyles.table} aria-label="تخته نرد ۲۴ خانه">
         <div className={`${boardStyles.board} ${moving ? boardStyles.boardMoving : ""}`} dir="ltr">
-          <div className={`${boardStyles.half} ${boardStyles.topLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(12+i,true))}</div>
+          <div className={`${boardStyles.half} ${boardStyles.topLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(12+i,true))}{state.phase === "roll" && turn === "dark" && <div className={boardStyles.playerRollPrompt} role="status" aria-live="polite"><i className={`${styles.checker} ${turn === "light" ? styles.lightChecker : styles.darkChecker}`}/><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong></div>}</div>
           <div className={`${boardStyles.half} ${boardStyles.topRight}`}>{Array.from({length:6},(_,i)=>renderPoint(18+i,true))}</div>
           <div className={boardStyles.bar} aria-label="مهره‌های زده‌شده در وسط تخته">
             <span className={boardStyles.barBrand} aria-hidden="true">GMO</span>
@@ -253,9 +253,8 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
             {(["dark", "light"] as Side[]).map(side => board.bar[side] > 0 && <button key={side} type="button" className={`${boardStyles.barHit} ${side === "dark" ? boardStyles.barHitTop : boardStyles.barHitBottom} ${selected === "bar" && turn === side ? boardStyles.barHitSelected : ""} ${state.phase === "move" && turn === side ? boardStyles.barEntryCue : ""}`} disabled={locked || state.phase !== "move" || turn !== side} aria-label={`${fa(board.bar[side])} مهرهٔ زده‌شدهٔ ${names[side]}؛ اول این مهره را برای ورود انتخاب کن`} aria-pressed={selected === "bar" && turn === side} onClick={() => select(selected === "bar" ? null : "bar")}><b>{fa(board.bar[side])}</b><i aria-hidden="true" className={`${boardStyles.checker} ${side === "light" ? boardStyles.lightChecker : boardStyles.darkChecker}`}/></button>)}
             <span className={boardStyles.barBrand} aria-hidden="true">ARENA</span>
           </div>
-          <div className={`${boardStyles.half} ${boardStyles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}</div>
+          <div className={`${boardStyles.half} ${boardStyles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}{state.phase === "roll" && turn === "light" && <div className={boardStyles.playerRollPrompt} role="status" aria-live="polite"><i className={`${styles.checker} ${styles.lightChecker}`}/><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong></div>}</div>
           <div className={`${boardStyles.half} ${boardStyles.bottomRight}`}>{Array.from({length:6},(_,i)=>renderPoint(5-i,false))}</div>
-          {state.phase === "roll" && <div className={boardStyles.rollHologram} aria-hidden="true"><span className={boardStyles.rollHologramHalo}><i className={`${boardStyles.checker} ${turn === "light" ? boardStyles.lightChecker : boardStyles.darkChecker}`}/></span><strong>تاس بریز</strong><span className={boardStyles.rollHologramLine}/></div>}
         </div>
       </section>
       <aside className={gameLayoutStyles.offLane} dir="rtl" aria-label="فضای خروج مهره‌ها">
