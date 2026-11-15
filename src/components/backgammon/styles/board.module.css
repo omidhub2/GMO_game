@@ -26,9 +26,9 @@
 .lowerPoint::before{bottom:0;transform:rotate(180deg)}
 
 .checkerStack{z-index:2;position:absolute;inset:0;pointer-events:none}
-.checkerStack .checker{position:absolute;left:50%;transform:translateX(-50%)}
-
-
+.checkerStack .checker{position:absolute;left:50%;width:min(86%,49px);transform:translateX(-50%)}
+.stackTop{top:calc(13px + var(--stack)*12%)}
+.stackBottom{bottom:calc(13px + var(--stack)*12%)}
 .selectedPoint .checker{filter:brightness(1.2);outline:2px solid #ffe287}
 .legalPoint{background:#f3d77d25}
 .legalPoint::after{content:"";position:absolute;z-index:4;top:54%;left:50%;width:min(65%,30px);aspect-ratio:1;border:2px dashed #ffe28c;border-radius:50%;background:#ffdc6b30;box-shadow:0 0 16px #ffd75d;transform:translate(-50%,-50%)}
@@ -41,38 +41,52 @@
 .board{grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr);border-width:2px}
 .bar{font-size:6px}
 .moveBadge{font-size:9px;padding:1px 2px}
-
-
-}
+.checkerStack .checker{width:91%}
+.stackTop{top:calc(11px + var(--stack)*11%)}
+.stackBottom{bottom:calc(11px + var(--stack)*11%)}}
 @media(max-height:500px) and (min-width:600px){.table{grid-template-rows:14px minmax(0,1fr) 14px;padding:4px}
-
-
-}
+.checkerStack .checker{width:min(80%,25px)}
+.stackTop{top:calc(10px + var(--stack)*12%)}
+.stackBottom{bottom:calc(10px + var(--stack)*12%)}}
 @media(prefers-reduced-motion:reduce){.boardMoving .checker{animation:none}}
 
+.checkerStack .checker{width:min(125%,88px)}
 
+.stackTop{top:calc(5px + var(--stack)*13%)}
 
-
-
-
+.stackBottom{bottom:calc(5px + var(--stack)*13%)}
 
 .point::before{opacity:.4}
 
 .half{background:repeating-linear-gradient(92deg,#3e281c 0,#432c20 4%,#3d291e 8%)}
+@media(max-width:900px){
+  .checkerStack .checker{width:min(126%,72px)}
 
+  .stackTop{top:calc(3px + var(--stack)*13%)}
 
+  .stackBottom{bottom:calc(3px + var(--stack)*13%)}}
+@media(max-width:560px){
+  .checkerStack .checker{width:min(132%,66px)}}
 
+.checkerStack .checker{width:min(88%,58px)}
 
+.stackTop{top:calc(10px + var(--stack)*11%)}
 
+.stackBottom{bottom:calc(10px + var(--stack)*11%)}
+@media(max-width:900px){
+  .checkerStack .checker{width:min(96%,54px)}
 
+  .stackTop{top:calc(8px + var(--stack)*11%)}
 
+  .stackBottom{bottom:calc(8px + var(--stack)*11%)}}
 
+.stackTop{top:calc(7px + var(--stack)*14%)}
 
+.stackBottom{bottom:calc(7px + var(--stack)*14%)}
+@media(max-width:900px){
+  .stackTop{top:calc(5px + var(--stack)*14%)}
 
-
-
-
-
+  .stackBottom{bottom:calc(5px + var(--stack)*14%)}}
 
 .table{height:100%;min-height:0;border-radius:0}
 
