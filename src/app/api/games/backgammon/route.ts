@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createRoom, joinRoom, readyRoom, roomAction, roomSnapshot, RoomError } from "@/modules/games/server/backgammon-rooms";
+import { createRoom, joinRoom, readyRoom, roomAction, roomMessage, roomSnapshot, RoomError } from "@/modules/games/server/backgammon-rooms";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,6 +35,7 @@ export async function POST(request: Request) {
     if (body.operation === "join") return NextResponse.json(joinRoom(room));
     const token = request.headers.get("authorization")?.replace(/^Bearer /, "") ?? "";
     if (body.operation === "ready") return NextResponse.json(readyRoom(room, token));
+    if (body.operation === "message") { const text = z.string().trim().min(1).max(120).parse(body.text); return NextResponse.json(roomMessage(room, token, text)); }
     if (body.operation === "action") return NextResponse.json(roomAction(room, token, actionSchema.parse(body.action)));
     throw new RoomError("درخواست معتبر نیست.");
   } catch (error) { return failure(error); }
