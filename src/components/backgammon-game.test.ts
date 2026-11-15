@@ -131,7 +131,7 @@ describe("Persian manual board interactions", () => {
     expect(container.querySelectorAll("[data-player-message]:disabled")).toHaveLength(0);
     expect(container.querySelectorAll("[data-player-checker]")).toHaveLength(2);
     expect(container.querySelectorAll(".chatPanel")).toHaveLength(0);
-    expect(container.querySelector(".rollHologramHalo .hologramChecker")).not.toBeNull();
+    expect(container.querySelectorAll(".chatToggle")).toHaveLength(0);
     expect(container.querySelectorAll("[data-player-country]")).toHaveLength(2);
     expect(container.querySelectorAll("[data-player-timer]")).toHaveLength(2);
     expect(container.querySelectorAll("[data-player-level]")).toHaveLength(2);
