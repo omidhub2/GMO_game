@@ -2,12 +2,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import styles from "./backgammon/styles/dice.module.css";
-import playerRailStyles from "./backgammon/styles/player-rail.module.css";
+import diceStageStyles from "./backgammon/styles/dice-stage.module.css";
 
 const pips = { 1:["50% 50%"], 2:["26% 26%","74% 74%"], 3:["26% 26%","50% 50%","74% 74%"], 4:["26% 26%","74% 26%","26% 74%","74% 74%"], 5:["26% 26%","74% 26%","50% 50%","26% 74%","74% 74%"], 6:["26% 22%","74% 22%","26% 50%","74% 50%","26% 78%","74% 78%"] } as const;
 export function Die({ value, spinning, hidden, second, preview = false, usedCount = 0, double = false }: { value: number; spinning: boolean; hidden: boolean; second: boolean; preview?: boolean; usedCount?: number; double?: boolean }) {
   const [rx, ry] = [[0,0],[0,-90],[0,180],[0,90],[-90,0],[90,0]][value - 1];
-  return <span role="img" aria-label={preview ? "نمای تاس پیش از شروع" : hidden ? "تاس در حال چرخش" : `تاس ${value.toLocaleString("fa-IR")}${usedCount ? `؛ ${usedCount.toLocaleString("fa-IR")} حرکت مصرف شده` : ""}`} data-preview={preview} data-revealed={!hidden} className={`${styles.dieScene} ${playerRailStyles.railDieScene} ${spinning ? styles.spinning : styles.revealed} ${second ? styles.secondDie : ""}`}>
+  return <span role="img" aria-label={preview ? "نمای تاس پیش از شروع" : hidden ? "تاس در حال چرخش" : `تاس ${value.toLocaleString("fa-IR")}${usedCount ? `؛ ${usedCount.toLocaleString("fa-IR")} حرکت مصرف شده` : ""}`} data-preview={preview} data-revealed={!hidden} className={`${styles.dieScene} ${diceStageStyles.railDieScene} ${spinning ? styles.spinning : styles.revealed} ${second ? styles.secondDie : ""}`}>
     {usedCount > 0 && !hidden && <span data-die-used-mark data-used-count={usedCount} className={styles.dieUsedMark} aria-hidden="true"><Check size={15} strokeWidth={3}/><b>{value.toLocaleString("fa-IR")}</b>{double && <small>×{usedCount.toLocaleString("fa-IR")}</small>}</span>}
     <span aria-hidden="true" className={styles.dieCube} style={{ "--rx": `${rx}deg`, "--ry": `${ry}deg` } as React.CSSProperties}>
       {[1,2,3,4,5,6].map(face => <span key={face} className={`${styles.dieFace} ${styles[`face${face}`]}`}>{pips[face as keyof typeof pips].map((position, i) => <i key={i} style={{ left: position.split(" ")[0], top: position.split(" ")[1] }} />)}</span>)}
@@ -48,7 +48,7 @@ export default function DiceBox({ dice, usedDice, canRoll, opening, onRoll, onBu
   const firstUsed = double ? Math.min(usedDice.length, 2) : dice ? Number(usedDice.includes(dice[0])) : 0;
   const secondUsed = double ? Math.max(0, usedDice.length - 2) : dice ? Number(usedDice.includes(dice[1])) : 0;
   return <button type="button" data-dice-box data-pattern={pattern} data-stage={visual}
-    className={`${styles.diceBox} ${playerRailStyles.railDiceBox} ${spinning ? styles.diceBoxActive : ""}`}
+    className={`${styles.diceBox} ${diceStageStyles.railDiceBox} ${spinning ? styles.diceBoxActive : ""}`}
     aria-label={opening ? "تاس شروع" : "تاس بریز"}
     disabled={!canRoll && !spinning}
     onPointerDown={event => {
@@ -61,8 +61,8 @@ export default function DiceBox({ dice, usedDice, canRoll, opening, onRoll, onBu
     onKeyDown={event => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); if (!event.repeat) begin(); } }}
     onKeyUp={event => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); release(); } }}
     onClick={event => { if (event.detail === 0 && stage.current === "idle" && canRoll) { begin(); release(); } }}>
-    <span className={`${styles.diceContent} ${playerRailStyles.railDiceContent}`} dir="ltr">
-      <span className={`${styles.centerDice} ${playerRailStyles.railCenterDice}`}>
+    <span className={`${styles.diceContent} ${diceStageStyles.railDiceContent}`} dir="ltr">
+      <span className={`${styles.centerDice} ${diceStageStyles.railCenterDice}`}>
         {dice || spinning ? <><Die value={visual === "holding" || visual === "settling" ? 1 : dice?.[0] ?? 1} spinning={visual === "holding" || visual === "settling"} hidden={visual === "holding" || visual === "settling"} second={false} usedCount={firstUsed} double={double}/><Die value={spinning ? 1 : dice?.[1] ?? 1} spinning={spinning} hidden={spinning} second usedCount={secondUsed} double={double}/></> : <><Die value={2} spinning={false} hidden={false} second={false} preview/><Die value={5} spinning={false} hidden={false} second preview/></>}
       </span>
     </span>
