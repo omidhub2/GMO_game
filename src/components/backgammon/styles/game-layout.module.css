@@ -63,6 +63,7 @@
   color:#f1dfad;
   text-align:center;
 }
+.offPocketTotal{font-size:11px;line-height:1;color:#c7bba5;font-weight:700}
 .offPocket > i{width:clamp(28px,3vw,38px)}
 .offPocket strong{font-size:19px;line-height:1.1}
 .offPocket strong small{font-size:10px;color:#c7bba5}
@@ -123,6 +124,7 @@
   }
   .offLane{gap:5px;padding:2px 0}
   .offPocket{gap:3px;padding:3px 1px;border-radius:8px}
+  .offPocketTotal{font-size:9px}
   .offPocket > i{width:24px}
   .offPocket strong{font-size:14px}
   .offPocket strong small{font-size:8px}
