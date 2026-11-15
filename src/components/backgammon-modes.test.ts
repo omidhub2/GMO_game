@@ -53,7 +53,14 @@ describe("backgammon mode selection", () => {
       act(() => container.querySelector<HTMLButtonElement>('[data-point="10"]')!.click()); advance(240);
       expect(container.textContent).toContain("نوبت کامپیوتر");
       expect(container.querySelector<HTMLButtonElement>("[data-dice-box]")!.disabled).toBe(true);
-      advance(700); // Computer rolls.
+      advance(700); // Computer commits its dice and starts the roll animation.
+      expect(container.querySelector<HTMLButtonElement>("[data-dice-box]")?.getAttribute("data-stage")).toBe("holding");
+      advance(500);
+      expect(container.querySelector<HTMLButtonElement>("[data-dice-box]")?.getAttribute("data-stage")).toBe("first");
+      advance(499);
+      expect(container.querySelector<HTMLButtonElement>("[data-dice-box]")?.getAttribute("data-stage")).toBe("first");
+      advance(1);
+      expect(container.querySelector<HTMLButtonElement>("[data-dice-box]")?.getAttribute("data-stage")).toBe("idle");
     }
     expect([...container.querySelectorAll<HTMLButtonElement>("[data-point]")].every(point => point.disabled)).toBe(true);
     for (let i = 0; i < 5; i++) advance(700);
