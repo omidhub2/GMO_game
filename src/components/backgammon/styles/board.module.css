@@ -59,34 +59,20 @@
 .point::before{opacity:.4}
 
 .half{background:repeating-linear-gradient(92deg,#3e281c 0,#432c20 4%,#3d291e 8%)}
-@media(max-width:900px){
-  
-
-  
-
-  }
-@media(max-width:560px){
-  }
 
 
 
 
 
 
-@media(max-width:900px){
-  
-
-  
-
-  }
 
 
 
 
-@media(max-width:900px){
-  
 
-  }
+
+
+
 
 .table{height:100%;min-height:0;border-radius:0}
 
