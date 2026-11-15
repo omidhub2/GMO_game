@@ -119,7 +119,7 @@ export type GameAction =
   | { type: "roll"; dice: [number, number]; revision: number }
   | { type: "select"; from: Source | null; revision: number }
   | { type: "move"; move: Move; revision: number }
-  | { type: "undo" | "offerDouble" | "acceptDouble" | "rejectDouble" | "nextGame"; revision: number };
+  | { type: "undo" | "offerDouble" | "acceptDouble" | "rejectDouble" | "nextGame" | "timeout"; revision: number };
 /** Every command carries the revision it was issued against. Replays / stale
  * double clicks are rejected atomically, including roll and turn transitions. */
 export function gameReducer(state: GameState, action: GameAction): GameState {
@@ -155,6 +155,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "offerDouble": if (canDouble(state)) next = { ...state, phase: "double", message: "حریف: دوبل را می‌پذیری؟" }; break;
     case "acceptDouble": if (state.phase === "double") next = { ...state, phase: "roll", cube: state.cube * 2, cubeOwner: opponent(state.turn), message: "دوبل پذیرفته شد؛ تاس بریز" }; break;
     case "rejectDouble": if (state.phase === "double") next = finish(state, state.turn, true); break;
+    case "timeout": {
+      if (state.phase === "finished") return state;
+      next = { ...state, turn: opponent(state.turn), phase: "roll", remaining: [], history: [], selected: null, turnNumber: state.turnNumber + 1, message: "زمان تمام شد؛ نوبت منتقل شد" };
+      break;
+    }
     case "nextGame": {
       if (state.phase !== "finished" || !state.target || Math.max(state.scores.light, state.scores.dark) >= state.target) return state;
       const crawford = !state.crawfordUsed && Math.max(state.scores.light, state.scores.dark) === state.target - 1;
