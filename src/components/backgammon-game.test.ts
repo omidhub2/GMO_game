@@ -131,6 +131,7 @@ describe("Persian manual board interactions", () => {
     expect(container.querySelectorAll("[data-player-message]:disabled")).toHaveLength(0);
     expect(container.querySelectorAll("[data-player-checker]")).toHaveLength(2);
     expect(container.querySelectorAll(".chatPanel")).toHaveLength(0);
+    expect(container.querySelector(".rollHologramHalo .hologramChecker")).not.toBeNull();
     expect(container.querySelectorAll("[data-player-country]")).toHaveLength(2);
     expect(container.querySelectorAll("[data-player-timer]")).toHaveLength(2);
     expect(container.querySelectorAll("[data-player-level]")).toHaveLength(2);
@@ -162,5 +163,8 @@ describe("in-game chat", () => {
     act(() => { const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")?.set; setter?.call(input,"سلام دوست من"); input.dispatchEvent(new Event("input",{bubbles:true})); });
     click(button("ارسال پیام"));
     expect(container.textContent).toContain("سلام دوست من");
+    expect(container.querySelector("[data-visible=\"true\"].chatToast")?.textContent).toContain("سلام دوست من");
+    act(() => vi.advanceTimersByTime(3000));
+    expect(container.querySelector(".chatToast")?.getAttribute("data-visible")).toBe("false");
   });
 });
