@@ -225,3 +225,24 @@
 @media(max-width:560px){
   .board{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr)}
 }
+
+
+/* Turn-to-roll announcement stays inside the active player's own board half. */
+.half{position:relative}
+.playerRollPrompt{
+  position:absolute;z-index:18;left:50%;top:50%;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:max-content;max-width:calc(100% - 12px);
+  padding:8px 12px;box-sizing:border-box;
+  border:1px solid #d5ad55;border-radius:999px;
+  background:linear-gradient(145deg,#17191beF,#29251eeF);
+  color:#ffe4a0;font-size:clamp(10px,1.15vw,14px);font-weight:800;
+  text-align:center;white-space:normal;
+  box-shadow:0 4px 16px #0009,0 0 18px #d5ad5538;
+  transform:translate(-50%,-50%);
+  pointer-events:none;animation:playerRollPromptIn .28s ease-out;
+}
+.playerRollPrompt i{width:clamp(20px,2.5vw,30px);height:auto;aspect-ratio:1;flex:none}
+@keyframes playerRollPromptIn{from{opacity:0;transform:translate(-50%,-44%) scale(.94)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@media(max-width:560px){.playerRollPrompt{gap:5px;padding:6px 8px;font-size:10px}.playerRollPrompt i{width:20px}}
+@media(prefers-reduced-motion:reduce){.playerRollPrompt{animation:none}}
