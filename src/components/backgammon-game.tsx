@@ -297,10 +297,10 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
                 </div>
               </div>
               <div className={playerRailStyles.profileScore} data-player-score>
-                <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
                 <button type="button" data-player-message className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}؛ قابلیت پیام‌رسانی هنوز فعال نیست`} disabled title="پیام‌رسانی به‌زودی">
                   <MessageCircle size={15} strokeWidth={1.8}/>
                 </button>
+                <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
               </div>
             </div>
             <div className={playerRailStyles.profileMeta} dir="ltr">
