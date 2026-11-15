@@ -107,13 +107,16 @@ describe("Persian manual board interactions", () => {
     click(button("پذیرش دوبل")); expect(container.textContent).toContain("مالک: سفید");
     expect(button("پیشنهاد دوبل ×۴").disabled).toBe(true);
   });
-  it("changes the board theme from the menu without changing the game turn", () => {
+  it("keeps the board on the simple theme without a theme picker", () => {
+    const game = container.querySelector<HTMLElement>('[data-board-theme]');
+    expect(game?.getAttribute("data-board-theme")).toBe("simple");
+    expect(container.querySelector('[data-theme]')).toBeNull();
+
     click(button("باز کردن منوی بازی"));
-    click(container.querySelector<HTMLButtonElement>('[data-theme="carbon"]')!);
-    expect(container.querySelector('[data-board-theme="carbon"]')).not.toBeNull();
-    expect(container.querySelector('[data-theme="carbon"]')?.getAttribute("aria-pressed")).toBe("true");
+    expect(container.querySelector('[data-board-theme="simple"]')).not.toBeNull();
+    expect(container.querySelector('[data-theme]')).toBeNull();
     click(button("بستن منو"));
+
     expect(button("تاس بریز").disabled).toBe(false);
-    localStorage.removeItem("gmo-backgammon-board-theme");
   });
 });
