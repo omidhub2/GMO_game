@@ -247,3 +247,55 @@
 .rightRail .offTray b{justify-self:center}
 .sessionStatus{font-size:11px;color:#eadba9;text-align:center;margin:0}
 .sessionStatus span{display:block;color:#ffb8ad}
+
+/* Keep DiceBox's original gold-edged, glossy appearance across the module boundary. */
+.rightRail .diceStage [data-dice-box]{
+  position:relative;
+  inset:auto;
+  width:100%;
+  height:100%;
+  min-height:0;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:7px 8px;
+  border:1px solid #f0b90b;
+  border-radius:15px;
+  background:linear-gradient(145deg,#28282b 0%,#151517 48%,#0d0d0e 100%);
+  box-shadow:0 10px 24px #000d,inset 0 1px #ffffff2c,inset 0 -2px 0 #000,0 0 0 1px #f0b90b70,0 0 20px #f0b90b20;
+  color:#f7e7b4;
+  transform:none;
+}
+.rightRail .diceStage [data-dice-box][data-stage="holding"],
+.rightRail .diceStage [data-dice-box][data-stage="settling"],
+.rightRail .diceStage [data-dice-box][data-stage="first"]{
+  background:linear-gradient(145deg,#303034 0%,#171719 48%,#0c0c0d 100%);
+  box-shadow:0 18px 44px #000c,inset 0 1px #ffffff30,0 0 0 2px #f0b90b99,0 0 38px #f0b90b35;
+}
+.rightRail .diceStage [data-dice-box]>span{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  min-height:0;
+}
+.rightRail .diceStage [data-dice-box]>span>span{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:0;
+}
+.rightRail .diceStage [data-dice-box] [role="img"]{
+  --size:40px;
+  filter:drop-shadow(0 5px 4px #000c);
+}
+@media(max-width:900px){
+  .rightRail .diceStage [data-dice-box]{padding:4px 5px}
+  .rightRail .diceStage [data-dice-box] [role="img"]{--size:38px}
+}
+@media(max-height:400px){
+  .rightRail .diceStage [data-dice-box] [role="img"]{--size:32px}
+}
