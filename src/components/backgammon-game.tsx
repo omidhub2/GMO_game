@@ -248,7 +248,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         {(["dark","light"] as Side[]).map(side => {
           const options=side === turn ? destinations.filter(m=>m.to === "off") : [];
           return <section key={side} className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`شمارش مهره ${names[side]}`}>
-            <div className={playerRailStyles.profileAvatar} aria-hidden="true">
+            <div className={playerRailStyles.profileAvatar} data-player-avatar aria-hidden="true">
               <span>{playerName(side).slice(0, 1)}</span>
             </div>
             <div className={playerRailStyles.profileInfo}>
@@ -257,11 +257,11 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
                   <strong>{playerName(side)}</strong>
                   <small>{names[side] === "سفید" ? "مهره سفید" : "مهره سیاه"}</small>
                 </div>
-                <button type="button" className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}؛ قابلیت پیام‌رسانی هنوز فعال نیست`} disabled title="پیام‌رسانی به‌زودی">
+                <button type="button" data-player-message className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}؛ قابلیت پیام‌رسانی هنوز فعال نیست`} disabled title="پیام‌رسانی به‌زودی">
                   <MessageCircle size={16} strokeWidth={1.8}/>
                 </button>
               </div>
-              <div className={playerRailStyles.profileScore}>
+              <div className={playerRailStyles.profileScore} data-player-score>
                 <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} aria-hidden="true"/>
                 <span className={playerRailStyles.scoreValue}><Trophy size={13} aria-hidden="true"/>{fa(state.scores[side])}</span>
               </div>
