@@ -165,6 +165,6 @@ describe("in-game chat", () => {
     expect(container.textContent).toContain("سلام دوست من");
     expect(container.querySelector("[data-visible=\"true\"].chatToast")?.textContent).toContain("سلام دوست من");
     act(() => vi.advanceTimersByTime(3000));
-    expect(container.querySelector(".chatToast")?.getAttribute("data-visible")).toBe("false");
+    expect(container.querySelector("[data-chat-toast]")?.getAttribute("data-visible")).toBe("false");
   });
 });
