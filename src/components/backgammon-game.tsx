@@ -64,7 +64,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const [chatOpen, setChatOpen] = useState(false);
   const [chatText, setChatText] = useState("");
   const [chatMessages, setChatMessages] = useState<Array<{id:string;seat?:string;text:string;createdAt:number}>>(session.snapshot?.messages ?? []);
-  const [quickMessages, setQuickMessages] = useState<string[]>(["سلام","آفرین","موفق","صبر","بازی"]);
+  const [quickMessages, setQuickMessages] = useState<string[]>(["سلام","دمت","موفق","صبر","بازی"]);
   const [quickDrafts, setQuickDrafts] = useState<string[]>(["سلام","آفرین","موفق","صبر","بازی"]);
   const [editingQuick, setEditingQuick] = useState(false);
   const [toastText, setToastText] = useState("");
