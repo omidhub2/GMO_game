@@ -62,6 +62,8 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const [menuOpen, setMenuOpen] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [messagePulse, setMessagePulse] = useState(false);
+  const messagePulseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [chatText, setChatText] = useState("");
   const [chatMessages, setChatMessages] = useState<Array<{id:string;seat?:string;text:string;createdAt:number}>>(session.snapshot?.messages ?? []);
   const [quickMessages, setQuickMessages] = useState<string[]>(["سلام","دمت","موفق","صبر","بازی"]);
@@ -88,7 +90,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   }, [state.phase, state.turn, state.turnNumber, canAct]);
   useEffect(() => { try { const saved=localStorage.getItem("gmo-backgammon-quick-messages"); if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed))setQuickMessages(Array.from({length:5},(_,i)=>String(parsed[i]??"").trim().split(/\\s+/).slice(0,4).join(" ")));} } catch {} }, []);
   useEffect(() => { try { localStorage.setItem("gmo-backgammon-quick-messages",JSON.stringify(quickMessages)); } catch {} }, [quickMessages]);
-  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; if(messagePulseTimer.current) clearTimeout(messagePulseTimer.current); if(toastTimer.current) clearTimeout(toastTimer.current); }; }, []);
   useEffect(() => {
     if (state.phase !== "move") {
       setTurnSeconds(30);
@@ -232,7 +234,13 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
     if (next === current.current) return false;
     current.current = next; setState(next); return true;
   }
+  function pulseMessageIcon() {
+    setMessagePulse(true);
+    if (messagePulseTimer.current) clearTimeout(messagePulseTimer.current);
+    messagePulseTimer.current = setTimeout(() => setMessagePulse(false), 10000);
+  }
   function showChatToast(text: string) {
+    pulseMessageIcon();
     setToastText(text); setToastVisible(true);
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToastVisible(false), 3000);
@@ -255,6 +263,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       showChatToast(clean);
     }
     setChatText("");
+    setChatOpen(false);
   }
   function animateMove(destination: Move["to"]) {
     busy.current = true; setMoving(true); setMovingTo(typeof destination === "number" ? destination : null);
@@ -298,7 +307,6 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         <div className={`${boardStyles.board} ${moving ? boardStyles.boardMoving : ""}`} dir="ltr">
           {state.phase === "roll" && <div className={boardStyles.rollHologram} role="status" aria-live="polite"><span className={boardStyles.rollHologramHalo}><span className={`${boardStyles.checker} ${turn === "light" ? boardStyles.lightChecker : boardStyles.darkChecker} ${boardStyles.hologramChecker}`} aria-label={turn === "light" ? "مهره سفید" : "مهره سیاه"}/></span><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong><span className={boardStyles.rollHologramLine}/></div>}
           <div className={boardStyles.chatToast} data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
-          <button type="button" className={boardStyles.chatToggle} aria-label="باز کردن چت" onClick={()=>setChatOpen(value=>!value)}><MessageCircle size={22}/></button>
           {chatOpen && <section className={boardStyles.chatPanel} data-chat-panel dir="rtl" aria-label="گفتگوی بازی"><header><span>گفتگوی بازی <small>GMO ARENA</small></span><button type="button" aria-label="بستن چت" onClick={()=>setChatOpen(false)}><X size={18}/></button></header><div className={boardStyles.chatMessages} aria-live="polite">{chatMessages.map(message=><p key={message.id}><span>{message.seat==="requester"?"بازیکن اول":message.seat==="guest"?"بازیکن دوم":"شما"}</span>{message.text}</p>)}</div><div className={boardStyles.quickMessages}>{quickMessages.map((message,i)=>message&&<button key={i} type="button" onClick={()=>void postChat(message)}>{message}</button>)}</div><form className={boardStyles.chatComposer} onSubmit={event=>{event.preventDefault();void postChat(chatText);}}><input value={chatText} maxLength={120} onChange={event=>setChatText(event.target.value)} placeholder="پیام خود را بنویسید…" aria-label="متن پیام"/><button type="submit" disabled={!chatText.trim()} aria-label="ارسال پیام"><Send size={17}/></button></form></section>}
 
           <div className={`${boardStyles.half} ${boardStyles.topLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(12+i,true))}</div>
