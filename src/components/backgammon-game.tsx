@@ -74,6 +74,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const handleDiceBusy = useCallback((value: boolean) => { busy.current = value; setRolling(value); }, []);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const seenChatIds = useRef(new Set<string>((session.snapshot?.messages ?? []).map(message => message.id)));
   const previousPhase = useRef(state.phase);
   const vibratedTurn = useRef("");
   useEffect(() => {
@@ -132,7 +133,15 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       try {
         const snapshot = await onlineSnapshot(online!, controller.signal);
         if (controller.signal.aborted) return;
-        if (snapshot.messages) setChatMessages(snapshot.messages);
+        if (snapshot.messages) {
+          setChatMessages(snapshot.messages);
+          for (const message of snapshot.messages) {
+            if (!seenChatIds.current.has(message.id)) {
+              seenChatIds.current.add(message.id);
+              showChatToast(message.text);
+            }
+          }
+        }
         if (snapshot.game && snapshot.game.revision > current.current.revision && !requestPending.current) {
           current.current = snapshot.game; setState(snapshot.game);
         }
@@ -223,10 +232,28 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
     if (next === current.current) return false;
     current.current = next; setState(next); return true;
   }
+  function showChatToast(text: string) {
+    setToastText(text); setToastVisible(true);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToastVisible(false), 3000);
+  }
   async function postChat(text: string) {
     const clean=text.trim().slice(0,120); if(!clean) return;
-    if(online){ try { const result=await onlineRequest({operation:"message",text:clean},online) as OnlineSnapshot; if(result.messages)setChatMessages(result.messages); } catch(error){setNetworkError(error instanceof Error?error.message:"ارسال پیام انجام نشد.");} }
-    else setChatMessages(items=>[...items,{id:`local-${Date.now()}-${items.length}`,text:clean,createdAt:Date.now()}].slice(-40));
+    if(online){
+      try {
+        const result=await onlineRequest({operation:"message",text:clean},online) as OnlineSnapshot;
+        if(result.messages){
+          setChatMessages(result.messages);
+          const sent=result.messages[result.messages.length-1];
+          if(sent){seenChatIds.current.add(sent.id);showChatToast(sent.text);}
+        }
+      } catch(error){setNetworkError(error instanceof Error?error.message:"ارسال پیام انجام نشد.");return;}
+    } else {
+      const localMessage={id:`local-${Date.now()}-${Math.random().toString(36).slice(2)}`,text:clean,createdAt:Date.now()};
+      seenChatIds.current.add(localMessage.id);
+      setChatMessages(items=>[...items,localMessage].slice(-40));
+      showChatToast(clean);
+    }
     setChatText("");
   }
   function animateMove(destination: Move["to"]) {
@@ -266,11 +293,11 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
 
   const playerName = (side: Side) => playMode === "computer" ? side === humanSide ? "شما" : "کامپیوتر" : playMode === "online" ? side === humanSide ? "شما" : "حریف آنلاین" : lobby.colors.requester === side ? "بازیکن اول" : "بازیکن دوم";
   return <main lang="fa" dir="rtl" data-play-mode={playMode} data-board-theme="simple" className={`${styles.page} ${boardStyles.playPage}`}>
-    <div className={gameLayoutStyles.gameToast} data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
     <div className={gameLayoutStyles.playArena} dir="ltr">
       <section className={boardStyles.table} aria-label="تخته نرد ۲۴ خانه">
         <div className={`${boardStyles.board} ${moving ? boardStyles.boardMoving : ""}`} dir="ltr">
-          {state.phase === "roll" && <div className={boardStyles.rollHologram} role="status" aria-live="polite"><span className={boardStyles.rollHologramHalo}><i className={`${styles.checker} ${turn === "light" ? styles.lightChecker : styles.darkChecker}`}/></span><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong><span className={boardStyles.rollHologramLine}/></div>}
+          {state.phase === "roll" && <div className={boardStyles.rollHologram} role="status" aria-live="polite"><span className={boardStyles.rollHologramHalo}><span className={`${boardStyles.checker} ${turn === "light" ? boardStyles.lightChecker : boardStyles.darkChecker} ${boardStyles.hologramChecker}`} aria-label={turn === "light" ? "مهره سفید" : "مهره سیاه"}/></span><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong><span className={boardStyles.rollHologramLine}/></div>}
+          <div className={boardStyles.chatToast} data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
           <button type="button" className={boardStyles.chatToggle} aria-label="باز کردن چت" onClick={()=>setChatOpen(value=>!value)}><MessageCircle size={22}/></button>
           {chatOpen && <section className={boardStyles.chatPanel} data-chat-panel dir="rtl" aria-label="گفتگوی بازی"><header><span>گفتگوی بازی <small>GMO ARENA</small></span><button type="button" aria-label="بستن چت" onClick={()=>setChatOpen(false)}><X size={18}/></button></header><div className={boardStyles.chatMessages} aria-live="polite">{chatMessages.map(message=><p key={message.id}><span>{message.seat==="requester"?"بازیکن اول":message.seat==="guest"?"بازیکن دوم":"شما"}</span>{message.text}</p>)}</div><div className={boardStyles.quickMessages}>{quickMessages.map((message,i)=>message&&<button key={i} type="button" onClick={()=>void postChat(message)}>{message}</button>)}</div><form className={boardStyles.chatComposer} onSubmit={event=>{event.preventDefault();void postChat(chatText);}}><input value={chatText} maxLength={120} onChange={event=>setChatText(event.target.value)} placeholder="پیام خود را بنویسید…" aria-label="متن پیام"/><button type="submit" disabled={!chatText.trim()} aria-label="ارسال پیام"><Send size={17}/></button></form></section>}
 
