@@ -157,7 +157,7 @@ describe("in-game chat", () => {
     const messageButton = container.querySelector<HTMLButtonElement>("[data-player-message]");
     expect(messageButton).not.toBeNull();
     click(messageButton!);
-    expect(container.querySelector(".chatPanel")).not.toBeNull();
+    expect(container.querySelector("[data-chat-panel]")).not.toBeNull();
     const input = container.querySelector<HTMLInputElement>('[aria-label="متن پیام"]')!;
     act(() => { const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")?.set; setter?.call(input,"سلام دوست من"); input.dispatchEvent(new Event("input",{bubbles:true})); });
     click(button("ارسال پیام"));
