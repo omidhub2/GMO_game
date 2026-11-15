@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { X } from "lucide-react";
-import styles from "./backgammon-game.module.css";
+import styles from "./backgammon/styles/drawer.module.css";
 
 export default function BackgammonDrawer({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
   const dialog = useRef<HTMLDialogElement>(null);
