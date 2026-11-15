@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
-import styles from "./backgammon-game.module.css";
+import styles from "./backgammon/styles/dice.module.css";
 import playerRailStyles from "./backgammon/styles/player-rail.module.css";
 
 const pips = { 1:["50% 50%"], 2:["26% 26%","74% 74%"], 3:["26% 26%","50% 50%","74% 74%"], 4:["26% 26%","74% 26%","26% 74%","74% 74%"], 5:["26% 26%","74% 26%","50% 50%","26% 74%","74% 74%"], 6:["26% 22%","74% 22%","26% 50%","74% 50%","26% 78%","74% 78%"] } as const;
