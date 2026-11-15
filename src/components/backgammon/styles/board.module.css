@@ -257,7 +257,7 @@
 .chatMessages p{align-self:flex-start;max-width:90%;margin:0;padding:7px 10px;border:1px solid #c4a05a35;border-radius:11px 11px 3px 11px;background:#ffffff0c;font-size:12px;overflow-wrap:anywhere}
 .chatMessages p span{display:block;margin-bottom:3px;color:#d6b76f;font-size:9px}
 .quickMessages{position:absolute;z-index:41;top:50%;right:calc(10px + min(310px,42%) + 12px);transform:translateY(-50%);display:flex;flex-direction:column;align-items:stretch;gap:7px;width:max-content;max-width:calc(100% - 350px);padding:9px;border:1px solid #d5ad5570;border-radius:15px;background:linear-gradient(145deg,#242428eF,#111115f2);backdrop-filter:blur(14px);box-shadow:0 12px 32px #000a}
-.quickMessages button{padding:8px 12px;border:1px solid #d5ad5577;border-radius:10px;background:#c59a351c;color:#ffe5a3;font-size:11px;white-space:nowrap;text-align:center;cursor:pointer;transition:background .16s ease,border-color .16s ease}.quickMessages button:hover{background:#c59a3540;border-color:#e7c46f}
+.quickMessages button{padding:8px 12px;border:1px solid #d5ad5577;border-radius:10px;background:#c59a351c;color:#fff;font-size:11px;white-space:nowrap;text-align:center;cursor:pointer;transition:background .16s ease,border-color .16s ease}.quickMessages button:hover{background:#c59a3540;border-color:#e7c46f}
 .chatComposer{display:flex;gap:6px;margin-top:5px}
 .chatComposer input{flex:1;min-width:0;height:38px;padding:0 10px;border:1px solid #d5ad5555;border-radius:10px;background:#0d0d10;color:#fff1ce;outline:none}
 .chatComposer input:focus{border-color:#f0c75e}
