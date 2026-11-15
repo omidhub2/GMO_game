@@ -258,7 +258,6 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
               <div className={playerRailStyles.profileHeading}>
                 <div className={playerRailStyles.profileName}>
                   <strong>{playerName(side)}</strong>
-                  <small>{names[side] === "سفید" ? "مهره سفید" : "مهره سیاه"}</small>
                 </div>
                 <button type="button" data-player-message className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}؛ قابلیت پیام‌رسانی هنوز فعال نیست`} disabled title="پیام‌رسانی به‌زودی">
                   <MessageCircle size={15} strokeWidth={1.8}/>
