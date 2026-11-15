@@ -6,7 +6,7 @@
 .playerStats{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;gap:4px 12px;padding:8px 12px;border:1px solid #b39a624d;border-radius:13px;background:linear-gradient(140deg,#263025,#171f18);font-size:11px;min-height:0}
 .activeStats{border-color:#d4b270;box-shadow:0 0 20px #c4a35b14}
 .statsIdentity{display:grid;grid-template-columns:26px 1fr;gap:0 5px;align-items:center}
-.statsIdentity :global(.checker){width:25px;grid-row:1/3}
+.statsIdentity .railChecker{width:25px;grid-row:1/3}
 .statsIdentity strong{font-weight:500;font-size:12px}
 .statsIdentity small{font-size:8px;color:#d2c6ab}
 .offTray>span{display:flex;align-items:center;justify-content:space-between;gap:6px}
@@ -16,7 +16,7 @@
 .barSource:disabled{opacity:.7!important}
 .barSelected{outline:2px solid #ffdc6b;background:#5b4424}
 .hitCount{display:flex;align-items:center;gap:7px;padding:2px 9px;border:1px solid #d4b27055;border-radius:999px;background:linear-gradient(130deg,#3d3422,#211f18);box-shadow:inset 0 1px #ffffff12}
-.hitCount :global(.checker){width:30px}
+.hitCount .railChecker{width:30px}
 .hitCount b{min-width:1.2em;text-align:center}
 .offTray{margin-top:7px;padding:7px;border:1px solid #b5985b55;border-radius:8px;background:#28271b;font-size:10px}
 .offTray button{border:1px solid #e4c36f;border-radius:6px;background:#574325;color:#ffedbf;min-height:44px;width:100%;margin-top:5px;font-size:10px!important}
@@ -29,7 +29,7 @@
 .rightRail{gap:5px}
 .playerStats{padding:7px 5px;border-radius:9px}
 .statsIdentity{grid-template-columns:18px 1fr;gap:1px 3px}
-.statsIdentity :global(.checker){width:18px}
+.statsIdentity .railChecker{width:18px}
 .statsIdentity strong{font-size:10px}
 .statsIdentity small{font-size:7px}
 .barSource b, .offTray b{font-size:12px}
@@ -52,15 +52,15 @@
 .offTray{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:0;padding:5px 8px}
 .offTray button{min-height:36px;padding:3px 8px;margin-top:0}
 .hitCount{display:flex;align-items:center;gap:7px;padding:2px 9px;border:1px solid #d4b27055;border-radius:999px;background:linear-gradient(130deg,#3d3422,#211f18);box-shadow:inset 0 1px #ffffff12}
-.hitCount :global(.checker){width:30px}
+.hitCount .railChecker{width:30px}
 .hitCount b{min-width:1.2em;text-align:center}
 @media(max-width:700px){.rightRail{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:0}
 .playerStats{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;gap:3px 6px;padding:6px 7px}
 .statsIdentity{grid-template-columns:22px 1fr;gap:0 4px}
-.statsIdentity :global(.checker){width:21px}
+.statsIdentity .railChecker{width:21px}
 .barSource{min-height:32px;padding:3px 6px}
 .hitCount{gap:4px;padding:1px 6px}
-.hitCount :global(.checker){width:24px}
+.hitCount .railChecker{width:24px}
 .offTray{font-size:8px;padding:3px 5px}
 .offTray button{min-height:30px;font-size:8px!important}}
 .rightRail{display:flex;flex-direction:column;justify-content:flex-end;align-self:stretch;gap:7px}
@@ -69,13 +69,13 @@
 @media(max-width:900px){.rightRail{display:flex;flex-direction:column;justify-content:flex-end;gap:5px}
 .playerStats{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;gap:2px 5px;padding:5px 6px}
 .statsIdentity{grid-template-columns:20px 1fr;gap:0 3px}
-.statsIdentity :global(.checker){width:18px}
+.statsIdentity .railChecker{width:18px}
 .statsIdentity strong{font-size:9px}
 .statsIdentity small{font-size:7px}
 .barSource b, .offTray b{font-size:10px}
 .barSource{min-height:29px;padding:2px 4px;font-size:8px!important}
 .hitCount{gap:3px;padding:1px 4px}
-.hitCount :global(.checker){width:19px}
+.hitCount .railChecker{width:19px}
 .offTray{font-size:7px;padding:2px 4px}
 .offTray button{min-height:26px;font-size:7px!important;padding:2px 4px}
 .cubeSummary{font-size:9px;padding:4px}
@@ -93,60 +93,60 @@
 .statsPair{display:flex;flex-direction:column;gap:14px;margin-top:auto}
 .rightRail{justify-content:flex-start}
 .diceStage{--dice-box-half:74px;position:absolute;z-index:30;left:50%;top:50%;width:0;height:0;transform:none;direction:ltr}
-.diceStage>:global(.diceBox){position:absolute;left:0;top:0;transform:translate(-50%,-50%);flex:none}
+.diceStage>.railDiceBox{position:absolute;left:0;top:0;transform:translate(-50%,-50%);flex:none}
 .turnPrompt{position:absolute;left:calc(var(--dice-box-half) + 16px);top:0;display:flex;align-items:center;gap:11px;min-width:120px;max-width:170px;min-height:56px;padding:7px 11px;border:1px solid #f0b90b66;border-radius:13px;background:linear-gradient(145deg,#252527f2,#111113f2);color:#ffe7a1;font-size:12px;font-weight:700;box-shadow:0 10px 23px #000b,0 0 17px #f0b90b16;opacity:0;visibility:hidden;transform:translate(7px,-50%);transition:opacity .38s ease,transform .38s ease,visibility .38s}
 .turnPrompt[data-visible="true"]{opacity:1;visibility:visible;transform:translate(0,-50%)}
-.turnPrompt :global(.checker){width:46px}
+.turnPrompt .railChecker{width:46px}
 .turnPrompt{direction:ltr}
 .turnPrompt span{direction:rtl;line-height:1.5}
 .railControls{align-self:stretch}
 @media(max-width:900px){.statsPair{gap:12px}
 .diceStage{--dice-box-half:68px}
 .turnPrompt{min-width:108px;max-width:136px;min-height:48px;padding:6px 8px;font-size:10px;gap:8px}
-.turnPrompt :global(.checker){width:37px}}
+.turnPrompt .railChecker{width:37px}}
 @media(max-width:560px){.diceStage{--dice-box-half:68px}
 .turnPrompt{min-width:88px;max-width:110px;min-height:42px;padding:5px 6px;font-size:9px;gap:6px}
-.turnPrompt :global(.checker){width:30px}}
+.turnPrompt .railChecker{width:30px}}
 @media(prefers-reduced-motion:reduce){.turnPrompt{transition:none}}
 .rightRail{--rail-card-height:96px;display:flex;flex-direction:column;justify-content:flex-start;gap:9px}
 .rightRail .diceStage{position:relative;left:auto;top:auto;width:100%;height:var(--rail-card-height);box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);align-items:center;gap:5px;padding:5px;border:1px solid #f0b90b66;border-radius:13px;background:linear-gradient(145deg,#242426,#111113);box-shadow:0 8px 22px #0008,inset 0 1px #ffffff12;transform:none}
-.rightRail .diceStage>:global(.diceBox){position:relative;inset:auto;width:100%;height:100%;min-height:0;box-sizing:border-box;padding:0;border:0;border-radius:8px;background:transparent;box-shadow:none;transform:none}
-.rightRail .diceStage :global(.diceContent){width:100%;height:100%;min-height:0}
-.rightRail .diceStage :global(.centerDice){width:100%;min-height:0;gap:5px}
-.rightRail .diceStage :global(.dieScene){--size:32px}
-.rightRail .diceStage :global(.dieScene){--size:40px}
-.rightRail .diceStage :global(.dieScene)[data-preview="true"]{opacity:.82}
+.rightRail .diceStage>.railDiceBox{position:relative;inset:auto;width:100%;height:100%;min-height:0;box-sizing:border-box;padding:0;border:0;border-radius:8px;background:transparent;box-shadow:none;transform:none}
+.rightRail .diceStage .railDiceContent{width:100%;height:100%;min-height:0}
+.rightRail .diceStage .railCenterDice{width:100%;min-height:0;gap:5px}
+.rightRail .diceStage .railDieScene{--size:32px}
+.rightRail .diceStage .railDieScene{--size:40px}
+.rightRail .diceStage .railDieScene[data-preview="true"]{opacity:.82}
 .rightRail .turnPrompt{position:relative;left:auto;top:auto;width:100%;height:100%;min-width:0;max-width:none;min-height:0;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px;border:0;border-radius:8px;background:#ffffff08;box-shadow:none;font-size:10px;transform:none;direction:ltr}
 .rightRail .turnPrompt[data-visible="true"]{transform:none}
-.rightRail .turnPrompt :global(.checker){width:58px}
+.rightRail .turnPrompt .railChecker{width:58px}
 .rightRail .turnPrompt span{min-width:0;line-height:1.35;text-align:right}
 .rightRail .statsPair{width:100%;margin-top:0;gap:9px}
 .rightRail .playerStats{width:100%;height:var(--rail-card-height);box-sizing:border-box;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:1fr 1fr;align-content:stretch;gap:3px 6px;padding:5px 7px;overflow:hidden}
 .rightRail .statsIdentity{grid-column:1;grid-row:1;grid-template-columns:22px 1fr;gap:0 4px}
-.rightRail .statsIdentity :global(.checker){width:20px}
+.rightRail .statsIdentity .railChecker{width:20px}
 .rightRail :global(.statsNumbers){grid-column:2;grid-row:1;display:flex;flex-direction:column;justify-content:center;gap:0;margin:0;font-size:8px}
 .rightRail :global(.statsNumbers) b{font-size:10px}
 .rightRail .barSource{grid-column:1;grid-row:2;width:100%;min-width:0;min-height:30px;padding:2px 4px;font-size:8px!important}
 .rightRail .barSource small{display:none}
 .rightRail .hitCount{gap:3px;padding:0 4px}
-.rightRail .hitCount :global(.checker){width:19px}
+.rightRail .hitCount .railChecker{width:19px}
 .rightRail .offTray{grid-column:2;grid-row:2;align-self:center;width:100%;min-width:0;min-height:30px;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:2px;margin:0;padding:2px 4px;font-size:8px;overflow:auto}
 .rightRail .offTray button{width:auto;min-height:24px;margin:0;padding:1px 3px;font-size:7px!important}
 @media(max-width:900px){.rightRail{--rail-card-height:80px;gap:7px}
 .rightRail .statsPair{gap:7px}
 .rightRail .diceStage{gap:3px;padding:4px}
-.rightRail .diceStage :global(.dieScene){--size:35px}
+.rightRail .diceStage .railDieScene{--size:35px}
 .rightRail .turnPrompt{gap:3px;padding:2px;font-size:9px}
-.rightRail .turnPrompt :global(.checker){width:54px}
+.rightRail .turnPrompt .railChecker{width:54px}
 .rightRail .playerStats{gap:2px 4px;padding:4px 5px}
 .rightRail .statsIdentity{grid-template-columns:18px 1fr;gap:0 3px}
-.rightRail .statsIdentity :global(.checker){width:17px}
+.rightRail .statsIdentity .railChecker{width:17px}
 .rightRail .statsIdentity strong{font-size:9px}
 .rightRail .statsIdentity small{font-size:7px}
 .rightRail :global(.statsNumbers){font-size:7px}
 .rightRail :global(.statsNumbers) b{font-size:9px}
 .rightRail .barSource{min-height:27px;padding:1px 3px}
-.rightRail .hitCount :global(.checker){width:16px}
+.rightRail .hitCount .railChecker{width:16px}
 .rightRail .offTray{min-height:27px;font-size:7px}}
 .rightRail{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto var(--rail-card-height) minmax(0,1fr);align-content:stretch;align-items:stretch;justify-content:stretch;gap:6px;overflow:visible}
 .rightRail{grid-template-rows:auto auto minmax(0,1fr)}
@@ -163,7 +163,7 @@
 .rightRail{--stats-card-height:116px;--turn-checker-size:58px}
 .rightRail .statsPair{grid-auto-rows:var(--stats-card-height);gap:8px}
 .rightRail .playerStats{height:var(--stats-card-height);min-height:var(--stats-card-height)}
-.rightRail .statsIdentity :global(.checker){width:var(--turn-checker-size)}
+.rightRail .statsIdentity .railChecker{width:var(--turn-checker-size)}
 .rightRail .statsName strong{font-size:14px}
 .rightRail .statsName small{font-size:10px}
 .rightRail .statsDetails{gap:6px}
@@ -175,7 +175,7 @@
 @media(max-width:900px){.rightRail{--stats-card-height:100px;--turn-checker-size:54px}
 .rightRail .statsPair{grid-auto-rows:var(--stats-card-height);gap:7px}
 .rightRail .playerStats{height:var(--stats-card-height);min-height:var(--stats-card-height)}
-.rightRail .statsIdentity :global(.checker){width:var(--turn-checker-size)}
+.rightRail .statsIdentity .railChecker{width:var(--turn-checker-size)}
 .rightRail .statsName strong{font-size:13px}
 .rightRail .statsName small{font-size:9px}
 .rightRail .statsDetails{gap:5px}
@@ -187,21 +187,21 @@
 .rightRail .statsPair{grid-auto-rows:var(--stats-card-height);gap:5px}
 .rightRail .playerStats{height:var(--stats-card-height);min-height:var(--stats-card-height)}
 .rightRail{--turn-checker-size:48px}
-.rightRail .statsIdentity :global(.checker){width:var(--turn-checker-size)}
+.rightRail .statsIdentity .railChecker{width:var(--turn-checker-size)}
 .rightRail .statsName strong{font-size:11px}
 .rightRail .statsName small{font-size:8px}
 .rightRail .barSource>span:first-child, .rightRail .offTray>span>span{font-size:9px}
 .rightRail .hitCount{min-width:23px;min-height:23px}
 .rightRail .hitCount b, .rightRail .offTray b{font-size:13px}
-.rightRail .turnPrompt :global(.checker){width:48px}}
+.rightRail .turnPrompt .railChecker{width:48px}}
 .rightRail .diceStage{height:var(--stats-card-height)}
-.rightRail .turnPrompt :global(.checker){width:var(--turn-checker-size)}
-.rightRail .diceStage :global(.dieScene){--size:45px}
-.rightRail .diceStage :global(.centerDice){gap:6px}
-@media(max-width:900px){.rightRail .diceStage :global(.dieScene){--size:38px}}
+.rightRail .turnPrompt .railChecker{width:var(--turn-checker-size)}
+.rightRail .diceStage .railDieScene{--size:45px}
+.rightRail .diceStage .railCenterDice{gap:6px}
+@media(max-width:900px){.rightRail .diceStage .railDieScene{--size:38px}}
 .rightRail .playerStats{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);direction:rtl;padding:5px 8px}
 .rightRail .statsIdentity{grid-column:1;grid-row:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;text-align:center}
-.rightRail .statsIdentity :global(.checker){width:var(--turn-checker-size);height:var(--turn-checker-size)}
+.rightRail .statsIdentity .railChecker{width:var(--turn-checker-size);height:var(--turn-checker-size)}
 .rightRail .statsName{display:flex;flex-direction:column;align-items:center;min-width:0}
 .rightRail .statsName strong{font-size:12px;color:#f2e4c4}
 .rightRail .statsName small{font-size:8px;color:#bcb4a3}
@@ -215,7 +215,7 @@
 .rightRail .offTray>span{display:flex;align-items:center;justify-content:space-between;gap:4px;flex:1;min-width:0}
 .rightRail .offTray button{width:auto;min-height:25px;margin:0;padding:1px 4px;border:1px solid #c6a24666;border-radius:6px;background:#342b17;color:#ffe7a1;font-size:8px!important}
 @media(max-width:900px){.rightRail .playerStats{padding:4px 6px}
-.rightRail .statsIdentity :global(.checker){width:var(--turn-checker-size);height:var(--turn-checker-size)}
+.rightRail .statsIdentity .railChecker{width:var(--turn-checker-size);height:var(--turn-checker-size)}
 .rightRail .statsName strong{font-size:12px}
 .rightRail .statsName small{font-size:8px}
 .rightRail .statsDetails{gap:3px}
@@ -223,16 +223,16 @@
 .rightRail .barSource>span:first-child, .rightRail .offTray>span>span{font-size:10px}
 .rightRail .hitCount{min-width:25px;min-height:25px}
 .rightRail .hitCount b, .rightRail .offTray b{font-size:15px}}
-.rightRail .turnPromptRolling :global(.checker){animation:turnCheckerRoll 1.2s ease-in-out infinite;transform-origin:center}
+.rightRail .turnPromptRolling .railChecker{animation:turnCheckerRoll 1.2s ease-in-out infinite;transform-origin:center}
 
 
 @keyframes turnCheckerRoll{0%,100%{transform:scale(1)}50%{transform:scale(1.12);filter:brightness(1.22);box-shadow:0 5px 12px #000c,0 0 16px #f0b90b99}}
-@media(prefers-reduced-motion:reduce){.rightRail .turnPromptRolling :global(.checker){animation:none;outline:2px solid #f0b90b}}
+@media(prefers-reduced-motion:reduce){.rightRail .turnPromptRolling .railChecker{animation:none;outline:2px solid #f0b90b}}
 .rightRail .diceStage{grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr)}
 .rightRail .playerStats{padding-inline:5px}
 @media(max-width:900px){.rightRail .diceStage{grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr)}
 .rightRail .playerStats{padding-inline:4px}}
-.rightRail .turnPromptRolling :global(.checker){width:min(62px,100%)}
+.rightRail .turnPromptRolling .railChecker{width:min(62px,100%)}
 .rightRail .playerStats{grid-template-columns:var(--turn-checker-size) minmax(0,1fr);column-gap:3px}
 .rightRail .barSource, .rightRail .offTray{justify-content:flex-start;gap:4px;padding-inline:4px;overflow:hidden}
 .rightRail .barSource>span:first-child, .rightRail .offTray>span>span{font-size:12px;font-weight:700}
