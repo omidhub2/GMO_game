@@ -246,3 +246,21 @@
 @keyframes playerRollPromptIn{from{opacity:0;transform:translate(-50%,-44%) scale(.94)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 @media(max-width:560px){.playerRollPrompt{gap:5px;padding:6px 8px;font-size:10px}.playerRollPrompt i{width:20px}}
 @media(prefers-reduced-motion:reduce){.playerRollPrompt{animation:none}}
+
+/* Centered turn hologram and charcoal glass chat on the right side of the board. */
+.rollHologram{left:25%;top:50%;z-index:24}
+.chatToggle{position:absolute;z-index:25;right:12px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:44px;height:44px;border:1px solid #d6b45e99;border-radius:14px;background:#151518d9;color:#f4d98f;box-shadow:0 5px 18px #0009,0 0 16px #d5ad5530;cursor:pointer}
+.chatPanel{position:absolute;z-index:40;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;width:min(310px,42%);max-height:min(82%,520px);padding:12px;border:1px solid #d5ad5580;border-radius:18px;background:linear-gradient(145deg,#29292deF,#111115f2);backdrop-filter:blur(16px);box-shadow:0 18px 55px #000c,inset 0 1px #fff2;color:#f3e6c7;direction:rtl}
+.chatPanel header{display:flex;align-items:center;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid #d5ad5540;font-weight:800}
+.chatPanel header small{display:block;color:#bda66f;font-size:8px;letter-spacing:.15em}
+.chatPanel header button,.chatComposer button{display:grid;place-items:center;width:34px;height:34px;border:1px solid #d5ad5566;border-radius:10px;background:#ffffff0b;color:#f3d98f}
+.chatMessages{display:flex;flex-direction:column;gap:7px;min-height:70px;max-height:220px;overflow:auto;padding:10px 2px}
+.chatMessages p{align-self:flex-start;max-width:90%;margin:0;padding:7px 10px;border:1px solid #c4a05a35;border-radius:11px 11px 3px 11px;background:#ffffff0c;font-size:12px;overflow-wrap:anywhere}
+.chatMessages p span{display:block;margin-bottom:3px;color:#d6b76f;font-size:9px}
+.quickMessages{display:flex;flex-wrap:wrap;gap:5px;padding:7px 0}
+.quickMessages button{padding:5px 9px;border:1px solid #d5ad5577;border-radius:999px;background:#c59a351c;color:#ffe5a3;font-size:11px}
+.chatComposer{display:flex;gap:6px;margin-top:5px}
+.chatComposer input{flex:1;min-width:0;height:38px;padding:0 10px;border:1px solid #d5ad5555;border-radius:10px;background:#0d0d10;color:#fff1ce;outline:none}
+.chatComposer input:focus{border-color:#f0c75e}
+@media(max-width:700px){.chatPanel{right:5px;width:min(270px,55%);padding:8px}.chatToggle{right:5px;width:38px;height:38px}.chatMessages{max-height:140px}}
+@media(prefers-reduced-motion:reduce){.rollHologram{animation:none}}
