@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { GameSession, OnlineCredentials, OnlineSnapshot } from "@/modules/games/domain/backgammon-session";
 import styles from "./backgammon-game.module.css";
+import setupStyles from "./backgammon-setup.module.css";
 
 export async function onlineRequest(body: Record<string, unknown>, credentials?: OnlineCredentials): Promise<unknown> {
   const response = await fetch("/api/games/backgammon", {
@@ -85,18 +86,18 @@ export default function BackgammonOnline({ onStart }: { onStart: (session: GameS
     <p>هر بازیکن با دستگاه خودش بازی می‌کند. اتصال هر دو نفر به همین سرور لازم است.</p>
     {!credentials ? <>
       {invite ? <p>به بازی دعوت شده‌ای؛ برای دریافت جایگاه نفر دوم وارد اتاق شو.</p> : <>
-        <fieldset className={styles.playModeField}><legend>رنگ شما</legend><div className={styles.playModeChoices}>
+        <fieldset className={setupStyles.playModeField}><legend>رنگ شما</legend><div className={setupStyles.playModeChoices}>
           {(["light", "dark"] as const).map(side => <label key={side}><input type="radio" name="online-color" value={side} checked={color === side} onChange={() => setColor(side)}/><span>{side === "light" ? "سفید" : "سیاه"}</span></label>)}
         </div></fieldset>
         <label className={styles.onlineTarget}>حالت مسابقه<select value={target} onChange={event => setTarget(event.target.value)}><option value="simple">ساده؛ بدون دوبل</option>{[1,3,5,7,9,11].map(n => <option key={n} value={n}>مسابقه تا {n.toLocaleString("fa-IR")} امتیاز</option>)}</select></label>
       </>}
-      <button className={styles.startButton} disabled={busy} onClick={connect}>{busy ? "در حال اتصال…" : invite ? "پیوستن به اتاق" : "ساخت اتاق آنلاین"}</button>
+      <button className={setupStyles.startButton} disabled={busy} onClick={connect}>{busy ? "در حال اتصال…" : invite ? "پیوستن به اتاق" : "ساخت اتاق آنلاین"}</button>
     </> : <>
       <p role="status">{snapshot?.joined ? "هر دو بازیکن وارد اتاق شده‌اند." : "منتظر ورود نفر دوم از لینک دعوت…"}</p>
       {snapshot && <p>رنگ شما: {snapshot.lobby.colors[snapshot.seat] === "light" ? "سفید" : "سیاه"}</p>}
       {snapshot?.seat === "requester" && <div className={styles.inviteLink}><input aria-label="لینک دعوت آنلاین" readOnly value={url} dir="ltr"/><button aria-label="کپی لینک دعوت" onClick={async () => { try { await navigator.clipboard.writeText(url); setCopyMessage("لینک دعوت کپی شد."); } catch { setCopyMessage("لینک را از کادر انتخاب و کپی کن."); } }}>کپی</button></div>}
       {copyMessage && <p role="status">{copyMessage}</p>}
-      {snapshot?.seat === "guest" && <button className={styles.startButton} disabled={busy || snapshot.lobby.started} onClick={ready}>تأیید رنگ و شروع بازی</button>}
+      {snapshot?.seat === "guest" && <button className={setupStyles.startButton} disabled={busy || snapshot.lobby.started} onClick={ready}>تأیید رنگ و شروع بازی</button>}
     </>}
     {error && <p role="alert" className={styles.onlineError}>{error}</p>}
     <p className={styles.localNotice}>اتاق آزمایشی تا ۶ ساعت روی همین سرور نگه‌داری می‌شود و با راه‌اندازی دوبارهٔ سرور پاک می‌شود.</p>
