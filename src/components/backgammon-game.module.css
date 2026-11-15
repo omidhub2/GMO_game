@@ -4,55 +4,13 @@
 .darkChecker{ composes: darkChecker from "./backgammon/styles/checkers.module.css"; }
 .emptyChecker{ composes: emptyChecker from "./backgammon/styles/checkers.module.css"; }
 .page{--gold:#d4b270;color:#f2ecdf;font-family:Tahoma,"Segoe UI",sans-serif;line-height:1.7;background:radial-gradient(ellipse at 50% 35%,#24362d,#101713 60%,#090d0b)}
-.colorSelectionStatus{display:flex;align-items:center;justify-content:center;gap:10px;min-height:84px;font-size:12px;text-align:center}
-.colorSelectionStatus>span:last-child{max-width:260px}
-.colorSelectionStatus .emptyChecker{flex-shrink:0}
-.colorChoices button{position:relative}
-.colorChoices button.colorChoiceSelected{border-color:#f0b90b;background:linear-gradient(145deg,#3b321b,#191919);box-shadow:inset 0 0 0 1px #f0b90b,0 0 16px #f0b90b16}
-.colorChoiceTick{position:absolute;top:8px;left:8px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;color:#17130a}
-.colorChoiceSelected .colorChoiceTick{background:#f0b90b}
 .gameShell{position:fixed;inset:0;z-index:40;overflow:hidden;background:#0c110e;color:#f2ecdf}
 .gameShell:fullscreen{width:100%;height:100%}
 .page button, .page select{font:inherit}
 .page button{cursor:pointer;touch-action:manipulation}
 .page button:disabled{opacity:.42;cursor:default}
 .page button:focus-visible, .page select:focus-visible, .page a:focus-visible{outline:3px solid #ffe6a0;outline-offset:3px}
-.setupPage{height:100%;overflow:auto;padding:28px clamp(16px,5vw,70px) 48px}
-.setupHeader{max-width:1060px;margin:0 auto 35px;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:12px;color:#cdbb96}
-.setupHeader a{display:flex;gap:8px;align-items:center;min-height:44px}
-.setupHeader>span{letter-spacing:.16em;font-size:10px}
-.setupCard{max-width:880px;margin:auto;padding:clamp(20px,4vw,42px);border:1px solid #a88a504d;border-radius:28px;background:linear-gradient(145deg,#20291fd9,#101712f5);box-shadow:0 28px 90px #0006}
-.setupEyebrow{display:flex;align-items:center;gap:9px;color:#dec28b;font-size:12px}
-.setupCard h1{margin:13px 0 8px;font-size:clamp(27px,4vw,42px);font-weight:600;letter-spacing:0}
-.setupIntro{color:#bfbcae;margin-bottom:28px;font-size:14px}
-.seatGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.seatCard{padding:20px;border:1px solid #5c60444d;border-radius:20px;background:linear-gradient(135deg,#2a3025,#191f19);transition:border-color .2s,background .2s}
-.seatReady{border-color:#a4b779;background:linear-gradient(135deg,#2c3b29,#19271c)}
-.seatHeading{display:flex;justify-content:space-between;gap:8px;align-items:center}
-.seatHeading>span{display:flex;gap:7px;align-items:center;font-size:14px}
-.seatHeading svg{color:#dab677}
-.seatHeading small{color:#bab7a7;font-size:11px}
-.colorChoices{display:flex;justify-content:center;gap:12px;padding:26px 0}
-.colorChoices button{display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;min-height:116px;border:1px solid #c6ac6c55;border-radius:14px;background:#141b15;color:#f4ead5;font-size:12px}
-.colorChoices button:hover{border-color:#e5c483;background:#303b2c}
-.colorChoices .checker{width:48px;margin-top:15px}
-.assignedColor{height:168px;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center}
-.assignedColor .checker, .emptyChecker{width:52px}
-.assignedColor strong{font-size:17px;font-weight:500}
-.assignedColor>span:last-child{font-size:11px;color:#c0bdab;text-align:center}
-.readyButton, .startButton{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border:1px solid #e0bd76;border-radius:12px;background:linear-gradient(140deg,#e0c38b,#ac8345);color:#1e1b13;font-weight:700!important}
-.readyButton{width:100%;font-size:13px!important}
-.confirmed{background:#283c28;color:#d8efb9;border-color:#8fbc71}
-.swapButton{display:flex;gap:6px;justify-content:center;align-items:center;min-height:44px;width:100%;margin-top:7px;border:0;background:transparent;color:#c8b78f;font-size:11px!important}
-.swapRequest{display:flex;align-items:flex-start;flex-wrap:wrap;gap:12px;padding:16px;margin-top:18px;border:1px solid #bba062;border-radius:14px;background:#483a2066;font-size:13px}
-.swapRequest p{font-size:12px;margin:4px 0;color:#ddd0b8}
-.swapActions{display:flex;gap:8px;flex-wrap:wrap;width:100%}
-.swapActions button{min-height:44px;border:1px solid #a68c5a;border-radius:8px;background:#332b1c;color:#f4e5c4;padding:6px 12px;font-size:12px}
-.pregameSettings{display:grid;grid-template-columns:1fr 1.5fr;gap:10px;align-items:center;padding:22px 0 14px;margin-top:8px}
-.pregameSettings label{font-size:14px}
-.pregameSettings select{width:100%;min-height:46px;border:1px solid #82734f;border-radius:10px;background:#171f17;color:#f4e5c4;padding:8px 12px}
-.pregameSettings p{grid-column:1/-1;color:#b9b8a7;font-size:12px;margin:0}
-.startButton{width:100%;font-size:16px!important;min-height:54px}
+.emptyChecker{width:52px}
 .localNotice{text-align:center;font-size:11px;color:#b8b5a6;margin:14px 0 0}
 .playPage{height:100%;display:grid;grid-template-rows:62px minmax(0,1fr) auto;gap:10px;padding:0 clamp(8px,2vw,28px) 12px}
 .playHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #b5985b2b}
@@ -81,24 +39,7 @@
 .result h2{font-size:24px}
 .result p{font-size:14px;color:#d8cbb0}
 .result button{min-height:44px;padding:8px 15px;margin:5px;border:1px solid #c8a563;border-radius:10px;background:#3e4529;color:#f7e7bd}
-@media(max-width:700px){.setupPage{padding:18px 12px 30px}
-.setupHeader{margin-bottom:18px}
-.setupCard{padding:22px 15px;border-radius:20px}
-.seatGrid{gap:10px}
-.seatCard{padding:12px 9px;border-radius:14px}
-.seatHeading{align-items:flex-start;flex-direction:column;gap:2px}
-.seatHeading>span{font-size:12px}
-.seatHeading small{font-size:10px}
-.colorChoices{gap:6px;padding-block:26px}
-.colorChoices .checker{width:35px}
-.colorChoices button{font-size:10px!important;min-height:116px}
-.assignedColor>span:last-child{font-size:9px}
-.readyButton{font-size:11px!important}
-.swapButton{font-size:9px!important}
-.pregameSettings{grid-template-columns:1fr}
-.pregameSettings p{grid-column:auto}
-.setupHeader>span{font-size:8px;letter-spacing:.08em}
-.playPage{grid-template-rows:52px minmax(0,1fr) auto;gap:7px;padding:0 6px max(6px,env(safe-area-inset-bottom))}
+@media(max-width:700px){.playPage{grid-template-rows:52px minmax(0,1fr) auto;gap:7px;padding:0 6px max(6px,env(safe-area-inset-bottom))}
 .playHeader{gap:5px}
 .headerTurn{font-size:12px;gap:6px}
 .headerTurn small{font-size:8px}
@@ -118,19 +59,6 @@
 .guide p, .guide h2{font-size:10px}
 .moveOptions button{font-size:10px;min-height:40px}}
 /* Carbon lobby, more dimensional checkers, and readable resting dice. */
-.setupPage{background:radial-gradient(ellipse at 50% 5%,#202022,#101012 58%,#09090a)}
-.setupCard{border-color:#f0b90b55;background:linear-gradient(145deg,#242426eF,#111113f7);box-shadow:0 28px 90px #0009,inset 0 1px #ffffff14}
-.seatGrid{grid-template-columns:minmax(0,1fr);max-width:720px;margin-inline:auto}
-.seatCard{border-color:#c6a24655;background:linear-gradient(145deg,#202022,#121214);box-shadow:inset 0 1px #ffffff0d}
-.seatReady{border-color:#f0b90b;background:linear-gradient(145deg,#282621,#151515)}
-.seatHeading svg, .setupEyebrow{color:#f0b90b}
-.colorChoices button{border-color:#c6a24666;background:linear-gradient(145deg,#202022,#101012);color:#f3e6bf}
-.colorChoices button:hover{border-color:#f0b90b;background:linear-gradient(145deg,#302a1a,#171719);box-shadow:0 0 20px #f0b90b1c}
-.readyButton, .startButton{border-color:#f0b90b;background:linear-gradient(145deg,#f7d56b,#c99a12);color:#17130a}
-.confirmed{border-color:#f0b90b;background:linear-gradient(145deg,#26231b,#151515);color:#f6df9c}
-.swapRequest{border-color:#c6a24688;background:#211d14}
-.swapActions button{border-color:#9d7d2e;background:#19191b}
-.pregameSettings select{border-color:#c6a24677;background:#131315}
 .shareInvite{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:46px;margin:6px 0;border:1px solid #c6a24688;border-radius:10px;background:linear-gradient(145deg,#28251d,#171719);color:#f3dda0;font-size:13px!important}
 .shareInvite:not(:disabled):hover{border-color:#f0b90b;box-shadow:0 0 20px #f0b90b20}
 .inviteLink{display:flex;gap:7px;margin:8px 0}
@@ -139,8 +67,7 @@
 .inviteMessage{margin:4px 0;color:#f0d98c;font-size:11px}
 .localNotice{color:#aaa69b}
 .turnChecker{width:48px;box-shadow:0 7px 12px #000d,inset 0 3px 5px #fff9,inset 0 -6px 9px #000d,0 0 0 3px #f0b90b35}
-@media(max-width:700px){.seatGrid{grid-template-columns:minmax(0,1fr)}
-.turnChecker{width:38px}}
+@media(max-width:700px){.turnChecker{width:38px}}
 /* Carbon and Binance gold game presentation. */
 .gameShell{background:#0b0b0c}
 .page{background:radial-gradient(ellipse at 50% 35%,#202022,#111112 57%,#09090a)}
@@ -163,19 +90,8 @@
 .statsNumbers{display:flex;gap:10px;margin:0;font-size:8px}
 .statsNumbers b{font-size:11px}}
 /* Final size and vertical seat layout overrides. */
-.seatGrid{grid-template-columns:minmax(0,1fr)}
 .turnChecker{width:46px}
 @media(max-width:700px){.turnChecker{width:36px}}
-.modeField{position:relative;z-index:5;min-width:0}
-.modeTrigger{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:50px;padding:9px 13px;border:1px solid #c6a24677;border-radius:12px;background:linear-gradient(145deg,#27251f,#111113);color:#f3e6bf;text-align:right;box-shadow:inset 0 1px #ffffff12;transition:border-color .18s,box-shadow .18s,transform .18s}
-.modeTrigger:hover, .modeTrigger[aria-expanded="true"]{border-color:#f0b90b;box-shadow:0 0 0 3px #f0b90b1b,0 8px 18px #0008,inset 0 1px #ffffff18}
-.modeTrigger:active{transform:scale(.99)}
-.modeTrigger svg{flex:none;color:#f0b90b;transition:transform .2s ease}
-.modeChevronOpen{transform:rotate(180deg)}
-.modeOptions{position:absolute;z-index:30;top:calc(100% + 8px);right:0;left:0;display:grid;gap:4px;padding:6px;border:1px solid #f0b90b88;border-radius:14px;background:linear-gradient(145deg,#252527,#101012);box-shadow:0 18px 35px #000d,inset 0 1px #ffffff17;animation:modeDropdownIn .18s ease-out}
-.modeOptions button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:44px;padding:7px 11px;border:1px solid transparent;border-radius:9px;background:transparent;color:#e6dfcb;text-align:right;font-size:12px}
-.modeOptions button:hover, .modeOptionSelected{border-color:#f0b90b55!important;background:linear-gradient(90deg,#f0b90b1e,#f0b90b08)!important;color:#ffe29a!important}
-.modeOptions button svg{color:#f0b90b}
 .guestSeat{min-height:142px}
 .guestColor{width:100%;height:auto;min-height:120px;flex-direction:column;gap:7px;border-radius:16px!important;background:linear-gradient(145deg,#242426,#111113)!important}
 .guestColor .checker{width:58px}
@@ -189,9 +105,9 @@
 
 
 
+
 @keyframes modeDropdownIn{from{opacity:0;transform:translateY(-7px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(prefers-reduced-motion:reduce){.modeOptions{animation:none}
-.modeTrigger, .modeTrigger svg, .guestColor{transition:none}}
+@media(prefers-reduced-motion:reduce){.guestColor{transition:none}}
 /* Glossy, lathed bowl checkers based on the supplied reference. */
 /* Landscape match table with the score panels anchored at lower right. */
 .playArena{grid-template-columns:minmax(0,1fr) 214px;grid-template-rows:minmax(0,1fr);gap:10px}
@@ -232,19 +148,10 @@
 .guestColorReady{border-color:#f0b90b!important;box-shadow:0 0 0 6px #171719,0 0 0 8px #f0b90b55!important}
 .guestColor>svg{position:absolute;right:-5px;top:-5px;padding:3px;border-radius:50%;background:#f0b90b;color:#17130a}
 .readyNotice{margin:12px 0 0;padding:12px 15px;border:1px solid #c6a24666;border-radius:12px;background:linear-gradient(145deg,#242116,#151516);color:#f2d888;text-align:center;font-size:13px}
-.setupPage .colorChoices .checker{width:96px;margin-top:20px}
-.setupPage .colorChoices button{min-width:0;min-height:182px;padding:12px 6px 18px;gap:16px;font-size:17px!important;font-weight:600}
-.setupPage .colorChoices button>span:last-child{min-height:2.8em;display:flex;align-items:center;justify-content:center;line-height:1.4}
-.setupPage .colorChoiceTick{width:26px;height:26px}
-.setupPage .swapButton{font-size:14px!important;min-height:48px;margin-top:0}
-@media(max-width:640px){.setupPage .colorChoices .checker{width:70px}
-.setupPage .colorChoices button{min-height:160px;font-size:15px!important;gap:12px}}
 /* Slight rim overlap keeps larger checkers readable within each half-board. */
 /* Give hit checkers a visible home on the central bar. */
 /* The drawer follows the menu button on the physical right edge. */
 /* Keep spent-die checks above the cube so every pip remains legible. */
-.setupPage .colorChoices{align-items:stretch}
-.setupPage .colorChoices button{flex:1 1 0;box-sizing:border-box}
 /* Dedicated bearing-off lane between board and the three control cards. */
 .playArena{grid-template-columns:minmax(0,1fr) clamp(68px,7vw,90px) 214px;gap:9px}
 .offLane{display:grid;grid-template-rows:repeat(2,minmax(0,1fr));min-width:0;min-height:0;gap:8px;padding:5px 0}
@@ -279,23 +186,12 @@
 /* Point to the active player's bar checker after the dice are rolled. */
 /* Make the active white or black checker the focal point of the roll cue. */
 /* Put hit and borne-off counts directly beside their labels. */
-.playModeField{border:0;padding:0;margin:24px 0;min-width:0}
-.playModeField legend{font-size:14px;color:#f3e6bf;margin-bottom:10px}
-.playModeChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.playModeChoices label{display:flex;align-items:center;gap:10px;min-height:76px;padding:14px;border:1px solid #c6a24666;border-radius:12px;background:#171719;color:#f3e6bf;cursor:pointer}
-.playModeChoices label:has(input:checked){border-color:#f0b90b;background:#302a1a;box-shadow:inset 0 0 0 1px #f0b90b}
-.playModeChoices label:has(input:focus-visible){outline:2px solid #f7d56b;outline-offset:4px}
-.playModeChoices input{width:18px;height:18px;flex-shrink:0;accent-color:#f0b90b}
-.playModeChoices span{font-size:14px}
-.playModeChoices small{display:block;color:#c8c0ae;font-size:12px;margin-top:6px}
 .onlineLobby{border-top:1px solid #c6a24655;padding-top:18px}
 .onlineLobby h2{font-size:20px}
 .onlineLobby p{font-size:14px;line-height:1.9;color:#d8cbb0}
 .onlineTarget{display:grid;gap:10px;margin:20px 0;font-size:14px}
 .onlineTarget select{min-height:46px;border:1px solid #c6a24677;border-radius:10px;background:#131315;color:#f3e6bf;padding:8px}
 .onlineLobby .onlineError{color:#ffb8ad}
-@media(max-width:480px){.playModeChoices{grid-template-columns:1fr}
-.playModeChoices label{min-height:68px}}
 /* Telegram WebApp responsive canvas: reserve stable grid tracks and let
    the board take the remaining width on narrow and short devices. */
 .gameShell{
