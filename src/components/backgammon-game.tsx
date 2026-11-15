@@ -208,8 +208,8 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
             {(["dark", "light"] as Side[]).map(side => board.bar[side] > 0 && <button key={side} type="button" className={`${boardStyles.barHit} ${side === "dark" ? boardStyles.barHitTop : boardStyles.barHitBottom} ${selected === "bar" && turn === side ? boardStyles.barHitSelected : ""} ${state.phase === "move" && turn === side ? boardStyles.barEntryCue : ""}`} disabled={locked || state.phase !== "move" || turn !== side} aria-label={`${fa(board.bar[side])} مهرهٔ زده‌شدهٔ ${names[side]}؛ اول این مهره را برای ورود انتخاب کن`} aria-pressed={selected === "bar" && turn === side} onClick={() => select(selected === "bar" ? null : "bar")}><b>{fa(board.bar[side])}</b><i aria-hidden="true" className={`${boardStyles.checker} ${side === "light" ? boardStyles.lightChecker : boardStyles.darkChecker}`}/></button>)}
             <span className={boardStyles.barBrand} aria-hidden="true">ARENA</span>
           </div>
-          <div className={`${boardStyles.half} ${gameLayoutStyles.bottomHalf} ${boardStyles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}</div>
-          <div className={`${boardStyles.half} ${gameLayoutStyles.bottomHalf} ${boardStyles.bottomRight}`}>{Array.from({length:6},(_,i)=>renderPoint(5-i,false))}</div>
+          <div className={`${boardStyles.half} ${boardStyles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}</div>
+          <div className={`${boardStyles.half} ${boardStyles.bottomRight}`}>{Array.from({length:6},(_,i)=>renderPoint(5-i,false))}</div>
           {state.phase === "roll" && <div className={boardStyles.rollHologram} aria-hidden="true"><span className={boardStyles.rollHologramHalo}><i className={`${boardStyles.checker} ${turn === "light" ? boardStyles.lightChecker : boardStyles.darkChecker}`}/></span><strong>تاس بریز</strong><span className={boardStyles.rollHologramLine}/></div>}
         </div>
       </section>
