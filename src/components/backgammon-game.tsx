@@ -248,10 +248,12 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         {(["dark","light"] as Side[]).map(side => {
           const options=side === turn ? destinations.filter(m=>m.to === "off") : [];
           return <section key={side} dir="ltr" className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`پروفایل بازیکن ${names[side]}`}>
-            <div className={playerRailStyles.profileAvatar} data-player-avatar aria-label={`آواتار ${playerName(side)}`}>
-              <span aria-hidden="true">{playerName(side).slice(0, 1)}</span>
+            <div className={playerRailStyles.avatarWrap}>
+              <div className={playerRailStyles.profileAvatar} data-player-avatar aria-label={`آواتار ${playerName(side)}`}>
+                <span aria-hidden="true">{playerName(side).slice(0, 1)}</span>
+              </div>
+              <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
             </div>
-            <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
             <div className={playerRailStyles.profileInfo} dir="rtl">
               <div className={playerRailStyles.profileHeading}>
                 <div className={playerRailStyles.profileName}>
