@@ -156,7 +156,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "acceptDouble": if (state.phase === "double") next = { ...state, phase: "roll", cube: state.cube * 2, cubeOwner: opponent(state.turn), message: "دوبل پذیرفته شد؛ تاس بریز" }; break;
     case "rejectDouble": if (state.phase === "double") next = finish(state, state.turn, true); break;
     case "timeout": {
-      if (state.phase === "finished") return state;
+      if (state.phase !== "move") return state;
       next = { ...state, turn: opponent(state.turn), phase: "roll", remaining: [], history: [], selected: null, turnNumber: state.turnNumber + 1, message: "زمان تمام شد؛ نوبت منتقل شد" };
       break;
     }
