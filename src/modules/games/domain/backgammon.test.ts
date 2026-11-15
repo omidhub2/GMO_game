@@ -244,7 +244,10 @@ describe("symmetry and conservation", () => {
     }
   },30000);
   it("passes the turn when the 30-second clock expires", () => {
-    const state = newGame(null, "light");
+    const opening = newGame(null, "light");
+    expect(gameReducer(opening, { type: "timeout", revision: opening.revision })).toBe(opening);
+    const state = gameReducer(opening, { type: "roll", dice: [3, 2], revision: opening.revision });
+    expect(state.phase).toBe("move");
     const next = gameReducer(state, { type: "timeout", revision: state.revision });
     expect(next.turn).toBe("dark");
     expect(next.phase).toBe("roll");
