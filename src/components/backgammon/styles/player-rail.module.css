@@ -279,9 +279,9 @@
   justify-content:center;
   width:100%;
   min-height:0;
-  gap:5px;
+  gap:6px;
 }
-.rightRail .diceStage [data-dice-box] [role="img"]{--size:40px}
+.rightRail .diceStage [data-dice-box] [role="img"]{--size:45px}
 .rightRail .diceStage [data-dice-box] [role="img"][data-preview="true"]{opacity:.82}
 @media(max-width:900px){
   .rightRail .diceStage [data-dice-box]>span>span{gap:6px}
