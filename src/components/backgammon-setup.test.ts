@@ -34,7 +34,9 @@ describe("pregame, full-screen table and press/release dice",()=>{
     click("لغو تأیید مهرهٔ سیاه");expect(button("پس از تأیید هر دو، ورود به بازی").disabled).toBe(true);
     expect(container.querySelectorAll('[aria-label="انتخاب رنگ مهره‌ها"] button')[1]).toBe(choices[1]);
     click("انتخاب سیاه");click("ورود به بازی");expect(container.querySelectorAll("[data-point]")).toHaveLength(24);expect(container.querySelector("select")).toBeNull();
-    expect(container.querySelector('[aria-label="شمارش مهره‌ها در سمت راست"]')!.querySelectorAll("[data-bar]")).toHaveLength(2);
+    expect(container.querySelectorAll('section[aria-label^="شمارش مهره"]')).toHaveLength(2);
+    expect(container.querySelector('[aria-label="شمارش مهره‌ها در سمت راست"]')!.textContent).not.toContain("زده‌شده:");
+    expect(container.querySelector('[aria-label="شمارش مهره‌ها در سمت راست"]')!.textContent).not.toContain("خارج‌شده:");
   });
   it("does not exchange colors until opponent accepts; resets both ready confirmations",()=>{
     click("انتخاب سفید");click("انتخاب سیاه");click("درخواست جابه‌جایی مهره‌ها");
