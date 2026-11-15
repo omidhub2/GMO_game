@@ -218,8 +218,9 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         {(["dark", "light"] as Side[]).map(side => {
           const options = side === turn ? destinations.filter(option => option.to === "off") : [];
           return <div key={side} className={`${gameLayoutStyles.offPocket} ${options.length ? gameLayoutStyles.offPocketLegal : ""}`} aria-label={`خروج ${names[side]}: ${fa(board.off[side])} از ۱۵ مهره`}>
+            <small className={gameLayoutStyles.offPocketTotal}>۱۵</small>
             <i aria-hidden="true" className={`${styles.checker} ${playerRailStyles.railChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/>
-            <strong>{fa(board.off[side])}<small> / ۱۵</small></strong>
+            <strong>{fa(board.off[side])}</strong>
             {options.length > 0 && <div className={gameLayoutStyles.offPocketMoves}>{options.map(option => <button key={option.die} type="button" disabled={locked} aria-label={`خروج مهرهٔ ${names[side]} با تاس ${fa(option.die)}`} onClick={() => move(option)}>تاس {fa(option.die)}</button>)}</div>}
           </div>;
         })}
