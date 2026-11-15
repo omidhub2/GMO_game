@@ -12,6 +12,7 @@ import BackgammonDrawer from "./backgammon-drawer";
 import DiceBox from "./backgammon-dice";
 import styles from "./backgammon-game.module.css";
 import boardStyles from "./backgammon/styles/board.module.css";
+import playerRailStyles from "./backgammon/styles/player-rail.module.css";
 
 const fa = (n: number) => n.toLocaleString("fa-IR");
 const names: Record<Side, string> = { light: "سفید", dark: "سیاه" };
@@ -219,31 +220,31 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
           </div>;
         })}
       </aside>
-      <aside className={styles.rightRail} dir="rtl" aria-label="شمارش مهره‌ها در سمت راست">
-        <div className={styles.railControls} dir="ltr">
-          <span className={styles.playBrand} dir="ltr">GMO<span>ARENA</span></span>
-          <button className={styles.menuToggle} dir="rtl" disabled={rolling || moving} aria-label="باز کردن منوی بازی" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={20}/><span>منو</span></button>
+      <aside className={playerRailStyles.rightRail} dir="rtl" aria-label="شمارش مهره‌ها در سمت راست">
+        <div className={playerRailStyles.railControls} dir="ltr">
+          <span className={playerRailStyles.playBrand} dir="ltr">GMO<span>ARENA</span></span>
+          <button className={playerRailStyles.menuToggle} dir="rtl" disabled={rolling || moving} aria-label="باز کردن منوی بازی" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={20}/><span>منو</span></button>
         </div>
-        <div className={styles.diceStage} dir="ltr">
+        <div className={playerRailStyles.diceStage} dir="ltr">
           <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={canAct && !pending && !moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
-          <div className={`${styles.turnPrompt} ${state.phase === "roll" ? styles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
+          <div className={`${playerRailStyles.turnPrompt} ${state.phase === "roll" ? playerRailStyles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
             {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
             <span>{!canAct ? playMode === "computer" ? "نوبت کامپیوتر" : "منتظر حریف" : state.phase === "move" ? "بازی کن" : "تاس بریز"}</span>
           </div>
         </div>
-        <p className={styles.sessionStatus} role="status">{playMode === "computer" ? "تک‌نفره • آفلاین" : playMode === "online" ? "دونفره • آنلاین" : "دونفره • آفلاین"}{networkError && <span role="alert">{networkError}</span>}</p>
-        <div className={styles.statsPair}>
+        <p className={playerRailStyles.sessionStatus} role="status">{playMode === "computer" ? "تک‌نفره • آفلاین" : playMode === "online" ? "دونفره • آنلاین" : "دونفره • آفلاین"}{networkError && <span role="alert">{networkError}</span>}</p>
+        <div className={playerRailStyles.statsPair}>
         {(["dark","light"] as Side[]).map(side => {
           const options=side === turn ? destinations.filter(m=>m.to === "off") : [];
-          return <section key={side} className={`${styles.playerStats} ${turn === side ? styles.activeStats : ""}`} aria-label={`شمارش مهره ${names[side]}`}>
-            <div className={styles.statsIdentity}><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/><span className={styles.statsName}><strong>{names[side]}</strong><small>{playerName(side)}</small></span></div>
-            <div className={styles.statsDetails}>
-              <button data-bar={side} type="button" disabled={locked || state.phase !== "move" || turn !== side || !board.bar[side]} onClick={() => select("bar")} aria-pressed={selected === "bar" && turn === side} aria-label={`مهره‌های زده شده ${names[side]}: ${fa(board.bar[side])}`} className={`${styles.barSource} ${selected === "bar" && turn === side ? styles.barSelected : ""}`}><span>زده‌شده:</span><span className={styles.hitCount}><b>{fa(board.bar[side])}</b></span></button>
-              <div className={`${styles.offTray} ${options.length ? styles.offLegal : ""}`} aria-label={`محل خروج ${names[side]}`}><span><span>خارج‌شده:</span><b>{fa(board.off[side])}</b></span></div>
+          return <section key={side} className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`شمارش مهره ${names[side]}`}>
+            <div className={playerRailStyles.statsIdentity}><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/><span className={playerRailStyles.statsName}><strong>{names[side]}</strong><small>{playerName(side)}</small></span></div>
+            <div className={playerRailStyles.statsDetails}>
+              <button data-bar={side} type="button" disabled={locked || state.phase !== "move" || turn !== side || !board.bar[side]} onClick={() => select("bar")} aria-pressed={selected === "bar" && turn === side} aria-label={`مهره‌های زده شده ${names[side]}: ${fa(board.bar[side])}`} className={`${playerRailStyles.barSource} ${selected === "bar" && turn === side ? playerRailStyles.barSelected : ""}`}><span>زده‌شده:</span><span className={playerRailStyles.hitCount}><b>{fa(board.bar[side])}</b></span></button>
+              <div className={`${playerRailStyles.offTray} ${options.length ? playerRailStyles.offLegal : ""}`} aria-label={`محل خروج ${names[side]}`}><span><span>خارج‌شده:</span><b>{fa(board.off[side])}</b></span></div>
             </div>
           </section>;
         })}
-        {state.target && <div className={styles.cubeSummary}>مکعب ×{fa(state.cube)}<small>{state.cubeOwner ? `مالک: ${names[state.cubeOwner]}` : "بدون مالک"}{state.crawford ? " • Crawford" : ""}</small></div>}
+        {state.target && <div className={playerRailStyles.cubeSummary}>مکعب ×{fa(state.cube)}<small>{state.cubeOwner ? `مالک: ${names[state.cubeOwner]}` : "بدون مالک"}{state.crawford ? " • Crawford" : ""}</small></div>}
       </div>
       </aside>
     </div>
