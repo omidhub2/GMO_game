@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2 } from "lucide-react";
 import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
 import type { GameSession, OnlineSnapshot } from "@/modules/games/domain/backgammon-session";
@@ -63,6 +63,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const [toastVisible, setToastVisible] = useState(false);
   const { board, turn, selected, dice, remaining } = state;
   const busy = useRef(false);
+  const handleDiceBusy = useCallback((value: boolean) => { busy.current = value; setRolling(value); }, []);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousPhase = useRef(state.phase);
@@ -235,7 +236,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
           <button className={playerRailStyles.menuToggle} dir="rtl" disabled={rolling || moving} aria-label="باز کردن منوی بازی" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={20}/><span>منو</span></button>
         </div>
         <div className={diceStageStyles.diceStage} dir="ltr">
-          <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={canAct && !pending && !moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} computerRollSignal={computerRollSignal} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
+          <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={canAct && !pending && !moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} computerRollSignal={computerRollSignal} onRoll={roll} onBusy={handleDiceBusy}/>
           <div className={`${diceStageStyles.turnPrompt} ${state.phase === "roll" ? diceStageStyles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
             {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + diceStageStyles.railChecker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
             <span>{!canAct ? playMode === "computer" ? "نوبت کامپیوتر" : "منتظر حریف" : state.phase === "move" ? "بازی کن" : "تاس بریز"}</span>
