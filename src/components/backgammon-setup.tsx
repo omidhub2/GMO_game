@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRightLeft, Check, ChevronDown, ChevronLeft, Crown, Dice
 import { canStart, lobbyReducer, newLobby, otherSeat, type LobbyAction, type Seat } from "@/modules/games/domain/backgammon-lobby";
 import type { GameSession } from "@/modules/games/domain/backgammon-session";
 import BackgammonOnline from "./backgammon-online";
-import styles from "./backgammon-game.module.css";
+import styles from "./backgammon-setup.module.css";
 
 const colors = { light: "سفید", dark: "سیاه" };
 export default function BackgammonSetup({ onStart }: { onStart: (session: GameSession) => void }) {
