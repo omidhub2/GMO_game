@@ -447,3 +447,8 @@
   .rightRail .profileAvatar{width:38px;height:38px}
   .rightRail .profileChecker{width:23px}
 }
+
+.rightRail .messageButton{width:clamp(30px,8cqh,38px);height:clamp(30px,8cqh,38px);cursor:pointer;transition:transform .18s ease,background .18s ease}
+.rightRail .messageButton svg{width:20px;height:20px}
+.rightRail .messageButton:hover{transform:scale(1.08);background:#302719}
+.rightRail .messageButton:disabled{opacity:1;cursor:pointer}
