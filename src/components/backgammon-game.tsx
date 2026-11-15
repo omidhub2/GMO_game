@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2 } from "lucide-react";
+import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, Trophy, MessageCircle } from "lucide-react";
 import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
 import type { GameSession, OnlineSnapshot } from "@/modules/games/domain/backgammon-session";
 import { computerMove } from "@/modules/games/domain/backgammon-computer";
@@ -248,10 +248,24 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         {(["dark","light"] as Side[]).map(side => {
           const options=side === turn ? destinations.filter(m=>m.to === "off") : [];
           return <section key={side} className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`شمارش مهره ${names[side]}`}>
-            <div className={playerRailStyles.statsIdentity}><i aria-hidden="true" className={`${styles.checker} ${playerRailStyles.railChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/><span className={playerRailStyles.statsName}><strong>{names[side]}</strong><small>{playerName(side)}</small></span></div>
-            <div className={playerRailStyles.statsDetails}>
-              <button data-bar={side} type="button" disabled={locked || state.phase !== "move" || turn !== side || !board.bar[side]} onClick={() => select("bar")} aria-pressed={selected === "bar" && turn === side} aria-label={`مهره‌های زده شده ${names[side]}: ${fa(board.bar[side])}`} className={`${playerRailStyles.barSource} ${selected === "bar" && turn === side ? playerRailStyles.barSelected : ""}`}><span>زده‌شده:</span><span className={playerRailStyles.hitCount}><b>{fa(board.bar[side])}</b></span></button>
-              <div className={`${playerRailStyles.offTray} ${options.length ? playerRailStyles.offLegal : ""}`} aria-label={`محل خروج ${names[side]}`}><span><span>خارج‌شده:</span><b>{fa(board.off[side])}</b></span></div>
+            <div className={playerRailStyles.profileAvatar} aria-hidden="true">
+              <span>{playerName(side).slice(0, 1)}</span>
+            </div>
+            <div className={playerRailStyles.profileInfo}>
+              <div className={playerRailStyles.profileHeading}>
+                <div className={playerRailStyles.profileName}>
+                  <strong>{playerName(side)}</strong>
+                  <small>{names[side] === "سفید" ? "مهره سفید" : "مهره سیاه"}</small>
+                </div>
+                <button type="button" className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}؛ قابلیت پیام‌رسانی هنوز فعال نیست`} disabled title="پیام‌رسانی به‌زودی">
+                  <MessageCircle size={16} strokeWidth={1.8}/>
+                </button>
+              </div>
+              <div className={playerRailStyles.profileScore}>
+                <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} aria-hidden="true"/>
+                <span className={playerRailStyles.scoreValue}><Trophy size={13} aria-hidden="true"/>{fa(state.scores[side])}</span>
+              </div>
+            </div>
             </div>
           </section>;
         })}
