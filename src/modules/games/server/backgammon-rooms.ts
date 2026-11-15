@@ -11,6 +11,7 @@ interface Room {
   tokens: Record<Seat, string | null>;
   expires: number;
   turnStartedAt: number;
+  messages: Array<{ id: string; seat: Seat; text: string; createdAt: number }>;
 }
 // Development rooms belong to this server process and expire after six hours.
 const shared = globalThis as typeof globalThis & { backgammonRooms?: Map<string, Room> };
@@ -25,7 +26,7 @@ export function createRoom(color: "light" | "dark", target: number | null) {
   lobby = lobbyReducer(lobby, { type: "choose", color, actor: "requester", revision: lobby.revision });
   lobby = lobbyReducer(lobby, { type: "ready", actor: "requester", revision: lobby.revision });
   const id = randomUUID(), token = randomUUID();
-  rooms.set(id, { lobby, target, game: null, tokens: { requester: token, guest: null }, expires: Date.now() + 6 * 3600_000, turnStartedAt: Date.now() });
+  rooms.set(id, { lobby, target, game: null, tokens: { requester: token, guest: null }, expires: Date.now() + 6 * 3600_000, turnStartedAt: Date.now(), messages: [] });
   return { room: id, token };
 }
 function getRoom(id: string) {
@@ -46,7 +47,7 @@ export function joinRoom(id: string) {
 }
 export function roomSnapshot(id: string, token: string): OnlineSnapshot {
   const room = getRoom(id), seat = participant(room, token);
-  return { lobby: room.lobby, target: room.target, game: room.game, seat, joined: !!room.tokens.guest };
+  return { lobby: room.lobby, target: room.target, game: room.game, seat, joined: !!room.tokens.guest, messages: room.messages.slice(-40) };
 }
 export function readyRoom(id: string, token: string) {
   const room = getRoom(id), seat = participant(room, token);
@@ -75,5 +76,14 @@ export function roomAction(id: string, token: string, action: GameAction) {
   if (next === state) throw new RoomError("وضعیت بازی تغییر کرده است؛ دوباره تلاش کن.", 409);
   room.game = next;
   if ((action.type === "roll" && next.phase === "move") || next.turn !== state.turn || next.turnNumber !== state.turnNumber) room.turnStartedAt = Date.now();
+  return roomSnapshot(id, token);
+}
+
+export function roomMessage(id: string, token: string, text: string) {
+  const room = getRoom(id), seat = participant(room, token);
+  const clean = text.trim().replace(/[<>]/g, "").slice(0, 120);
+  if (!clean) throw new RoomError("متن پیام خالی است.");
+  room.messages.push({ id: randomUUID(), seat, text: clean, createdAt: Date.now() });
+  if (room.messages.length > 100) room.messages.splice(0, room.messages.length - 100);
   return roomSnapshot(id, token);
 }
