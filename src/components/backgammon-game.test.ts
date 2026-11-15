@@ -128,8 +128,9 @@ describe("Persian manual board interactions", () => {
     expect(cards).toHaveLength(2);
     expect(container.querySelectorAll("[data-player-avatar]")).toHaveLength(2);
     expect(container.querySelectorAll("[data-player-score]")).toHaveLength(2);
-    expect(container.querySelectorAll("[data-player-message]:disabled")).toHaveLength(2);
+    expect(container.querySelectorAll("[data-player-message]:disabled")).toHaveLength(0);
     expect(container.querySelectorAll("[data-player-checker]")).toHaveLength(2);
+    expect(container.querySelectorAll(".chatPanel")).toHaveLength(0);
     expect(container.querySelectorAll("[data-player-country]")).toHaveLength(2);
     expect(container.querySelectorAll("[data-player-timer]")).toHaveLength(2);
     expect(container.querySelectorAll("[data-player-level]")).toHaveLength(2);
@@ -148,5 +149,18 @@ describe("Persian manual board interactions", () => {
     click(button("بستن منو"));
 
     expect(button("تاس بریز").disabled).toBe(false);
+  });
+});
+
+describe("in-game chat", () => {
+  it("opens the glass chat panel from a player message icon and sends a message", () => {
+    const messageButton = container.querySelector<HTMLButtonElement>("[data-player-message]");
+    expect(messageButton).not.toBeNull();
+    click(messageButton!);
+    expect(container.querySelector(".chatPanel")).not.toBeNull();
+    const input = container.querySelector<HTMLInputElement>('[aria-label="متن پیام"]')!;
+    act(() => { const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")?.set; setter?.call(input,"سلام دوست من"); input.dispatchEvent(new Event("input",{bubbles:true})); });
+    click(button("ارسال پیام"));
+    expect(container.textContent).toContain("سلام دوست من");
   });
 });
