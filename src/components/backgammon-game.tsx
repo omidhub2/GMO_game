@@ -214,7 +214,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         {(["dark", "light"] as Side[]).map(side => {
           const options = side === turn ? destinations.filter(option => option.to === "off") : [];
           return <div key={side} className={`${styles.offPocket} ${options.length ? styles.offPocketLegal : ""}`} aria-label={`خروج ${names[side]}: ${fa(board.off[side])} از ۱۵ مهره`}>
-            <i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/>
+            <i aria-hidden="true" className={`${styles.checker} ${playerRailStyles.railChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/>
             <strong>{fa(board.off[side])}<small> / ۱۵</small></strong>
             {options.length > 0 && <div className={styles.offPocketMoves}>{options.map(option => <button key={option.die} type="button" disabled={locked} aria-label={`خروج مهرهٔ ${names[side]} با تاس ${fa(option.die)}`} onClick={() => move(option)}>تاس {fa(option.die)}</button>)}</div>}
           </div>;
@@ -228,7 +228,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         <div className={playerRailStyles.diceStage} dir="ltr">
           <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={canAct && !pending && !moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
           <div className={`${playerRailStyles.turnPrompt} ${state.phase === "roll" ? playerRailStyles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
-            {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
+            {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + playerRailStyles.railChecker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
             <span>{!canAct ? playMode === "computer" ? "نوبت کامپیوتر" : "منتظر حریف" : state.phase === "move" ? "بازی کن" : "تاس بریز"}</span>
           </div>
         </div>
@@ -237,7 +237,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         {(["dark","light"] as Side[]).map(side => {
           const options=side === turn ? destinations.filter(m=>m.to === "off") : [];
           return <section key={side} className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`شمارش مهره ${names[side]}`}>
-            <div className={playerRailStyles.statsIdentity}><i aria-hidden="true" className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/><span className={playerRailStyles.statsName}><strong>{names[side]}</strong><small>{playerName(side)}</small></span></div>
+            <div className={playerRailStyles.statsIdentity}><i aria-hidden="true" className={`${styles.checker} ${playerRailStyles.railChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/><span className={playerRailStyles.statsName}><strong>{names[side]}</strong><small>{playerName(side)}</small></span></div>
             <div className={playerRailStyles.statsDetails}>
               <button data-bar={side} type="button" disabled={locked || state.phase !== "move" || turn !== side || !board.bar[side]} onClick={() => select("bar")} aria-pressed={selected === "bar" && turn === side} aria-label={`مهره‌های زده شده ${names[side]}: ${fa(board.bar[side])}`} className={`${playerRailStyles.barSource} ${selected === "bar" && turn === side ? playerRailStyles.barSelected : ""}`}><span>زده‌شده:</span><span className={playerRailStyles.hitCount}><b>{fa(board.bar[side])}</b></span></button>
               <div className={`${playerRailStyles.offTray} ${options.length ? playerRailStyles.offLegal : ""}`} aria-label={`محل خروج ${names[side]}`}><span><span>خارج‌شده:</span><b>{fa(board.off[side])}</b></span></div>
