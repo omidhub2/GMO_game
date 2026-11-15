@@ -452,3 +452,15 @@
 .rightRail .messageButton svg{width:20px;height:20px}
 .rightRail .messageButton:hover{transform:scale(1.08);background:#302719}
 .rightRail .messageButton:disabled{opacity:1;cursor:pointer}
+
+/* Incoming and outgoing messages draw attention to the player's own chat icon. */
+.rightRail .messagePulse{
+  animation:playerMessagePulse .85s ease-in-out infinite;
+  transform-origin:center;
+  filter:drop-shadow(0 0 5px #f0c75e);
+}
+@keyframes playerMessagePulse{
+  0%,100%{transform:scale(1) rotate(0);opacity:1}
+  50%{transform:scale(1.28) rotate(-8deg);opacity:.72}
+}
+@media(prefers-reduced-motion:reduce){.rightRail .messagePulse{animation:none}}
