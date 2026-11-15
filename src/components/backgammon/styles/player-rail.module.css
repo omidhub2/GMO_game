@@ -464,3 +464,16 @@
   50%{transform:scale(1.28) rotate(-8deg);opacity:.72}
 }
 @media(prefers-reduced-motion:reduce){.rightRail .messagePulse{animation:none}}
+
+
+/* Give the dice station a little more vertical room; player cards share
+   the remaining rail height and become slightly shorter. */
+.rightRail{
+  --rail-dice-height:clamp(78px,25cqh,106px);
+}
+@media(max-width:360px){
+  .rightRail{--rail-dice-height:clamp(72px,23cqh,92px)}
+}
+@media(max-height:400px){
+  .rightRail{--rail-dice-height:68px}
+}
