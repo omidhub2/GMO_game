@@ -1,0 +1,18 @@
+/* In-game action footer, double offer and result overlays. */
+.playFooter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 18px;max-height:30dvh;overflow:auto;border-top:1px solid #b5985b33;padding-top:8px}
+.actions{display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;flex-wrap:wrap;max-width:340px}
+.actions button{display:flex;align-items:center;justify-content:center;gap:5px;min-height:42px;padding:7px 14px;border:1px solid #b89a61;border-radius:9px;background:#253025;color:#f0dfbc;font-size:12px}
+.actions small{display:block;width:100%;text-align:left;font-size:9px;color:#c8bea6}
+.result{position:absolute;z-index:35;top:50%;left:50%;transform:translate(-50%,-50%);width:min(90%,420px);padding:28px;border:1px solid #c8a563;border-radius:20px;background:#18251bf5;box-shadow:0 0 0 100vmax #0009,0 20px 80px #000a;text-align:center}
+.result h2{font-size:24px}
+.result p{font-size:14px;color:#d8cbb0}
+.result button{min-height:44px;padding:8px 15px;margin:5px;border:1px solid #c8a563;border-radius:10px;background:#3e4529;color:#f7e7bd}
+@media(max-width:700px){.playFooter{gap:4px 8px;max-height:30dvh}
+.actions{max-width:130px;gap:4px}
+.actions button{font-size:10px;min-height:38px;padding:6px 8px}
+.actions small{font-size:8px}}
+@media(max-height:500px) and (min-width:600px){.playFooter{max-height:25dvh}
+.actions small{display:none}}
+.playFooter{max-height:18dvh;padding-top:5px}
+.playFooter{max-height:14dvh;padding:3px 6px max(0px,env(safe-area-inset-bottom));border-top:1px solid #f0b90b2b}
+.playFooter{min-height:0;margin:0;padding:0!important;border:0!important;max-height:none}
