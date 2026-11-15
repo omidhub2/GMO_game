@@ -119,9 +119,9 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         message = state.message;
         duration = 2400;
       }
-    } else if (state.phase === "move" && phaseChanged) {
-      message = previous === "opening" ? names[turn] + " بازی را شروع می‌کند" : "تاس ریخته شد";
-      duration = previous === "opening" ? 3200 : 1400;
+    } else if (state.phase === "move" && phaseChanged && previous === "opening") {
+      message = names[turn] + " بازی را شروع می‌کند";
+      duration = 3200;
     } else if (state.phase === "roll" && state.message.includes("نوبت منتقل شد")) {
       message = state.message;
       duration = 2800;
