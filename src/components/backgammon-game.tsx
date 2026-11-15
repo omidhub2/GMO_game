@@ -71,9 +71,14 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const previousPhase = useRef(state.phase);
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
   useEffect(() => {
+    if (state.phase !== "move") {
+      setTurnSeconds(30);
+      timeoutSent.current = false;
+      return;
+    }
+    // The clock starts only after the roll has produced a playable turn.
     setTurnSeconds(30);
     timeoutSent.current = false;
-    if (state.phase === "finished") return;
     const interval = setInterval(() => {
       setTurnSeconds(seconds => {
         if (seconds <= 1) {
@@ -100,7 +105,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [state.turn, state.turnNumber, online, state.phase === "finished"]);
+  }, [state.phase, state.turn, state.turnNumber, online]);
   useEffect(() => {
     if (!online) return;
     const controller = new AbortController();
