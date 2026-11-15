@@ -19,6 +19,8 @@ beforeEach(()=>{
   Object.defineProperty(HTMLDialogElement.prototype,"showModal",{configurable:true,value:function(this:HTMLDialogElement){this.open=true;}});
   Object.defineProperty(HTMLDialogElement.prototype,"close",{configurable:true,value:function(this:HTMLDialogElement){this.open=false;}});
   container=document.createElement("div");document.body.append(container);root=createRoot(container);act(()=>root.render(React.createElement(BackgammonGame)));
+  act(()=>container.querySelector<HTMLInputElement>('input[name="connection"]')!.click());
+  act(()=>container.querySelectorAll<HTMLInputElement>('input[name="players"]')[1].click());
 });
 afterEach(()=>{act(()=>root.unmount());container.remove();vi.restoreAllMocks();vi.useRealTimers();});
 

@@ -4,7 +4,9 @@ import Link from "next/link";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2 } from "lucide-react";
 import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
-import type { LobbyState } from "@/modules/games/domain/backgammon-lobby";
+import type { GameSession, OnlineSnapshot } from "@/modules/games/domain/backgammon-session";
+import { computerMove } from "@/modules/games/domain/backgammon-computer";
+import { onlineRequest, onlineSnapshot } from "./backgammon-online";
 import BackgammonSetup from "./backgammon-setup";
 import BackgammonDrawer from "./backgammon-drawer";
 import DiceBox from "./backgammon-dice";
@@ -29,18 +31,30 @@ function randomDie(): number {
 }
 
 export default function BackgammonGame() {
-  const [session, setSession] = useState<{ lobby: LobbyState; target: number | null } | null>(null);
+  const [session, setSession] = useState<GameSession | null>(null);
   const shell = useRef<HTMLDivElement>(null);
   function fullscreen() { const result=shell.current?.requestFullscreen?.(); result?.catch(() => {}); }
   function leave() {
     if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+    const url = new URL(window.location.href);
+    url.searchParams.delete("room"); url.searchParams.delete("invite");
+    window.history.replaceState(null, "", url);
     setSession(null);
   }
-  return <div ref={shell} className={styles.gameShell}>{session ? <BackgammonTable lobby={session.lobby} target={session.target} onLeave={leave} onFullscreen={fullscreen}/> : <BackgammonSetup onStart={(lobby,target) => setSession({lobby,target})}/>}</div>;
+  return <div ref={shell} className={styles.gameShell}>{session ? <BackgammonTable session={session} onLeave={leave} onFullscreen={fullscreen}/> : <BackgammonSetup onStart={setSession}/>}</div>;
 }
 
-function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: LobbyState; target: number | null; onLeave: () => void; onFullscreen: () => void }) {
-  const [state, setState] = useState(() => newGame(target, lobby.colors.guest ?? "dark"));
+function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSession; onLeave: () => void; onFullscreen: () => void }) {
+  const { lobby, target, playMode, online } = session;
+  const [state, setState] = useState(() => session.snapshot?.game ?? newGame(target, playMode === "local" ? lobby.colors.guest : null));
+  const [networkError, setNetworkError] = useState("");
+  const [pending, setPending] = useState(false);
+  const requestPending = useRef(false);
+  const mounted = useRef(true);
+  const humanSide = lobby.colors[session.snapshot?.seat ?? "requester"]!;
+  const canAct = playMode === "local" || (state.phase === "opening" || state.phase === "finished"
+    ? playMode === "computer" || session.snapshot?.seat === "requester"
+    : state.phase === "double" ? state.turn !== humanSide : state.turn === humanSide);
   const current = useRef(state);
   const [rolling, setRolling] = useState(false);
   const [moving, setMoving] = useState(false);
@@ -55,6 +69,42 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousPhase = useRef(state.phase);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  useEffect(() => {
+    if (!online) return;
+    const controller = new AbortController();
+    let pollTimer: ReturnType<typeof setTimeout>;
+    async function poll() {
+      try {
+        const snapshot = await onlineSnapshot(online!, controller.signal);
+        if (controller.signal.aborted) return;
+        if (snapshot.game && snapshot.game.revision > current.current.revision && !requestPending.current) {
+          current.current = snapshot.game; setState(snapshot.game);
+        }
+        setNetworkError("");
+      } catch (error) { if (!controller.signal.aborted) setNetworkError(error instanceof Error ? error.message : "ارتباط قطع شد؛ در حال تلاش دوباره…"); }
+      if (!controller.signal.aborted) pollTimer = setTimeout(poll, 800);
+    }
+    void poll();
+    return () => { controller.abort(); clearTimeout(pollTimer); };
+  }, [online]);
+  useEffect(() => {
+    if (playMode !== "computer" || canAct || rolling || moving) return;
+    const aiTimer = setTimeout(() => {
+      let next = current.current;
+      if (next.phase === "double") next = gameReducer(next, { type: "acceptDouble", revision: next.revision });
+      else if (next.phase === "roll") next = gameReducer(next, { type: "roll", dice: [randomDie(), randomDie()], revision: next.revision });
+      else if (next.phase === "move") {
+        const choice = computerMove(next);
+        if (choice) {
+          next = gameReducer(next, { type: "select", from: choice.from, revision: next.revision });
+          next = gameReducer(next, { type: "move", move: choice, revision: next.revision });
+        }
+      }
+      current.current = next; setState(next);
+    }, 700);
+    return () => clearTimeout(aiTimer);
+  }, [playMode, canAct, state.revision, rolling, moving]);
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem("gmo-backgammon-board-theme");
@@ -94,7 +144,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   }, [state.phase, state.message, turn]);
   useEffect(() => {
     function clearSelection(event: MouseEvent | KeyboardEvent) {
-      if (busy.current || current.current.selected === null) return;
+      if (busy.current || requestPending.current || playMode === "online" || (playMode === "computer" && current.current.turn !== humanSide) || current.current.selected === null) return;
       if (event instanceof KeyboardEvent ? event.key !== "Escape" : event.target instanceof Element && !!event.target.closest("button,a,select,input,label")) return;
       const next = gameReducer(current.current, { type: "select", from: null, revision: current.current.revision });
       current.current = next; setState(next);
@@ -102,14 +152,25 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     document.addEventListener("click", clearSelection);
     document.addEventListener("keydown", clearSelection);
     return () => { document.removeEventListener("click", clearSelection); document.removeEventListener("keydown", clearSelection); };
-  }, []);
+  }, [playMode, humanSide]);
   const moves = useMemo(() => state.phase === "move" ? legalMoves(board, turn, remaining) : [], [board, turn, remaining, state.phase]);
   const destinations = selected === null ? [] : moves.filter(m => m.from === selected);
-  const locked = rolling || moving;
+  const locked = rolling || moving || pending || !canAct;
   const complete = !!state.target && Math.max(state.scores.light, state.scores.dark) >= state.target;
 
   function send(action: GameAction): boolean {
-    if (busy.current) return false;
+    if ((busy.current && action.type !== "roll") || requestPending.current || !canAct) return false;
+    if (online) {
+      requestPending.current = true; setPending(true);
+      void onlineRequest({ operation: "action", action }, online).then(result => {
+        const snapshot = result as OnlineSnapshot;
+        if (mounted.current && snapshot.game && snapshot.game.revision >= current.current.revision) {
+          current.current = snapshot.game; setState(snapshot.game); setNetworkError("");
+        }
+      }).catch(error => { if (mounted.current) setNetworkError(error instanceof Error ? error.message : "ارتباط برقرار نشد."); })
+        .finally(() => { requestPending.current = false; if (mounted.current) setPending(false); });
+      return true;
+    }
     const next = gameReducer(current.current, action);
     if (next === current.current) return false;
     current.current = next; setState(next); return true;
@@ -119,7 +180,8 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     timer.current = setTimeout(() => { busy.current = false; setMoving(false); setMovingTo(null); }, 240);
   }
   function roll() {
-    if (!["opening", "roll"].includes(current.current.phase) || state.revision !== current.current.revision) return false;
+    if (!canAct || requestPending.current || !["opening", "roll"].includes(current.current.phase) || state.revision !== current.current.revision) return false;
+    if (online) return send({ type: "roll", dice: [1, 1], revision: current.current.revision });
     const next=gameReducer(current.current,{ type:"roll", dice:[randomDie(),randomDie()], revision:state.revision });
     if (next === current.current) return false;
     current.current=next; setState(next); return true;
@@ -129,7 +191,7 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
   }
   function select(from: Source | null) { send({ type: "select", from, revision: state.revision }); }
   function clickPoint(index: number) {
-    if (busy.current) return;
+    if (locked || busy.current) return;
     if (selected === index) { select(null); return; }
     const choices = destinations.filter(m => m.to === index);
     if (choices.length === 1) { move(choices[0]); return; }
@@ -148,8 +210,8 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     </button>;
   }
 
-  const playerName = (side: Side) => lobby.colors.requester === side ? "درخواست‌دهنده" : "حریف";
-  return <main lang="fa" dir="rtl" data-board-theme={boardTheme} className={`${styles.page} ${styles.playPage}`}>
+  const playerName = (side: Side) => playMode === "computer" ? side === humanSide ? "شما" : "کامپیوتر" : playMode === "online" ? side === humanSide ? "شما" : "حریف آنلاین" : lobby.colors.requester === side ? "بازیکن اول" : "بازیکن دوم";
+  return <main lang="fa" dir="rtl" data-play-mode={playMode} data-board-theme={boardTheme} className={`${styles.page} ${styles.playPage}`}>
     <div className={styles.gameToast} data-visible={toastVisible} role="status" aria-live="polite">{toastText}</div>
     <div className={styles.playArena} dir="ltr">
       <section className={styles.table} aria-label="تخته نرد ۲۴ خانه">
@@ -179,15 +241,16 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
       <aside className={styles.rightRail} dir="rtl" aria-label="شمارش مهره‌ها در سمت راست">
         <div className={styles.railControls} dir="ltr">
           <span className={styles.playBrand} dir="ltr">GMO<span>ARENA</span></span>
-          <button className={styles.menuToggle} dir="rtl" disabled={locked} aria-label="باز کردن منوی بازی" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={20}/><span>منو</span></button>
+          <button className={styles.menuToggle} dir="rtl" disabled={rolling || moving} aria-label="باز کردن منوی بازی" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={20}/><span>منو</span></button>
         </div>
         <div className={styles.diceStage} dir="ltr">
-          <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={!moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
+          <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={canAct && !pending && !moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
           <div className={`${styles.turnPrompt} ${state.phase === "roll" ? styles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
             {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
-            <span>{state.phase === "move" ? "بازی کن" : "تاس بریز"}</span>
+            <span>{!canAct ? playMode === "computer" ? "نوبت کامپیوتر" : "منتظر حریف" : state.phase === "move" ? "بازی کن" : "تاس بریز"}</span>
           </div>
         </div>
+        <p className={styles.sessionStatus} role="status">{playMode === "computer" ? "تک‌نفره • آفلاین" : playMode === "online" ? "دونفره • آنلاین" : "دونفره • آفلاین"}{networkError && <span role="alert">{networkError}</span>}</p>
         <div className={styles.statsPair}>
         {(["dark","light"] as Side[]).map(side => {
           const options=side === turn ? destinations.filter(m=>m.to === "off") : [];
@@ -206,8 +269,8 @@ function BackgammonTable({ lobby, target, onLeave, onFullscreen }: { lobby: Lobb
     {state.target && <footer className={styles.playFooter}>
       <div className={styles.actions}><button disabled={locked || !canDouble(state)} onClick={()=>send({type:"offerDouble",revision:state.revision})}>پیشنهاد دوبل ×{fa(state.cube * 2)}</button></div>
     </footer>}
-    {state.phase === "double" && <section className={styles.result} aria-label="پاسخ دوبل"><h2>{names[opponent(turn)]}؛ پیشنهاد دوبل ×{fa(state.cube * 2)}</h2><p>با رد، {fa(state.cube)} امتیاز به {names[turn]} می‌رسد.</p><button onClick={()=>send({type:"acceptDouble",revision:state.revision})}>پذیرش دوبل</button><button onClick={()=>send({type:"rejectDouble",revision:state.revision})}>رد دوبل</button></section>}
-    {state.result && <section className={styles.result} role="status"><h2>{names[state.result.winner]} برنده شد</h2><p>{state.result.dropped ? "برد با رد دوبل" : ["","برد عادی","مارس","بک‌گمون"][state.result.multiplier]} • {fa(state.result.points)} امتیاز{complete ? " • پایان مسابقه" : ""}</p>{state.target && !complete ? <button onClick={()=>send({type:"nextGame",revision:state.revision})}>دست بعدی مسابقه</button> : <button onClick={onLeave}>بازی جدید</button>}</section>}
+    {state.phase === "double" && <section className={styles.result} aria-label="پاسخ دوبل"><h2>{names[opponent(turn)]}؛ پیشنهاد دوبل ×{fa(state.cube * 2)}</h2><p>با رد، {fa(state.cube)} امتیاز به {names[turn]} می‌رسد.</p><button disabled={locked} onClick={()=>send({type:"acceptDouble",revision:state.revision})}>پذیرش دوبل</button><button disabled={locked} onClick={()=>send({type:"rejectDouble",revision:state.revision})}>رد دوبل</button></section>}
+    {state.result && <section className={styles.result} role="status"><h2>{names[state.result.winner]} برنده شد</h2><p>{state.result.dropped ? "برد با رد دوبل" : ["","برد عادی","مارس","بک‌گمون"][state.result.multiplier]} • {fa(state.result.points)} امتیاز{complete ? " • پایان مسابقه" : ""}</p>{state.target && !complete ? <button disabled={locked} onClick={()=>send({type:"nextGame",revision:state.revision})}>دست بعدی مسابقه</button> : <button onClick={onLeave}>بازی جدید</button>}</section>}
     {menuOpen && <BackgammonDrawer onClose={()=>setMenuOpen(false)}>
       <div className={styles.drawerPlayer}><Dices size={30}/><h2>تخته‌نرد</h2><p>{state.target ? `مسابقه تا ${fa(state.target)} امتیاز` : "بازی ساده • بدون دوبل"}</p><small>درخواست‌دهنده: {names[lobby.colors.requester!]} • حریف: {names[lobby.colors.guest!]}</small></div>
       <button className={styles.drawerItem} onClick={()=>{onFullscreen();setMenuOpen(false);}}><Maximize size={20}/><span>نمایش تمام‌صفحه<small>تمرکز روی تخته</small></span></button>

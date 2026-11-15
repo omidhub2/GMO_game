@@ -2,6 +2,7 @@
   "name": "gmo-arena",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -45,6 +46,7 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.69.1",
     "@tailwindcss/postcss": "^4.1.14",
     "@types/node": "^22.18.8",
     "@types/pg": "^8.15.5",

@@ -17,6 +17,8 @@ function click(el: HTMLElement) { act(() => el.click()); }
 function settle() { act(() => vi.advanceTimersByTime(1100)); }
 function roll() { click(button("تاس بریز")); settle(); }
 function start(mode?: string) {
+  click(container.querySelector<HTMLInputElement>('input[name="connection"]')!);
+  click(container.querySelectorAll<HTMLInputElement>('input[name="players"]')[1]);
   if (mode) { click(button("ساده؛ بدون دوبل")); click(button(`مسابقه تا ${Number(mode).toLocaleString("fa-IR")} امتیاز`)); }
   click(button("انتخاب سیاه")); click(button("انتخاب سفید")); click(button("ورود به بازی"));
 }
