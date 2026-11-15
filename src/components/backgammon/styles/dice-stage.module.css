@@ -89,3 +89,17 @@
 .diceStageRail .diceStage .railDieScene{--size:clamp(24px,11cqh,39px)}
 .diceStageRail .diceStage .railCenterDice{gap:clamp(2px,1cqh,6px)}
 .diceStageRail .turnPrompt .railChecker{width:clamp(22px,11cqh,40px);max-width:100%;height:auto}
+
+
+/* Slightly larger dice, balanced against the taller dice station. */
+.diceStageRail .diceStage .railDieScene{--size:clamp(28px,13cqh,48px)}
+.diceStageRail .diceStage [data-dice-box] [role="img"]{--size:clamp(28px,13cqh,48px)}
+.diceStageRail .diceStage .railCenterDice{gap:clamp(4px,1.2cqh,8px)}
+@media(max-width:900px){
+  .diceStageRail .diceStage .railDieScene{--size:clamp(27px,12.5cqh,44px)}
+  .diceStageRail .diceStage [data-dice-box] [role="img"]{--size:clamp(27px,12.5cqh,44px)}
+}
+@media(max-height:400px){
+  .diceStageRail .diceStage .railDieScene{--size:34px}
+  .diceStageRail .diceStage [data-dice-box] [role="img"]{--size:34px}
+}
