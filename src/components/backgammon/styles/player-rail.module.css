@@ -287,3 +287,126 @@
   .rightRail .diceStage [data-dice-box]>span>span{gap:6px}
   .rightRail .diceStage [data-dice-box] [role="img"]{--size:38px}
 }
+
+
+/* Resolution-aware player rail: cards and their checkers scale to the
+   actual rail height, not to a device-width breakpoint. */
+.rightRail{
+  container-type:size;
+  min-width:0;
+  min-height:0;
+  height:100%;
+  overflow:hidden;
+  --rail-dice-height:clamp(64px,22cqh,92px);
+  --rail-checker-size:clamp(26px,14cqh,50px);
+  --rail-inner-gap:clamp(3px,1cqh,7px);
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:auto var(--rail-dice-height) auto minmax(0,1fr) auto;
+  align-content:stretch;
+  gap:var(--rail-inner-gap);
+}
+.rightRail .railControls{grid-column:1;grid-row:1;min-width:0;min-height:0}
+.rightRail .diceStage{
+  grid-column:1;grid-row:2;
+  width:100%;height:100%;min-width:0;min-height:0;
+  margin:0;padding:clamp(3px,1cqh,5px);
+  grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);
+}
+.rightRail .diceStage .railDieScene{--size:clamp(24px,11cqh,39px)}
+.rightRail .diceStage .railCenterDice{gap:clamp(2px,1cqh,6px)}
+.rightRail .turnPrompt .railChecker{width:clamp(22px,11cqh,40px);max-width:100%;height:auto}
+.rightRail .sessionStatus{
+  grid-column:1;grid-row:3;
+  min-width:0;margin:0;
+  font-size:clamp(8px,2.6cqh,11px);
+  line-height:1.25;
+  overflow-wrap:anywhere;
+}
+.rightRail .statsPair{
+  grid-column:1;grid-row:4;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:repeat(2,minmax(0,1fr));
+  grid-auto-rows:minmax(0,1fr);
+  align-content:stretch;align-items:stretch;
+  width:100%;height:100%;min-width:0;min-height:0;
+  margin:0!important;padding:0;
+  gap:var(--rail-inner-gap);
+}
+.rightRail .playerStats{
+  display:grid;
+  grid-template-columns:var(--rail-checker-size) minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr);
+  align-items:center;
+  width:100%;height:100%;min-width:0;min-height:0;
+  box-sizing:border-box;
+  padding:clamp(3px,1.2cqh,7px) clamp(3px,1.2cqw,7px);
+  gap:clamp(2px,1cqw,5px);
+  overflow:hidden;
+}
+.rightRail .statsIdentity{
+  grid-column:1;grid-row:1;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  min-width:0;min-height:0;max-width:100%;
+  gap:clamp(1px,.6cqh,4px);
+  overflow:hidden;
+}
+.rightRail .statsIdentity .railChecker{
+  width:100%;max-width:100%;max-height:var(--rail-checker-size);
+  height:auto;aspect-ratio:1;flex:0 1 auto;
+}
+.rightRail .statsName{
+  display:flex;flex-direction:column;align-items:center;
+  min-width:0;max-width:100%;overflow:hidden;text-align:center;
+}
+.rightRail .statsName strong{font-size:clamp(9px,3cqh,12px);line-height:1.2;white-space:nowrap}
+.rightRail .statsName small{max-width:100%;font-size:clamp(7px,2.2cqh,9px);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rightRail .statsDetails{
+  grid-column:2;grid-row:1;
+  display:grid;grid-template-rows:repeat(2,minmax(0,1fr));
+  align-self:stretch;gap:clamp(2px,.8cqh,4px);
+  min-width:0;min-height:0;overflow:hidden;
+}
+.rightRail .barSource,.rightRail .offTray{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;max-width:100%;min-width:0;min-height:0;height:100%;
+  box-sizing:border-box;margin:0;
+  gap:clamp(2px,.8cqw,5px);
+  padding:1px clamp(3px,.9cqw,6px);
+  overflow:hidden;flex-wrap:nowrap;
+}
+.rightRail .barSource>span:first-child,.rightRail .offTray>span>span{
+  min-width:0;font-size:clamp(7px,2.5cqh,10px);
+  line-height:1.1;white-space:nowrap;
+}
+.rightRail .hitCount{
+  display:flex;align-items:center;justify-content:center;
+  flex:none;min-width:clamp(18px,6.5cqh,25px);
+  min-height:clamp(18px,6.5cqh,25px);
+  gap:2px;padding:0 2px;
+}
+.rightRail .hitCount .railChecker{width:clamp(12px,4.2cqh,17px);max-width:100%;height:auto}
+.rightRail .hitCount b,.rightRail .offTray b{
+  font-size:clamp(11px,3.8cqh,16px);line-height:1;white-space:nowrap
+}
+.rightRail .offTray>span{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;gap:2px;flex:1;min-width:0;overflow:hidden
+}
+.rightRail .offTray button{
+  min-width:0;max-width:100%;min-height:22px;
+  margin:0;padding:1px 3px;font-size:clamp(7px,2cqh,9px)!important;
+  overflow:hidden;text-overflow:ellipsis
+}
+.rightRail .cubeSummary{grid-column:1;grid-row:5;min-width:0;padding:clamp(3px,1cqh,7px);font-size:clamp(9px,2.8cqh,12px)}
+@media(max-width:360px){
+  .rightRail{--rail-checker-size:clamp(24px,13cqh,44px);--rail-dice-height:clamp(60px,20cqh,80px)}
+  .rightRail .playerStats{padding-inline:3px}
+}
+@media(max-height:340px){
+  .rightRail{--rail-dice-height:60px;--rail-inner-gap:3px;--rail-checker-size:clamp(22px,12cqh,38px)}
+  .rightRail .railControls{min-height:28px}
+  .rightRail .railControls .menuToggle{min-height:26px}
+}
