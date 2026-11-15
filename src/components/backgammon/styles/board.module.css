@@ -197,3 +197,22 @@
 .playPage .goldPoint::before{background:var(--point-b)}
 
 .playPage .bar{background:var(--bar-surface)}
+
+
+/* Keep checker stacks inside their point on compact and short viewports. */
+.table,.board{width:100%;min-width:0;min-height:0}
+.board{height:100%;grid-template-columns:minmax(0,1fr) clamp(18px,3.5vw,36px) minmax(0,1fr)}
+.point{min-width:0;min-height:0;overflow:hidden}
+.checkerStack{
+  --piece-gap:-2px;
+  --piece-inset:clamp(2px,1cqh,5px);
+  --piece-size:min(90cqw,calc((100cqh - 12px)/5),62px);
+  overflow:hidden;
+}
+.checkerStack .checker{
+  width:var(--piece-size);height:var(--piece-size);
+  max-width:90%;box-sizing:border-box;
+}
+@media(max-width:560px){
+  .board{grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr)}
+}
