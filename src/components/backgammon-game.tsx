@@ -266,7 +266,6 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
                 <span className={playerRailStyles.scoreValue}><Trophy size={13} aria-hidden="true"/>{fa(state.scores[side])}</span>
               </div>
             </div>
-            </div>
           </section>;
         })}
         {state.target && <div className={playerRailStyles.cubeSummary}>مکعب ×{fa(state.cube)}<small>{state.cubeOwner ? `مالک: ${names[state.cubeOwner]}` : "بدون مالک"}{state.crawford ? " • Crawford" : ""}</small></div>}
