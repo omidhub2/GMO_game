@@ -10,6 +10,7 @@ interface Room {
   game: OnlineSnapshot["game"];
   tokens: Record<Seat, string | null>;
   expires: number;
+  turnStartedAt: number;
 }
 // Development rooms belong to this server process and expire after six hours.
 const shared = globalThis as typeof globalThis & { backgammonRooms?: Map<string, Room> };
@@ -24,7 +25,7 @@ export function createRoom(color: "light" | "dark", target: number | null) {
   lobby = lobbyReducer(lobby, { type: "choose", color, actor: "requester", revision: lobby.revision });
   lobby = lobbyReducer(lobby, { type: "ready", actor: "requester", revision: lobby.revision });
   const id = randomUUID(), token = randomUUID();
-  rooms.set(id, { lobby, target, game: null, tokens: { requester: token, guest: null }, expires: Date.now() + 6 * 3600_000 });
+  rooms.set(id, { lobby, target, game: null, tokens: { requester: token, guest: null }, expires: Date.now() + 6 * 3600_000, turnStartedAt: Date.now() });
   return { room: id, token };
 }
 function getRoom(id: string) {
@@ -53,6 +54,7 @@ export function readyRoom(id: string, token: string) {
   if (canStart(room.lobby)) {
     room.lobby = lobbyReducer(room.lobby, { type: "start", actor: "requester", revision: room.lobby.revision });
     room.game = newGame(room.target);
+    room.turnStartedAt = Date.now();
   }
   return roomSnapshot(id, token);
 }
@@ -60,13 +62,18 @@ export function roomAction(id: string, token: string, action: GameAction) {
   const room = getRoom(id), seat = participant(room, token), state = room.game;
   if (!state) throw new RoomError("بازی هنوز شروع نشده است.", 409);
   const side = room.lobby.colors[seat];
-  const allowed = state.phase === "opening" || state.phase === "finished"
-    ? seat === "requester" : state.phase === "double" ? side !== state.turn : side === state.turn;
-  if (!allowed) throw new RoomError("منتظر نوبت خودت بمان.", 403);
+  if (action.type === "timeout") {
+    if (Date.now() - room.turnStartedAt < 30_000) throw new RoomError("هنوز زمان این نوبت تمام نشده است.", 409);
+  } else {
+    const allowed = state.phase === "opening" || state.phase === "finished"
+      ? seat === "requester" : state.phase === "double" ? side !== state.turn : side === state.turn;
+    if (!allowed) throw new RoomError("منتظر نوبت خودت بمان.", 403);
+  }
   // The server owns dice; clients cannot choose their outcome.
   if (action.type === "roll") action = { ...action, dice: [randomInt(1, 7), randomInt(1, 7)] };
   const next = gameReducer(state, action);
   if (next === state) throw new RoomError("وضعیت بازی تغییر کرده است؛ دوباره تلاش کن.", 409);
   room.game = next;
+  if (next.turn !== state.turn || next.turnNumber !== state.turnNumber) room.turnStartedAt = Date.now();
   return roomSnapshot(id, token);
 }
