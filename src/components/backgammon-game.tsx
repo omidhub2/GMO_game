@@ -245,7 +245,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
     <div className={gameLayoutStyles.playArena} dir="ltr">
       <section className={boardStyles.table} aria-label="تخته نرد ۲۴ خانه">
         <div className={`${boardStyles.board} ${moving ? boardStyles.boardMoving : ""}`} dir="ltr">
-          <div className={`${boardStyles.half} ${boardStyles.topLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(12+i,true))}{state.phase === "roll" && turn === "dark" && <div className={boardStyles.playerRollPrompt} role="status" aria-live="polite"><i className={`${styles.checker} ${turn === "light" ? styles.lightChecker : styles.darkChecker}`}/><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong></div>}</div>
+          <div className={`${boardStyles.half} ${boardStyles.topLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(12+i,true))}{state.phase === "roll" && turn === "dark" && <div className={boardStyles.playerRollPrompt} role="status" aria-live="polite"><i className={`${styles.checker} ${styles.darkChecker}`}/><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong></div>}</div>
           <div className={`${boardStyles.half} ${boardStyles.topRight}`}>{Array.from({length:6},(_,i)=>renderPoint(18+i,true))}</div>
           <div className={boardStyles.bar} aria-label="مهره‌های زده‌شده در وسط تخته">
             <span className={boardStyles.barBrand} aria-hidden="true">GMO</span>
@@ -289,7 +289,6 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
               <div className={playerRailStyles.profileAvatar} data-player-avatar aria-label={`آواتار ${playerName(side)}`}>
                 <span aria-hidden="true">{playerName(side).slice(0, 1)}</span>
               </div>
-              <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
             </div>
             <div className={playerRailStyles.profileInfo} dir="rtl">
               <div className={playerRailStyles.profileHeading}>
@@ -297,7 +296,8 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
                   <strong>{playerName(side)}</strong>
                 </div>
               </div>
-              <div className={playerRailStyles.profileScore}>
+              <div className={playerRailStyles.profileScore} data-player-score>
+                <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
                 <button type="button" data-player-message className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}؛ قابلیت پیام‌رسانی هنوز فعال نیست`} disabled title="پیام‌رسانی به‌زودی">
                   <MessageCircle size={15} strokeWidth={1.8}/>
                 </button>
