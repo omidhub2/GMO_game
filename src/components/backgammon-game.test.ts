@@ -126,9 +126,9 @@ describe("Persian manual board interactions", () => {
   it("renders refreshed player profile cards without hit or borne-off labels", () => {
     const cards = [...container.querySelectorAll('section[class*="playerStats"]')];
     expect(cards).toHaveLength(2);
-    expect(container.querySelectorAll(".profileAvatar")).toHaveLength(2);
-    expect(container.querySelectorAll(".profileScore")).toHaveLength(2);
-    expect(container.querySelectorAll(".messageButton:disabled")).toHaveLength(2);
+    expect(container.querySelectorAll("[data-player-avatar]")).toHaveLength(2);
+    expect(container.querySelectorAll("[data-player-score]")).toHaveLength(2);
+    expect(container.querySelectorAll("[data-player-message]:disabled")).toHaveLength(2);
     expect(container.textContent).not.toContain("زده‌شده:");
     expect(container.textContent).not.toContain("خارج‌شده:");
   });
