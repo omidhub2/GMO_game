@@ -4,8 +4,6 @@
 .darkChecker{ composes: darkChecker from "./backgammon/styles/checkers.module.css"; }
 .emptyChecker{ composes: emptyChecker from "./backgammon/styles/checkers.module.css"; }
 .page{--gold:#d4b270;color:#f2ecdf;font-family:Tahoma,"Segoe UI",sans-serif;line-height:1.7;background:radial-gradient(ellipse at 50% 35%,#24362d,#101713 60%,#090d0b)}
-.gameShell{position:fixed;inset:0;z-index:40;overflow:hidden;background:#0c110e;color:#f2ecdf}
-.gameShell:fullscreen{width:100%;height:100%}
 .page button, .page select{font:inherit}
 .page button{cursor:pointer;touch-action:manipulation}
 .page button:disabled{opacity:.42;cursor:default}
@@ -17,45 +15,31 @@
 .headerTurn{display:flex;align-items:center;gap:10px;font-size:15px}
 .headerTurn .checker{width:30px}
 .headerTurn small{display:block;font-size:10px;color:#c4bfaa}
-.playArena{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:8px;min-height:0}
 .railTop, .railBottom{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:9px;line-height:1.2;color:#e1c68d;direction:rtl}
 .statsNumbers{display:grid;gap:3px;margin:8px 0;color:#d9d0bb;font-size:10px}
 .statsNumbers span{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .statsNumbers b{font-size:15px;color:#f3dfb2}
-.playFooter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 18px;max-height:30dvh;overflow:auto;border-top:1px solid #b5985b33;padding-top:8px}
 .turnStatus p{font-size:13px;margin:0 0 4px;color:#e9dfc7}
 .diceUsage{display:flex;flex-wrap:wrap;gap:5px}
 .diceUsage>span{border:1px solid #baa47477;border-radius:6px;padding:1px 8px;font-size:11px}
 .diceUsage>.usedDie{color:#c3b491;background:#373226;border-style:dashed}
-.actions{display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;flex-wrap:wrap;max-width:340px}
-.actions button{display:flex;align-items:center;justify-content:center;gap:5px;min-height:42px;padding:7px 14px;border:1px solid #b89a61;border-radius:9px;background:#253025;color:#f0dfbc;font-size:12px}
-.actions small{display:block;width:100%;text-align:left;font-size:9px;color:#c8bea6}
 .guide{grid-column:1/-1;font-size:11px}
 .guide h2{font-size:11px;display:inline-block;margin:0 0 4px 8px;font-weight:500}
 .guide p{font-size:11px;margin:1px 0;color:#c6bea9}
 .moveOptions{display:inline-flex;flex-wrap:wrap;gap:5px}
 .moveOptions button{min-height:36px;padding:5px 10px;border:1px solid #bda26577;border-radius:8px;background:#282e20;color:#f3dfb2;font-size:11px}
-.result{position:absolute;z-index:35;top:50%;left:50%;transform:translate(-50%,-50%);width:min(90%,420px);padding:28px;border:1px solid #c8a563;border-radius:20px;background:#18251bf5;box-shadow:0 0 0 100vmax #0009,0 20px 80px #000a;text-align:center}
-.result h2{font-size:24px}
-.result p{font-size:14px;color:#d8cbb0}
-.result button{min-height:44px;padding:8px 15px;margin:5px;border:1px solid #c8a563;border-radius:10px;background:#3e4529;color:#f7e7bd}
 @media(max-width:700px){.playPage{grid-template-rows:52px minmax(0,1fr) auto;gap:7px;padding:0 6px max(6px,env(safe-area-inset-bottom))}
 .playHeader{gap:5px}
 .headerTurn{font-size:12px;gap:6px}
 .headerTurn small{font-size:8px}
 .headerTurn .checker{width:26px}
-.playArena{grid-template-columns:minmax(0,1fr) 72px;gap:5px}
 .railTop, .railBottom{font-size:7px}
 .railTop span:nth-child(2){display:none}
 .pointNumber{font-size:8px}
 .statsNumbers{font-size:8px;margin-block:6px}
 .statsNumbers b{font-size:12px}
-.playFooter{gap:4px 8px;max-height:30dvh}
 .turnStatus p{font-size:10px}
 .diceUsage>span{font-size:9px;padding:1px 5px}
-.actions{max-width:130px;gap:4px}
-.actions button{font-size:10px;min-height:38px;padding:6px 8px}
-.actions small{font-size:8px}
 .guide p, .guide h2{font-size:10px}
 .moveOptions button{font-size:10px;min-height:40px}}
 /* Carbon lobby, more dimensional checkers, and readable resting dice. */
@@ -69,25 +53,20 @@
 .turnChecker{width:48px;box-shadow:0 7px 12px #000d,inset 0 3px 5px #fff9,inset 0 -6px 9px #000d,0 0 0 3px #f0b90b35}
 @media(max-width:700px){.turnChecker{width:38px}}
 /* Carbon and Binance gold game presentation. */
-.gameShell{background:#0b0b0c}
 .page{background:radial-gradient(ellipse at 50% 35%,#202022,#111112 57%,#09090a)}
 .playHeader{border-color:#d7ad462d}
 .headerTurn .checker{display:none}
 .turnChecker{width:38px;filter:drop-shadow(0 4px 5px #000b);box-shadow:0 4px 7px #000c,inset 0 2px 3px #fff7,inset 0 -3px 5px #000b}
 @media(max-width:700px){.turnChecker{width:30px}}
 @media(max-height:500px) and (min-width:600px){.playPage{grid-template-rows:45px minmax(0,1fr) auto;gap:4px;padding-bottom:4px}
-.playFooter{max-height:25dvh}
 .statsNumbers{display:none}
 .pointNumber{font-size:8px}
 .guide p{display:none}
-.headerTurn .checker{width:24px}
-.actions small{display:none}}
+.headerTurn .checker{width:24px}}
 @media(prefers-reduced-motion:reduce){.page *{scroll-behavior:auto}}
 /* Compact play layout refinements. */
-.playFooter{max-height:18dvh;padding-top:5px}
 .doubleProgress{font-size:10px;color:#d7c18f}
-@media(max-width:700px){.playArena{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:5px}
-.statsNumbers{display:flex;gap:10px;margin:0;font-size:8px}
+@media(max-width:700px){.statsNumbers{display:flex;gap:10px;margin:0;font-size:8px}
 .statsNumbers b{font-size:11px}}
 /* Final size and vertical seat layout overrides. */
 .turnChecker{width:46px}
@@ -106,25 +85,18 @@
 
 
 
+
 @keyframes modeDropdownIn{from{opacity:0;transform:translateY(-7px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.guestColor{transition:none}}
 /* Glossy, lathed bowl checkers based on the supplied reference. */
 /* Landscape match table with the score panels anchored at lower right. */
-.playArena{grid-template-columns:minmax(0,1fr) 214px;grid-template-rows:minmax(0,1fr);gap:10px}
-@media(max-width:900px){.playArena{grid-template-columns:minmax(0,1fr) 178px;grid-template-rows:minmax(0,1fr);gap:6px}
-.statsNumbers{display:flex;gap:6px;margin:0;font-size:7px}
+@media(max-width:900px){.statsNumbers{display:flex;gap:6px;margin:0;font-size:7px}
 .statsNumbers b{font-size:10px}}
-@media(orientation:portrait) and (max-width:900px){.playPage{position:absolute;top:0;left:0;width:100dvh;height:100dvw;transform-origin:top left;transform:translateX(100dvw) rotate(90deg)}
-.playPage .playArena{grid-template-columns:minmax(0,1fr) 178px;grid-template-rows:minmax(0,1fr)}}
+@media(orientation:portrait) and (max-width:900px){.playPage{position:absolute;top:0;left:0;width:100dvh;height:100dvw;transform-origin:top left;transform:translateX(100dvw) rotate(90deg)}}
 .playPage{grid-template-rows:minmax(0,1fr) auto;gap:4px;padding:0}
-.gameToast{position:absolute;z-index:45;top:calc(8px + env(safe-area-inset-top));left:50%;max-width:min(80vw,420px);padding:8px 16px;border:1px solid #f0b90b88;border-radius:999px;background:linear-gradient(145deg,#252527f5,#101012f5);color:#ffe7a1;font-size:13px;font-weight:700;text-align:center;white-space:nowrap;box-shadow:0 9px 24px #000b,0 0 22px #f0b90b20;opacity:0;visibility:hidden;transform:translate(-50%,-6px);transition:opacity .45s ease,transform .45s ease,visibility .45s}
-.gameToast[data-visible="true"]{opacity:1;visibility:visible;transform:translate(-50%,0)}
 .turnChecker{width:34px}
-.playFooter{max-height:14dvh;padding:3px 6px max(0px,env(safe-area-inset-bottom));border-top:1px solid #f0b90b2b}
 .turnStatus{min-height:20px}
-@media(max-width:900px){.turnChecker{width:28px}
-.gameToast{font-size:11px;padding:6px 11px}}
-@media(prefers-reduced-motion:reduce){.gameToast{transition:none}}
+@media(max-width:900px){.turnChecker{width:28px}}
 /* Final turn station and board scale. */
 /* Keep enlarged checkers inside each point so neighboring stacks never collide. */
 /* Align the dice card with the two player cards in the right column. */
@@ -133,10 +105,7 @@
 /* Slightly larger dice and clearer spacing within each point stack. */
 /* Compact score cards: checker at right, larger hit/off totals at left. */
 /* Edge-to-edge game canvas at every viewport size. */
-.gameShell{position:fixed;inset:0;width:100vw;height:100dvh;min-height:0;margin:0;padding:0;overflow:hidden}
 .playPage{position:absolute;inset:0;width:100%;height:100%;min-height:0;box-sizing:border-box;margin:0;padding:0!important;gap:0!important;overflow:hidden;grid-template-rows:minmax(0,1fr) auto}
-.playArena{min-height:0;height:auto;margin:0}
-.playFooter{min-height:0;margin:0;padding:0!important;border:0!important;max-height:none}
 .turnStatus{min-height:0}
 @media(orientation:portrait) and (max-width:900px){.playPage{inset:auto;top:0;left:0;width:100dvh;height:100dvw;transform:translateX(100dvw) rotate(90deg)}}
 .waitFirst{display:flex;align-items:center;justify-content:center;gap:10px;margin:17px 0 2px;color:#ded4b7;font-size:12px}
@@ -153,36 +122,11 @@
 /* The drawer follows the menu button on the physical right edge. */
 /* Keep spent-die checks above the cube so every pip remains legible. */
 /* Dedicated bearing-off lane between board and the three control cards. */
-.playArena{grid-template-columns:minmax(0,1fr) clamp(68px,7vw,90px) 214px;gap:9px}
-.offLane{display:grid;grid-template-rows:repeat(2,minmax(0,1fr));min-width:0;min-height:0;gap:8px;padding:5px 0}
-.offPocket{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:0;padding:7px 2px;border:1px solid #b995564d;border-radius:12px;background:linear-gradient(145deg,#272320,#111113);box-shadow:inset 0 1px #ffffff12;text-align:center;color:#f1dfad}
 .offPocketLabel{font-size:11px;font-weight:700;line-height:1.3}
-.offPocket .checker{width:clamp(28px,3vw,38px)}
-.offPocket strong{font-size:19px;line-height:1.1}
-.offPocket strong small{font-size:10px;color:#c7bba5}
-.offPocketLegal{border:2px dashed #f0b90b;box-shadow:0 0 18px #f0b90b33,inset 0 1px #ffffff18}
-.offPocketMoves{display:flex;flex-direction:column;gap:4px;width:100%;padding:0 3px;box-sizing:border-box}
-.offPocketMoves button{min-height:32px;border:1px solid #f0b90b;border-radius:7px;background:#f0b90b27;color:#ffe8a1;font-size:11px;font-weight:700}
-@media(max-width:900px){.playArena, .playPage .playArena{grid-template-columns:minmax(0,1fr) clamp(56px,7vw,72px) 178px;gap:5px}
-.offLane{gap:5px;padding:2px 0}
-.offPocket{gap:2px;padding:3px 1px;border-radius:8px}
-.offPocketLabel{font-size:9px}
-.offPocket .checker{width:26px}
-.offPocket strong{font-size:15px}
-.offPocket strong small{font-size:8px}
-.offPocketMoves button{min-height:26px;font-size:9px}}
+@media(max-width:900px){.offPocketLabel{font-size:9px}}
 /* Turn cue floats over the board without intercepting checker touches. */
 /* Compact the exit lane while retaining checker color and the off count. */
-.playArena{grid-template-columns:minmax(0,1fr) clamp(48px,5vw,62px) 214px;gap:7px}
-.offPocket{gap:3px}
-.offPocketMoves button{padding-inline:1px}
-@media(max-width:900px){.playArena, .playPage .playArena{grid-template-columns:minmax(0,1fr) clamp(42px,5vw,52px) 178px;gap:4px}
-.offPocket .checker{width:24px}
-.offPocket strong{font-size:14px}
-.offPocketMoves button{font-size:8px}}
 /* Return a little more landscape width to the board. */
-.playArena{grid-template-columns:minmax(0,1fr) clamp(48px,5vw,62px) 188px}
-@media(max-width:900px){.playArena, .playPage .playArena{grid-template-columns:minmax(0,1fr) clamp(42px,5vw,52px) 158px}}
 /* Point to the active player's bar checker after the dice are rolled. */
 /* Make the active white or black checker the focal point of the roll cue. */
 /* Put hit and borne-off counts directly beside their labels. */
@@ -194,29 +138,4 @@
 .onlineLobby .onlineError{color:#ffb8ad}
 /* Telegram WebApp responsive canvas: reserve stable grid tracks and let
    the board take the remaining width on narrow and short devices. */
-.gameShell{
-  width:100vw;width:100dvw;
-  height:var(--tg-viewport-height,100dvh);
-  min-width:0;min-height:0;
-}
 .playPage{min-width:0;min-height:0}
-.playArena{
-  min-width:0;min-height:0;
-  grid-template-columns:minmax(0,1fr) clamp(38px,5vw,62px) clamp(132px,22vw,188px);
-  grid-template-rows:minmax(0,1fr);
-  gap:clamp(3px,.9vw,8px);
-  overflow:hidden;
-}
-.playArena>.table, .playArena>.offLane, .playArena>.rightRail{
-  min-width:0;min-height:0;height:100%;
-}
-.offLane{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr))}
-.offPocket{min-width:0;min-height:0;overflow:hidden}
-@media(max-width:900px){.playArena, .playPage .playArena{
-    grid-template-columns:minmax(0,1fr) clamp(36px,7vw,52px) clamp(124px,24vw,164px);
-    gap:clamp(3px,.8vw,6px);
-  }}
-@media(max-width:360px){.playArena, .playPage .playArena{
-    grid-template-columns:minmax(0,1fr) 34px 122px;
-    gap:3px;
-  }}
