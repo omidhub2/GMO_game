@@ -1,4 +1,5 @@
 /* Dice station layout and turn prompt, scoped to the player rail. */
+.railChecker{display:block;flex:none;aspect-ratio:1;}
 .diceStageRail{min-width:0;min-height:0;}
 .diceStage{--dice-box-half:74px;position:absolute;z-index:30;left:50%;top:50%;width:0;height:0;transform:none;direction:ltr}
 .diceStage>.railDiceBox{position:absolute;left:0;top:0;transform:translate(-50%,-50%);flex:none}
