@@ -11,6 +11,7 @@ import BackgammonSetup from "./backgammon-setup";
 import BackgammonDrawer from "./backgammon-drawer";
 import DiceBox from "./backgammon-dice";
 import styles from "./backgammon-game.module.css";
+import boardThemeStyles from "./backgammon/styles/board-theme.module.css";
 
 const fa = (n: number) => n.toLocaleString("fa-IR");
 const names: Record<Side, string> = { light: "سفید", dark: "سیاه" };
@@ -275,7 +276,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       <div className={styles.drawerPlayer}><Dices size={30}/><h2>تخته‌نرد</h2><p>{state.target ? `مسابقه تا ${fa(state.target)} امتیاز` : "بازی ساده • بدون دوبل"}</p><small>درخواست‌دهنده: {names[lobby.colors.requester!]} • حریف: {names[lobby.colors.guest!]}</small></div>
       <button className={styles.drawerItem} onClick={()=>{onFullscreen();setMenuOpen(false);}}><Maximize size={20}/><span>نمایش تمام‌صفحه<small>تمرکز روی تخته</small></span></button>
       <button className={styles.drawerItem} aria-label="برگشت حرکت" disabled={locked || !canUndo(state)} onClick={()=>{if(send({type:"undo",revision:state.revision})) setMenuOpen(false);}}><Undo2 size={20}/><span>برگشت حرکت<small>{canUndo(state) ? "برگرداندن آخرین حرکت با همان تاس‌ها" : state.phase === "move" ? "هنوز حرکتی انجام نشده است" : "برگشت پس از پایان نوبت ممکن نیست"}</small></span></button>
-      <section className={styles.boardThemePicker} aria-label="تم تخته"><strong>تم تخته</strong><div className={styles.boardThemeOptions}>{boardThemes.map(theme => <button key={theme.id} type="button" data-theme={theme.id} className={styles.boardThemeOption} aria-pressed={boardTheme === theme.id} onClick={() => chooseBoardTheme(theme.id)}><span className={styles.boardThemeSwatch} aria-hidden="true"/><span>{theme.label}</span>{boardTheme === theme.id && <span aria-hidden="true">✓</span>}</button>)}</div></section>
+      <section className={boardThemeStyles.boardThemePicker} aria-label="تم تخته"><strong>تم تخته</strong><div className={boardThemeStyles.boardThemeOptions}>{boardThemes.map(theme => <button key={theme.id} type="button" data-theme={theme.id} className={boardThemeStyles.boardThemeOption} aria-pressed={boardTheme === theme.id} onClick={() => chooseBoardTheme(theme.id)}><span className={boardThemeStyles.boardThemeSwatch} aria-hidden="true"/><span>{theme.label}</span>{boardTheme === theme.id && <span aria-hidden="true">✓</span>}</button>)}</div></section>
       <button className={styles.drawerItem} aria-expanded={showHelp} onClick={()=>setShowHelp(value=>!value)}><HelpCircle size={20}/><span>راهنمای بازی<small>انتخاب مهره، تاس و برگشت</small></span></button>
       {showHelp && <div className={styles.drawerHelp}>شماره‌ها از دید بازیکن فعال‌اند؛ از ۲۴ به ۱ برو. هر مقصد فقط یک تاس مصرف می‌کند. مهره‌های زده‌شده و خروج در ستون سمت راست‌اند. باکس تاس را نگه دار؛ پس از رهاکردن، تاس اول در ۵۰۰ میلی‌ثانیه و دومی ۴۰۰ میلی‌ثانیه بعد مشخص می‌شود. برگشت فقط تا پایان نوبت مجاز است.</div>}
       <button className={styles.drawerItem} onClick={onLeave}><LogOut size={20}/><span>بازی جدید و تنظیمات<small>بازی فعلی پایان می‌یابد؛ بازگشت به انتخاب رنگ</small></span></button>
