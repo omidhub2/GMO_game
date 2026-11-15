@@ -46,6 +46,8 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const [state, setState] = useState(() => session.snapshot?.game ?? newGame(target, playMode === "local" ? lobby.colors.guest : null));
   const [networkError, setNetworkError] = useState("");
   const [pending, setPending] = useState(false);
+  const [turnSeconds, setTurnSeconds] = useState(30);
+  const timeoutSent = useRef(false);
   const requestPending = useRef(false);
   const mounted = useRef(true);
   const humanSide = lobby.colors[session.snapshot?.seat ?? "requester"]!;
@@ -68,6 +70,37 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousPhase = useRef(state.phase);
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  useEffect(() => {
+    setTurnSeconds(30);
+    timeoutSent.current = false;
+    if (state.phase === "finished") return;
+    const interval = setInterval(() => {
+      setTurnSeconds(seconds => {
+        if (seconds <= 1) {
+          if (!timeoutSent.current) {
+            timeoutSent.current = true;
+            const revision = current.current.revision;
+            if (online) {
+              void onlineRequest({ operation: "action", action: { type: "timeout", revision } }, online)
+                .then(result => {
+                  const snapshot = result as OnlineSnapshot;
+                  if (mounted.current && snapshot.game && snapshot.game.revision >= current.current.revision) {
+                    current.current = snapshot.game; setState(snapshot.game);
+                  }
+                })
+                .catch(error => { if (mounted.current) setNetworkError(error instanceof Error ? error.message : "انتقال نوبت انجام نشد."); });
+            } else {
+              const next = gameReducer(current.current, { type: "timeout", revision });
+              if (next !== current.current) { current.current = next; setState(next); }
+            }
+          }
+          return 0;
+        }
+        return seconds - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [state.turn, state.turnNumber, online, state.phase]);
   useEffect(() => {
     if (!online) return;
     const controller = new AbortController();
@@ -267,9 +300,9 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
               </div>
             </div>
             <div className={playerRailStyles.profileMeta} dir="ltr">
-              <span className={playerRailStyles.profileMetaItem} data-player-country aria-label="کشور بازیکن مشخص نشده"><Flag size={12}/><small>—</small></span>
-              <span className={playerRailStyles.profileMetaItem} data-player-timer aria-label="زمان باقی‌مانده در این نسخه موجود نیست"><Clock3 size={12}/><small>—:—</small></span>
-              <span className={playerRailStyles.profileMetaItem} data-player-level><small>Level —</small></span>
+              <span className={playerRailStyles.profileMetaItem} data-player-country aria-label="ایران"><small>🇮🇷</small></span>
+              <span className={playerRailStyles.profileMetaItem} data-player-timer aria-label={`زمان باقی‌مانده ${fa(turn === side ? turnSeconds : 30)} ثانیه`}><Clock3 size={12}/><small>{`00:${String(turn === side ? turnSeconds : 30).padStart(2,"0")}`}</small></span>
+              <span className={playerRailStyles.profileMetaItem} data-player-level><small>{`Level ${side === "dark" ? 3 : 4}`}</small></span>
             </div>
           </section>;
         })}
