@@ -388,7 +388,7 @@
   background:#171719;color:#e6cc91;
 }
 .rightRail .messageButton:disabled{opacity:.85;cursor:not-allowed}
-.rightRail .profileScore{display:flex;align-items:center;gap:5px;min-width:0}
+.rightRail .profileScore{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
 .rightRail .scoreValue{
   display:flex;align-items:center;gap:5px;min-width:0;
   color:#f0dfb5;font-size:clamp(10px,2.8cqh,14px);
