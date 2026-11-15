@@ -16,8 +16,8 @@ export function Die({ value, spinning, hidden, second, preview = false, usedCoun
 }
 
 type Visual = "idle" | "holding" | "settling" | "first";
-export default function DiceBox({ dice, usedDice, canRoll, opening, onRoll, onBusy }: {
-  dice: [number, number] | null; usedDice: number[]; canRoll: boolean; opening: boolean;
+export default function DiceBox({ dice, usedDice, canRoll, opening, computerRollSignal = 0, onRoll, onBusy }: {
+  dice: [number, number] | null; usedDice: number[]; canRoll: boolean; opening: boolean; computerRollSignal?: number;
   onRoll: () => boolean; onBusy: (busy: boolean) => void;
 }) {
   const [visual, setVisual] = useState<Visual>("idle");
@@ -26,6 +26,16 @@ export default function DiceBox({ dice, usedDice, canRoll, opening, onRoll, onBu
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const pointer = useRef<number | null>(null);
   useEffect(() => () => { timers.current.forEach(clearTimeout); }, []);
+  useEffect(() => {
+    if (!computerRollSignal) return;
+    timers.current.forEach(clearTimeout);
+    stage.current = "holding"; setVisual("holding"); setPattern(p => (p + 1) % 3); onBusy(true);
+    // Computer results are already committed by the game reducer; this only animates them.
+    timers.current = [
+      setTimeout(() => { stage.current = "first"; setVisual("first"); }, 500),
+      setTimeout(() => { stage.current = "idle"; setVisual("idle"); onBusy(false); }, 1000)
+    ];
+  }, [computerRollSignal, onBusy]);
   function begin() {
     if (!canRoll || stage.current !== "idle") return;
     stage.current = "holding"; setVisual("holding"); setPattern(p => (p + 1) % 3); onBusy(true);
