@@ -88,7 +88,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
                     current.current = snapshot.game; setState(snapshot.game);
                   }
                 })
-                .catch(error => { if (mounted.current) setNetworkError(error instanceof Error ? error.message : "انتقال نوبت انجام نشد."); });
+                .catch(error => { timeoutSent.current = false; if (mounted.current) setNetworkError(error instanceof Error ? error.message : "انتقال نوبت انجام نشد."); });
             } else {
               const next = gameReducer(current.current, { type: "timeout", revision });
               if (next !== current.current) { current.current = next; setState(next); }
@@ -100,7 +100,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [state.turn, state.turnNumber, online, state.phase]);
+  }, [state.turn, state.turnNumber, online, state.phase === "finished"]);
   useEffect(() => {
     if (!online) return;
     const controller = new AbortController();
