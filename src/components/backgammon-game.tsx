@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, Trophy, MessageCircle, Flag, Clock3 } from "lucide-react";
+import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, Trophy, MessageCircle, Flag, Clock3, Send, X, Settings2 } from "lucide-react";
 import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
 import type { GameSession, OnlineSnapshot } from "@/modules/games/domain/backgammon-session";
 import { computerMove } from "@/modules/games/domain/backgammon-computer";
@@ -61,6 +61,12 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const [movingTo, setMovingTo] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatText, setChatText] = useState("");
+  const [chatMessages, setChatMessages] = useState<Array<{id:string;seat?:string;text:string;createdAt:number}>>(session.snapshot?.messages ?? []);
+  const [quickMessages, setQuickMessages] = useState<string[]>(["سلام","آفرین","موفق","صبر","بازی"]);
+  const [quickDrafts, setQuickDrafts] = useState<string[]>(["سلام","آفرین","موفق","صبر","بازی"]);
+  const [editingQuick, setEditingQuick] = useState(false);
   const [toastText, setToastText] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
   const { board, turn, selected, dice, remaining } = state;
@@ -79,6 +85,8 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       try { navigator.vibrate(120); } catch { /* vibration is optional on unsupported devices */ }
     }
   }, [state.phase, state.turn, state.turnNumber, canAct]);
+  useEffect(() => { try { const saved=localStorage.getItem("gmo-backgammon-quick-messages"); if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed))setQuickMessages(Array.from({length:5},(_,i)=>String(parsed[i]??"").slice(0,4)));} } catch {} }, []);
+  useEffect(() => { try { localStorage.setItem("gmo-backgammon-quick-messages",JSON.stringify(quickMessages)); } catch {} }, [quickMessages]);
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
   useEffect(() => {
     if (state.phase !== "move") {
@@ -124,6 +132,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       try {
         const snapshot = await onlineSnapshot(online!, controller.signal);
         if (controller.signal.aborted) return;
+        if (snapshot.messages) setChatMessages(snapshot.messages);
         if (snapshot.game && snapshot.game.revision > current.current.revision && !requestPending.current) {
           current.current = snapshot.game; setState(snapshot.game);
         }
@@ -214,6 +223,12 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
     if (next === current.current) return false;
     current.current = next; setState(next); return true;
   }
+  async function postChat(text: string) {
+    const clean=text.trim().slice(0,120); if(!clean) return;
+    if(online){ try { const result=await onlineRequest({operation:"message",text:clean},online) as OnlineSnapshot; if(result.messages)setChatMessages(result.messages); } catch(error){setNetworkError(error instanceof Error?error.message:"ارسال پیام انجام نشد.");} }
+    else setChatMessages(items=>[...items,{id:`local-${Date.now()}-${items.length}`,text:clean,createdAt:Date.now()}].slice(-40));
+    setChatText("");
+  }
   function animateMove(destination: Move["to"]) {
     busy.current = true; setMoving(true); setMovingTo(typeof destination === "number" ? destination : null);
     timer.current = setTimeout(() => { busy.current = false; setMoving(false); setMovingTo(null); }, 240);
@@ -255,7 +270,11 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
     <div className={gameLayoutStyles.playArena} dir="ltr">
       <section className={boardStyles.table} aria-label="تخته نرد ۲۴ خانه">
         <div className={`${boardStyles.board} ${moving ? boardStyles.boardMoving : ""}`} dir="ltr">
-          <div className={`${boardStyles.half} ${boardStyles.topLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(12+i,true))}{state.phase === "roll" && turn === "dark" && <div className={boardStyles.rollHologram} role="status" aria-live="polite"><span className={boardStyles.rollHologramHalo}><i className={`${styles.checker} ${styles.darkChecker}`}/></span><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong><span className={boardStyles.rollHologramLine}/></div>}</div>
+          {state.phase === "roll" && <div className={boardStyles.rollHologram} role="status" aria-live="polite"><span className={boardStyles.rollHologramHalo}><i className={`${styles.checker} ${turn === "light" ? styles.lightChecker : styles.darkChecker}`}/></span><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong><span className={boardStyles.rollHologramLine}/></div>}
+          <button type="button" className={boardStyles.chatToggle} aria-label="باز کردن چت" onClick={()=>setChatOpen(value=>!value)}><MessageCircle size={22}/></button>
+          {chatOpen && <section className={boardStyles.chatPanel} dir="rtl" aria-label="گفتگوی بازی"><header><span>گفتگوی بازی <small>GMO ARENA</small></span><button type="button" aria-label="بستن چت" onClick={()=>setChatOpen(false)}><X size={18}/></button></header><div className={boardStyles.chatMessages} aria-live="polite">{chatMessages.map(message=><p key={message.id}><span>{message.seat==="requester"?"بازیکن اول":message.seat==="guest"?"بازیکن دوم":"شما"}</span>{message.text}</p>)}</div><div className={boardStyles.quickMessages}>{quickMessages.map((message,i)=>message&&<button key={i} type="button" onClick={()=>void postChat(message)}>{message}</button>)}</div><form className={boardStyles.chatComposer} onSubmit={event=>{event.preventDefault();void postChat(chatText);}}><input value={chatText} maxLength={120} onChange={event=>setChatText(event.target.value)} placeholder="پیام خود را بنویسید…" aria-label="متن پیام"/><button type="submit" disabled={!chatText.trim()} aria-label="ارسال پیام"><Send size={17}/></button></form></section>}
+
+          <div className={`${boardStyles.half} ${boardStyles.topLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(12+i,true))}</div>
           <div className={`${boardStyles.half} ${boardStyles.topRight}`}>{Array.from({length:6},(_,i)=>renderPoint(18+i,true))}</div>
           <div className={boardStyles.bar} aria-label="مهره‌های زده‌شده در وسط تخته">
             <span className={boardStyles.barBrand} aria-hidden="true">GMO</span>
@@ -263,7 +282,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
             {(["dark", "light"] as Side[]).map(side => board.bar[side] > 0 && <button key={side} type="button" className={`${boardStyles.barHit} ${side === "dark" ? boardStyles.barHitTop : boardStyles.barHitBottom} ${selected === "bar" && turn === side ? boardStyles.barHitSelected : ""} ${state.phase === "move" && turn === side ? boardStyles.barEntryCue : ""}`} disabled={locked || state.phase !== "move" || turn !== side} aria-label={`${fa(board.bar[side])} مهرهٔ زده‌شدهٔ ${names[side]}؛ اول این مهره را برای ورود انتخاب کن`} aria-pressed={selected === "bar" && turn === side} onClick={() => select(selected === "bar" ? null : "bar")}><b>{fa(board.bar[side])}</b><i aria-hidden="true" className={`${boardStyles.checker} ${side === "light" ? boardStyles.lightChecker : boardStyles.darkChecker}`}/></button>)}
             <span className={boardStyles.barBrand} aria-hidden="true">ARENA</span>
           </div>
-          <div className={`${boardStyles.half} ${boardStyles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}{state.phase === "roll" && turn === "light" && <div className={boardStyles.rollHologram} role="status" aria-live="polite"><span className={boardStyles.rollHologramHalo}><i className={`${styles.checker} ${styles.lightChecker}`}/></span><strong>{canAct ? "نوبت شماست؛ تاس بریزید" : playMode === "computer" ? "نوبت کامپیوتر؛ در حال تاس‌ریختن" : "نوبت حریف؛ منتظر تاس"}</strong><span className={boardStyles.rollHologramLine}/></div>}</div>
+          <div className={`${boardStyles.half} ${boardStyles.bottomLeft}`}>{Array.from({length:6},(_,i)=>renderPoint(11-i,false))}</div>
           <div className={`${boardStyles.half} ${boardStyles.bottomRight}`}>{Array.from({length:6},(_,i)=>renderPoint(5-i,false))}</div>
         </div>
       </section>
@@ -307,8 +326,8 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
                 </div>
               </div>
               <div className={playerRailStyles.profileScore} data-player-score>
-                <button type="button" data-player-message className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}؛ قابلیت پیام‌رسانی هنوز فعال نیست`} disabled title="پیام‌رسانی به‌زودی">
-                  <MessageCircle size={15} strokeWidth={1.8}/>
+                <button type="button" data-player-message className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}`} onClick={()=>setChatOpen(true)} title="ارسال پیام">
+                  <MessageCircle size={19} strokeWidth={1.9}/>
                 </button>
                 <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
               </div>
@@ -333,11 +352,13 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       <div className={drawerStyles.drawerPlayer}><Dices size={30}/><h2>تخته‌نرد</h2><p>{state.target ? `مسابقه تا ${fa(state.target)} امتیاز` : "بازی ساده • بدون دوبل"}</p><small>درخواست‌دهنده: {names[lobby.colors.requester!]} • حریف: {names[lobby.colors.guest!]}</small></div>
       <button className={drawerStyles.drawerItem} onClick={()=>{onFullscreen();setMenuOpen(false);}}><Maximize size={20}/><span>نمایش تمام‌صفحه<small>تمرکز روی تخته</small></span></button>
       <button className={drawerStyles.drawerItem} aria-label="برگشت حرکت" disabled={locked || !canUndo(state)} onClick={()=>{if(send({type:"undo",revision:state.revision})) setMenuOpen(false);}}><Undo2 size={20}/><span>برگشت حرکت<small>{canUndo(state) ? "برگرداندن آخرین حرکت با همان تاس‌ها" : state.phase === "move" ? "هنوز حرکتی انجام نشده است" : "برگشت پس از پایان نوبت ممکن نیست"}</small></span></button>
+      <button className={drawerStyles.drawerItem} onClick={()=>setEditingQuick(value=>!value)} aria-expanded={editingQuick}><Settings2 size={20}/><span>تنظیم پیام‌های سریع<small>حداکثر ۵ پیام، هرکدام ۴ حرف</small></span></button>
+      {editingQuick && <div className={drawerStyles.quickSettings}>{quickDrafts.map((value,index)=><label key={index}>پیام {index+1}<input value={value} maxLength={4} onChange={event=>setQuickDrafts(items=>items.map((item,i)=>i===index?event.target.value.slice(0,4):item))}/></label>)}<button type="button" onClick={()=>{setQuickMessages(quickDrafts.map(value=>value.trim().slice(0,4)));setEditingQuick(false);}}>ذخیره پیام‌ها</button></div>}
       <button className={drawerStyles.drawerItem} aria-expanded={showHelp} onClick={()=>setShowHelp(value=>!value)}><HelpCircle size={20}/><span>راهنمای بازی<small>انتخاب مهره، تاس و برگشت</small></span></button>
       {showHelp && <div className={drawerStyles.drawerHelp}>شماره‌ها از دید بازیکن فعال‌اند؛ از ۲۴ به ۱ برو. هر مقصد فقط یک تاس مصرف می‌کند. مهره‌های زده‌شده و خروج در ستون سمت راست‌اند. باکس تاس را نگه دار؛ پس از رهاکردن، تاس اول در ۵۰۰ میلی‌ثانیه و دومی ۴۰۰ میلی‌ثانیه بعد مشخص می‌شود. برگشت فقط تا پایان نوبت مجاز است.</div>}
       <button className={drawerStyles.drawerItem} onClick={onLeave}><LogOut size={20}/><span>بازی جدید و تنظیمات<small>بازی فعلی پایان می‌یابد؛ بازگشت به انتخاب رنگ</small></span></button>
       <Link className={drawerStyles.drawerItem} href="/games"><LogOut size={20}/><span>خروج به بازی‌ها</span></Link>
-      <p className={styles.localNotice}>بازی دونفره روی همین دستگاه</p>
+      <p className={styles.localNotice}>{playMode==="online"?"چت آنلاین اتاق بازی":"پیام‌های محلی بازی"}</p>
     </BackgammonDrawer>}
   </main>;
 }
