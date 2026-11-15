@@ -1,9 +1,8 @@
 /* Shared checker visuals live in checkers.module.css; these local exports keep existing component APIs stable. */
-.checker { composes: checker from "./backgammon/styles/checkers.module.css"; }
-.lightChecker { composes: lightChecker from "./backgammon/styles/checkers.module.css"; }
-.darkChecker { composes: darkChecker from "./backgammon/styles/checkers.module.css"; }
-.emptyChecker { composes: emptyChecker from "./backgammon/styles/checkers.module.css"; }
-
+.checker{ composes: checker from "./backgammon/styles/checkers.module.css"; }
+.lightChecker{ composes: lightChecker from "./backgammon/styles/checkers.module.css"; }
+.darkChecker{ composes: darkChecker from "./backgammon/styles/checkers.module.css"; }
+.emptyChecker{ composes: emptyChecker from "./backgammon/styles/checkers.module.css"; }
 .page{--gold:#d4b270;color:#f2ecdf;font-family:Tahoma,"Segoe UI",sans-serif;line-height:1.7;background:radial-gradient(ellipse at 50% 35%,#24362d,#101713 60%,#090d0b)}
 .colorSelectionStatus{display:flex;align-items:center;justify-content:center;gap:10px;min-height:84px;font-size:12px;text-align:center}
 .colorSelectionStatus>span:last-child{max-width:260px}
@@ -65,27 +64,6 @@
 .statsNumbers{display:grid;gap:3px;margin:8px 0;color:#d9d0bb;font-size:10px}
 .statsNumbers span{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .statsNumbers b{font-size:15px;color:#f3dfb2}
-.diceBox{position:absolute;z-index:30;left:50%;top:50%;transform:translate(-50%,-50%);width:190px;min-height:122px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:10px 18px;border:1px solid #ddbd7e;border-radius:22px;background:radial-gradient(ellipse at 50% 0,#47563a,#18251b 75%);box-shadow:0 8px 24px #0009,inset 0 1px #f9e2af88,0 0 0 5px #21180d66;color:#f8e6c4;touch-action:none!important;user-select:none;-webkit-user-select:none}
-.diceBox:disabled{opacity:1!important;border-color:#97805a}
-.diceBoxActive{background:radial-gradient(ellipse at 50% 20%,#5e7045,#1c3022 75%);box-shadow:0 12px 35px #0009,0 0 28px #d8b65c44}
-.diceBoxLabel{font-size:10px;color:#ead3a5}
-.diceInstructions{font-size:9px;color:#d2cab5}
-.centerDice{display:flex;align-items:center;justify-content:center;gap:16px;min-height:43px}
-.diceInvitation{display:flex;color:#e3c17d}
-.dieScene{--size:36px;display:block;width:var(--size);height:var(--size);perspective:400px;filter:drop-shadow(0 6px 4px #0008)}
-.dieCube{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry))}
-.dieFace{position:absolute;display:block;inset:0;border:1px solid #c7b68e;border-radius:7px;background:linear-gradient(145deg,#fff9e9,#d6c9aa);box-shadow:inset 0 2px 3px #fff,inset 0 -3px 5px #76664a;backface-visibility:hidden;transform:translateZ(calc(var(--size)/2))}
-.face2{transform:rotateY(90deg) translateZ(calc(var(--size)/2))}
-.face3{transform:rotateY(180deg) translateZ(calc(var(--size)/2))}
-.face4{transform:rotateY(-90deg) translateZ(calc(var(--size)/2))}
-.face5{transform:rotateX(90deg) translateZ(calc(var(--size)/2))}
-.face6{transform:rotateX(-90deg) translateZ(calc(var(--size)/2))}
-.dieFace i{position:absolute;width:20%;height:20%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#6a3328,#311610 75%);transform:translate(-50%,-50%);box-shadow:inset 0 1px 2px #0008}
-.spinning .dieCube{animation:orbitRoll .68s linear infinite}
-.spinning.secondDie .dieCube{animation-direction:reverse;animation-duration:.79s}
-[data-pattern="1"] .spinning .dieCube{animation-name:bounceRoll}
-[data-pattern="2"] .spinning .dieCube{animation-name:swirlRoll}
-.revealed{animation:dieLand .25s ease-out}
 .playFooter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 18px;max-height:30dvh;overflow:auto;border-top:1px solid #b5985b33;padding-top:8px}
 .turnStatus p{font-size:13px;margin:0 0 4px;color:#e9dfc7}
 .diceUsage{display:flex;flex-wrap:wrap;gap:5px}
@@ -122,21 +100,6 @@
 
 
 
-@keyframes orbitRoll{from{transform:rotateX(0) rotateY(0) rotateZ(0)}to{transform:rotateX(720deg) rotateY(360deg) rotateZ(180deg)}}
-
-
-
-@keyframes bounceRoll{0%{transform:translateY(0) rotateX(0) rotateY(0)}50%{transform:translateY(-9px) rotateX(360deg) rotateY(180deg)}100%{transform:translateY(0) rotateX(720deg) rotateY(360deg)}}
-
-
-
-@keyframes swirlRoll{from{transform:rotateZ(0) rotateX(45deg) rotateY(0)}to{transform:rotateZ(360deg) rotateX(405deg) rotateY(720deg)}}
-
-
-
-@keyframes dieLand{from{transform:translateY(-7px) scale(1.06)}to{transform:translateY(0) scale(1)}}
-
-
 
 @keyframes drawerIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
 @media(max-width:700px){.setupPage{padding:18px 12px 30px}
@@ -167,11 +130,6 @@
 .pointNumber{font-size:8px}
 .statsNumbers{font-size:8px;margin-block:6px}
 .statsNumbers b{font-size:12px}
-.diceBox{width:139px;min-height:112px;gap:8px;padding:9px 10px;border-radius:17px}
-.dieScene{--size:29px}
-.centerDice{gap:13px;min-height:36px}
-.diceBoxLabel{font-size:9px}
-.diceInstructions{font-size:8px}
 .playFooter{gap:4px 8px;max-height:30dvh}
 .turnStatus p{font-size:10px}
 .diceUsage>span{font-size:9px;padding:1px 5px}
@@ -202,76 +160,34 @@
 .inviteMessage{margin:4px 0;color:#f0d98c;font-size:11px}
 .localNotice{color:#aaa69b}
 .turnChecker{width:48px;box-shadow:0 7px 12px #000d,inset 0 3px 5px #fff9,inset 0 -6px 9px #000d,0 0 0 3px #f0b90b35}
-.diceBox{width:202px;min-height:124px;padding:10px 13px;box-shadow:0 18px 45px #000d,inset 0 1px #ffffff2c,inset 0 -3px 0 #000,0 0 0 1px #f0b90b70,0 0 36px #f0b90b28}
-.diceContent{min-height:92px;gap:14px}
-.centerDice{gap:12px;min-height:64px}
-.dieScene{--size:52px;filter:drop-shadow(0 8px 6px #000c)}
-.dieFace{border-width:2px;border-radius:8px;background:linear-gradient(145deg,#fffef6,#e4ddc9);box-shadow:inset 0 3px 4px #fff,inset 0 -5px 8px #716344,0 0 0 1px #0004}
-.dieFace i{width:22%;height:22%;background:radial-gradient(circle at 32% 25%,#55545a,#17171b 78%);box-shadow:inset 0 2px 3px #000d,0 1px 1px #fff9}
-.revealed .dieCube{transform:rotateX(calc(var(--rx) - 9deg)) rotateY(calc(var(--ry) + 11deg))}
 @media(max-width:700px){.seatGrid{grid-template-columns:minmax(0,1fr)}
-.diceBox{width:184px;min-height:108px;padding:7px 10px}
-.diceContent{min-height:80px;gap:11px}
-.turnChecker{width:38px}
-.dieScene{--size:44px}
-.centerDice{gap:8px;min-height:54px}}
+.turnChecker{width:38px}}
 /* Carbon and Binance gold game presentation. */
 .gameShell{background:#0b0b0c}
 .page{background:radial-gradient(ellipse at 50% 35%,#202022,#111112 57%,#09090a)}
 .playHeader{border-color:#d7ad462d}
 .headerTurn .checker{display:none}
-.diceBox{width:188px;min-height:106px;gap:0;padding:12px 17px;border-color:#f0b90b;border-radius:22px;background:linear-gradient(145deg,#28282b 0%,#151517 48%,#0d0d0e 100%);box-shadow:0 15px 38px #000b,inset 0 1px #ffffff23,inset 0 -2px 0 #000,0 0 0 1px #f0b90b38,0 0 28px #f0b90b18;color:#f7e7b4}
-.diceBoxActive{background:linear-gradient(145deg,#303034 0%,#171719 48%,#0c0c0d 100%);box-shadow:0 18px 44px #000c,inset 0 1px #ffffff30,0 0 0 2px #f0b90b99,0 0 38px #f0b90b35}
-.diceContent{display:flex;align-items:center;justify-content:center;gap:17px;width:100%;min-height:74px}
 .turnChecker{width:38px;filter:drop-shadow(0 4px 5px #000b);box-shadow:0 4px 7px #000c,inset 0 2px 3px #fff7,inset 0 -3px 5px #000b}
-.centerDice{gap:13px;min-height:54px}
-.dieScene{--size:44px}
-.dieFace{border-color:#bd9a4a;background:linear-gradient(145deg,#fffdf3,#d9d3c1);box-shadow:inset 0 2px 3px #fff,inset 0 -4px 6px #776744,0 0 0 1px #0003}
-.dieFace i{background:radial-gradient(circle at 35% 30%,#414145,#111113 75%);box-shadow:inset 0 1px 2px #000b}
-.revealed .dieCube{transform:rotateX(calc(var(--rx) - 13deg)) rotateY(calc(var(--ry) + 17deg));transition:transform .3s cubic-bezier(.2,.8,.2,1)}
-.diceInvitation{color:#f0b90b;filter:drop-shadow(0 0 9px #f0b90b44)}
-@media(max-width:700px){.diceBox{width:160px;min-height:90px;padding:8px 12px;border-radius:18px}
-.diceContent{min-height:64px;gap:12px}
-.turnChecker{width:30px}
-.dieScene{--size:37px}
-.centerDice{gap:9px;min-height:45px}}
+@media(max-width:700px){.turnChecker{width:30px}}
 @media(max-height:500px) and (min-width:600px){.playPage{grid-template-rows:45px minmax(0,1fr) auto;gap:4px;padding-bottom:4px}
 .playFooter{max-height:25dvh}
 .statsNumbers{display:none}
-.diceBox{min-height:88px;width:156px;gap:3px;padding:6px}
-.dieScene{--size:27px}
-.diceInstructions{font-size:8px}
 .pointNumber{font-size:8px}
 .guide p{display:none}
 .headerTurn .checker{width:24px}
 .actions small{display:none}}
-@media(prefers-reduced-motion:reduce){.spinning .dieCube, .revealed, .drawer{animation:none}
-.spinning{opacity:.65}
+@media(prefers-reduced-motion:reduce){.drawer{animation:none}
 .page *{scroll-behavior:auto}}
 /* Compact play layout refinements. */
-.diceBox{width:158px;min-height:104px;gap:6px;padding:7px 12px;border-radius:18px}
-.dieScene{--size:42px;transform:scale(1);transition:transform .22s cubic-bezier(.2,.8,.2,1)}
-[data-stage="holding"] .spinning{transform:scale(1.2)}
 .playFooter{max-height:18dvh;padding-top:5px}
 .doubleProgress{font-size:10px;color:#d7c18f}
 @media(max-width:700px){.playArena{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:5px}
 .statsNumbers{display:flex;gap:10px;margin:0;font-size:8px}
-.statsNumbers b{font-size:11px}
-.diceBox{width:132px;min-height:90px;gap:4px;padding:6px 9px;border-radius:16px}
-.dieScene{--size:35px}
-.centerDice{gap:10px;min-height:32px}}
+.statsNumbers b{font-size:11px}}
 /* Final size and vertical seat layout overrides. */
 .seatGrid{grid-template-columns:minmax(0,1fr)}
-.diceBox{width:210px;min-height:128px;padding:9px 12px}
-.diceContent{min-height:96px;gap:12px}
 .turnChecker{width:46px}
-.dieScene{--size:52px}
-.centerDice{gap:10px;min-height:64px}
-@media(max-width:700px){.diceBox{width:184px;min-height:112px;padding:7px 9px}
-.diceContent{min-height:86px;gap:9px}
-.turnChecker{width:36px}
-.dieScene{--size:44px}
-.centerDice{gap:7px;min-height:56px}}
+@media(max-width:700px){.turnChecker{width:36px}}
 .modeField{position:relative;z-index:5;min-width:0}
 .modeTrigger{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:50px;padding:9px 13px;border:1px solid #c6a24677;border-radius:12px;background:linear-gradient(145deg,#27251f,#111113);color:#f3e6bf;text-align:right;box-shadow:inset 0 1px #ffffff12;transition:border-color .18s,box-shadow .18s,transform .18s}
 .modeTrigger:hover, .modeTrigger[aria-expanded="true"]{border-color:#f0b90b;box-shadow:0 0 0 3px #f0b90b1b,0 8px 18px #0008,inset 0 1px #ffffff18}
@@ -293,6 +209,7 @@
 
 
 
+
 @keyframes modeDropdownIn{from{opacity:0;transform:translateY(-7px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.modeOptions{animation:none}
 .modeTrigger, .modeTrigger svg, .guestColor{transition:none}}
@@ -307,18 +224,10 @@
 .playPage{grid-template-rows:minmax(0,1fr) auto;gap:4px;padding:0}
 .gameToast{position:absolute;z-index:45;top:calc(8px + env(safe-area-inset-top));left:50%;max-width:min(80vw,420px);padding:8px 16px;border:1px solid #f0b90b88;border-radius:999px;background:linear-gradient(145deg,#252527f5,#101012f5);color:#ffe7a1;font-size:13px;font-weight:700;text-align:center;white-space:nowrap;box-shadow:0 9px 24px #000b,0 0 22px #f0b90b20;opacity:0;visibility:hidden;transform:translate(-50%,-6px);transition:opacity .45s ease,transform .45s ease,visibility .45s}
 .gameToast[data-visible="true"]{opacity:1;visibility:visible;transform:translate(-50%,0)}
-.diceBox{width:148px;min-height:74px;padding:3px 6px;border-radius:15px;box-shadow:0 10px 24px #000d,inset 0 1px #ffffff2c,inset 0 -2px 0 #000,0 0 0 1px #f0b90b70,0 0 20px #f0b90b20}
-.diceContent{min-height:62px;gap:7px}
 .turnChecker{width:34px}
-.centerDice{min-height:42px;gap:5px}
-.dieScene{--size:32px;filter:drop-shadow(0 5px 4px #000c)}
 .playFooter{max-height:14dvh;padding:3px 6px max(0px,env(safe-area-inset-bottom));border-top:1px solid #f0b90b2b}
 .turnStatus{min-height:20px}
-@media(max-width:900px){.diceBox{width:136px;min-height:68px;padding:2px 5px}
-.diceContent{min-height:56px;gap:5px}
-.turnChecker{width:28px}
-.dieScene{--size:29px}
-.centerDice{min-height:38px;gap:4px}
+@media(max-width:900px){.turnChecker{width:28px}
 .gameToast{font-size:11px;padding:6px 11px}}
 @media(prefers-reduced-motion:reduce){.gameToast{transition:none}}
 /* Final turn station and board scale. */
@@ -363,18 +272,16 @@
 
 
 
+
 @keyframes drawerFromRight{from{transform:translateX(100%);opacity:.9}to{transform:translateX(0);opacity:1}}
 @media(orientation:portrait) and (max-width:900px){.drawer{--drawer-width:min(380px,86dvh);inset:auto auto auto auto;top:calc(100dvh - var(--drawer-width));left:100dvw;width:var(--drawer-width);max-width:none;height:100dvw;max-height:100dvw;border-radius:16px 0 0 16px;transform-origin:top left;transform:rotate(90deg);animation:drawerFromRightRotated .26s cubic-bezier(.2,.8,.2,1)}
+
 
 
 
   @keyframes drawerFromRightRotated{from{transform:rotate(90deg) translateX(100%);opacity:.9}to{transform:rotate(90deg);opacity:1}}}
 @media(prefers-reduced-motion:reduce){.drawer{animation:none}}
 /* Keep spent-die checks above the cube so every pip remains legible. */
-.dieScene{position:relative}
-.dieUsedMark{position:absolute;z-index:8;top:-20px;left:50%;display:flex;align-items:center;justify-content:center;gap:1px;min-width:29px;height:20px;padding:0 2px;box-sizing:border-box;border:1px solid #17130a;border-radius:10px;background:#f0b90b;color:#17130a;box-shadow:0 2px 5px #000b;transform:translateX(-50%);pointer-events:none;white-space:nowrap;line-height:1}
-.dieUsedMark b{font-size:12px}
-.dieUsedMark small{font-size:10px;font-weight:800}
 .setupPage .colorChoices{align-items:stretch}
 .setupPage .colorChoices button{flex:1 1 0;box-sizing:border-box}
 /* Dedicated bearing-off lane between board and the three control cards. */
@@ -443,16 +350,16 @@
   gap:clamp(3px,.9vw,8px);
   overflow:hidden;
 }
-.playArena>.table,.playArena>.offLane,.playArena>.rightRail{
+.playArena>.table, .playArena>.offLane, .playArena>.rightRail{
   min-width:0;min-height:0;height:100%;
 }
 .offLane{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr))}
 .offPocket{min-width:0;min-height:0;overflow:hidden}
-@media(max-width:900px){.playArena,.playPage .playArena{
+@media(max-width:900px){.playArena, .playPage .playArena{
     grid-template-columns:minmax(0,1fr) clamp(36px,7vw,52px) clamp(124px,24vw,164px);
     gap:clamp(3px,.8vw,6px);
   }}
-@media(max-width:360px){.playArena,.playPage .playArena{
+@media(max-width:360px){.playArena, .playPage .playArena{
     grid-template-columns:minmax(0,1fr) 34px 122px;
     gap:3px;
   }}
