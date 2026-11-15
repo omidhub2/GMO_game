@@ -243,4 +243,13 @@ describe("symmetry and conservation", () => {
       expect(s.phase).toBe("finished"); assertTotals(s.board);
     }
   },30000);
+  it("passes the turn when the 30-second clock expires", () => {
+    const state = newGame(null, "light");
+    const next = gameReducer(state, { type: "timeout", revision: state.revision });
+    expect(next.turn).toBe("dark");
+    expect(next.phase).toBe("roll");
+    expect(next.turnNumber).toBe(state.turnNumber + 1);
+    expect(next.message).toContain("زمان تمام شد");
+  });
+
 });
