@@ -1,0 +1,10 @@
+/* Online room lobby and invitation UI. */
+.inviteLink{display:flex;gap:7px;margin:8px 0}
+.inviteLink input{flex:1;min-width:0;padding:8px 10px;border:1px solid #c6a24666;border-radius:8px;background:#0c0c0e;color:#eadba9;font-size:11px}
+.inviteLink button{display:grid;place-items:center;width:42px;border:1px solid #c6a24677;border-radius:8px;background:#1a1916;color:#f0b90b}
+.onlineLobby{border-top:1px solid #c6a24655;padding-top:18px}
+.onlineLobby h2{font-size:20px}
+.onlineLobby p{font-size:14px;line-height:1.9;color:#d8cbb0}
+.onlineTarget{display:grid;gap:10px;margin:20px 0;font-size:14px}
+.onlineTarget select{min-height:46px;border:1px solid #c6a24677;border-radius:10px;background:#131315;color:#f3e6bf;padding:8px}
+.onlineLobby .onlineError{color:#ffb8ad}
