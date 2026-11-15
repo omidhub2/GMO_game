@@ -15,6 +15,7 @@ import gameLayoutStyles from "./backgammon/styles/game-layout.module.css";
 import matchControlsStyles from "./backgammon/styles/match-controls.module.css";
 import boardStyles from "./backgammon/styles/board.module.css";
 import playerRailStyles from "./backgammon/styles/player-rail.module.css";
+import diceStageStyles from "./backgammon/styles/dice-stage.module.css";
 import drawerStyles from "./backgammon/styles/drawer.module.css";
 
 const fa = (n: number) => n.toLocaleString("fa-IR");
@@ -223,14 +224,14 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
           </div>;
         })}
       </aside>
-      <aside className={playerRailStyles.rightRail} dir="rtl" aria-label="شمارش مهره‌ها در سمت راست">
+      <aside className={`${playerRailStyles.rightRail} ${diceStageStyles.diceStageRail}`} dir="rtl" aria-label="شمارش مهره‌ها در سمت راست">
         <div className={playerRailStyles.railControls} dir="ltr">
           <span className={playerRailStyles.playBrand} dir="ltr">GMO<span>ARENA</span></span>
           <button className={playerRailStyles.menuToggle} dir="rtl" disabled={rolling || moving} aria-label="باز کردن منوی بازی" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={20}/><span>منو</span></button>
         </div>
-        <div className={playerRailStyles.diceStage} dir="ltr">
+        <div className={diceStageStyles.diceStage} dir="ltr">
           <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={canAct && !pending && !moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
-          <div className={`${playerRailStyles.turnPrompt} ${state.phase === "roll" ? playerRailStyles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
+          <div className={`${diceStageStyles.turnPrompt} ${state.phase === "roll" ? diceStageStyles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
             {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + playerRailStyles.railChecker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
             <span>{!canAct ? playMode === "computer" ? "نوبت کامپیوتر" : "منتظر حریف" : state.phase === "move" ? "بازی کن" : "تاس بریز"}</span>
           </div>
