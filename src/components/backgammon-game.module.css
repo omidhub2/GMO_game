@@ -11,90 +11,19 @@
 .emptyChecker{width:52px}
 .localNotice{text-align:center;font-size:11px;color:#b8b5a6;margin:14px 0 0}
 .playPage{height:100%;display:grid;grid-template-rows:62px minmax(0,1fr) auto;gap:10px;padding:0 clamp(8px,2vw,28px) 12px}
-.playHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #b5985b2b}
-.headerTurn{display:flex;align-items:center;gap:10px;font-size:15px}
-.headerTurn .checker{width:30px}
-.headerTurn small{display:block;font-size:10px;color:#c4bfaa}
-.railTop, .railBottom{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:9px;line-height:1.2;color:#e1c68d;direction:rtl}
-.statsNumbers{display:grid;gap:3px;margin:8px 0;color:#d9d0bb;font-size:10px}
-.statsNumbers span{display:flex;align-items:center;justify-content:space-between;gap:6px}
-.statsNumbers b{font-size:15px;color:#f3dfb2}
-.turnStatus p{font-size:13px;margin:0 0 4px;color:#e9dfc7}
-.diceUsage{display:flex;flex-wrap:wrap;gap:5px}
-.diceUsage>span{border:1px solid #baa47477;border-radius:6px;padding:1px 8px;font-size:11px}
-.diceUsage>.usedDie{color:#c3b491;background:#373226;border-style:dashed}
-.guide{grid-column:1/-1;font-size:11px}
-.guide h2{font-size:11px;display:inline-block;margin:0 0 4px 8px;font-weight:500}
-.guide p{font-size:11px;margin:1px 0;color:#c6bea9}
-.moveOptions{display:inline-flex;flex-wrap:wrap;gap:5px}
-.moveOptions button{min-height:36px;padding:5px 10px;border:1px solid #bda26577;border-radius:8px;background:#282e20;color:#f3dfb2;font-size:11px}
-@media(max-width:700px){.playPage{grid-template-rows:52px minmax(0,1fr) auto;gap:7px;padding:0 6px max(6px,env(safe-area-inset-bottom))}
-.playHeader{gap:5px}
-.headerTurn{font-size:12px;gap:6px}
-.headerTurn small{font-size:8px}
-.headerTurn .checker{width:26px}
-.railTop, .railBottom{font-size:7px}
-.railTop span:nth-child(2){display:none}
-.pointNumber{font-size:8px}
-.statsNumbers{font-size:8px;margin-block:6px}
-.statsNumbers b{font-size:12px}
-.turnStatus p{font-size:10px}
-.diceUsage>span{font-size:9px;padding:1px 5px}
-.guide p, .guide h2{font-size:10px}
-.moveOptions button{font-size:10px;min-height:40px}}
+@media(max-width:700px){.playPage{grid-template-rows:52px minmax(0,1fr) auto;gap:7px;padding:0 6px max(6px,env(safe-area-inset-bottom))}}
 /* Carbon lobby, more dimensional checkers, and readable resting dice. */
-.shareInvite{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:46px;margin:6px 0;border:1px solid #c6a24688;border-radius:10px;background:linear-gradient(145deg,#28251d,#171719);color:#f3dda0;font-size:13px!important}
-.shareInvite:not(:disabled):hover{border-color:#f0b90b;box-shadow:0 0 20px #f0b90b20}
-.inviteMessage{margin:4px 0;color:#f0d98c;font-size:11px}
 .localNotice{color:#aaa69b}
-.turnChecker{width:48px;box-shadow:0 7px 12px #000d,inset 0 3px 5px #fff9,inset 0 -6px 9px #000d,0 0 0 3px #f0b90b35}
-@media(max-width:700px){.turnChecker{width:38px}}
 /* Carbon and Binance gold game presentation. */
 .page{background:radial-gradient(ellipse at 50% 35%,#202022,#111112 57%,#09090a)}
-.playHeader{border-color:#d7ad462d}
-.headerTurn .checker{display:none}
-.turnChecker{width:38px;filter:drop-shadow(0 4px 5px #000b);box-shadow:0 4px 7px #000c,inset 0 2px 3px #fff7,inset 0 -3px 5px #000b}
-@media(max-width:700px){.turnChecker{width:30px}}
-@media(max-height:500px) and (min-width:600px){.playPage{grid-template-rows:45px minmax(0,1fr) auto;gap:4px;padding-bottom:4px}
-.statsNumbers{display:none}
-.pointNumber{font-size:8px}
-.guide p{display:none}
-.headerTurn .checker{width:24px}}
+@media(max-height:500px) and (min-width:600px){.playPage{grid-template-rows:45px minmax(0,1fr) auto;gap:4px;padding-bottom:4px}}
 @media(prefers-reduced-motion:reduce){.page *{scroll-behavior:auto}}
 /* Compact play layout refinements. */
-.doubleProgress{font-size:10px;color:#d7c18f}
-@media(max-width:700px){.statsNumbers{display:flex;gap:10px;margin:0;font-size:8px}
-.statsNumbers b{font-size:11px}}
 /* Final size and vertical seat layout overrides. */
-.turnChecker{width:46px}
-@media(max-width:700px){.turnChecker{width:36px}}
-.guestSeat{min-height:142px}
-.guestColor{width:100%;height:auto;min-height:120px;flex-direction:column;gap:7px;border-radius:16px!important;background:linear-gradient(145deg,#242426,#111113)!important}
-.guestColor .checker{width:58px}
-.guestCheckerLabel{display:grid;gap:2px;text-align:center}
-.guestCheckerLabel strong{color:#f4dda0;font-size:13px;font-weight:600}
-.guestCheckerLabel small{color:#c9c3b3;font-size:11px}
-.guestColorReady .guestCheckerLabel small{color:#f0b90b}
-.guestColor>svg{right:10px;top:10px}
-
-
-
-
-
-
-
-
-@keyframes modeDropdownIn{from{opacity:0;transform:translateY(-7px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(prefers-reduced-motion:reduce){.guestColor{transition:none}}
 /* Glossy, lathed bowl checkers based on the supplied reference. */
 /* Landscape match table with the score panels anchored at lower right. */
-@media(max-width:900px){.statsNumbers{display:flex;gap:6px;margin:0;font-size:7px}
-.statsNumbers b{font-size:10px}}
 @media(orientation:portrait) and (max-width:900px){.playPage{position:absolute;top:0;left:0;width:100dvh;height:100dvw;transform-origin:top left;transform:translateX(100dvw) rotate(90deg)}}
 .playPage{grid-template-rows:minmax(0,1fr) auto;gap:4px;padding:0}
-.turnChecker{width:34px}
-.turnStatus{min-height:20px}
-@media(max-width:900px){.turnChecker{width:28px}}
 /* Final turn station and board scale. */
 /* Keep enlarged checkers inside each point so neighboring stacks never collide. */
 /* Align the dice card with the two player cards in the right column. */
@@ -104,24 +33,12 @@
 /* Compact score cards: checker at right, larger hit/off totals at left. */
 /* Edge-to-edge game canvas at every viewport size. */
 .playPage{position:absolute;inset:0;width:100%;height:100%;min-height:0;box-sizing:border-box;margin:0;padding:0!important;gap:0!important;overflow:hidden;grid-template-rows:minmax(0,1fr) auto}
-.turnStatus{min-height:0}
 @media(orientation:portrait) and (max-width:900px){.playPage{inset:auto;top:0;left:0;width:100dvh;height:100dvw;transform:translateX(100dvw) rotate(90deg)}}
-.waitFirst{display:flex;align-items:center;justify-content:center;gap:10px;margin:17px 0 2px;color:#ded4b7;font-size:12px}
-.waitFirst .emptyChecker{width:30px;height:30px;min-width:30px;border-color:#f0b90b;color:#f0b90b;font-size:18px}
-.guestSeat{display:flex;align-items:center;justify-content:center;min-height:90px;padding:10px}
-.guestColor{position:relative;display:flex;align-items:center;justify-content:center;width:72px;height:72px;border:1px solid #c6a24666!important;border-radius:50%!important;background:radial-gradient(circle at 30% 22%,#302c22,#121214 70%)!important;box-shadow:0 9px 16px #000b,inset 0 1px #ffffff22,0 0 0 6px #171719!important;transition:transform .18s,border-color .18s,box-shadow .18s}
-.guestColor .checker{width:52px}
-.guestColor:hover{transform:translateY(-2px) scale(1.04);border-color:#f0b90b!important;box-shadow:0 12px 20px #000d,inset 0 1px #ffffff2a,0 0 0 6px #171719,0 0 18px #f0b90b25!important}
-.guestColorReady{border-color:#f0b90b!important;box-shadow:0 0 0 6px #171719,0 0 0 8px #f0b90b55!important}
-.guestColor>svg{position:absolute;right:-5px;top:-5px;padding:3px;border-radius:50%;background:#f0b90b;color:#17130a}
-.readyNotice{margin:12px 0 0;padding:12px 15px;border:1px solid #c6a24666;border-radius:12px;background:linear-gradient(145deg,#242116,#151516);color:#f2d888;text-align:center;font-size:13px}
 /* Slight rim overlap keeps larger checkers readable within each half-board. */
 /* Give hit checkers a visible home on the central bar. */
 /* The drawer follows the menu button on the physical right edge. */
 /* Keep spent-die checks above the cube so every pip remains legible. */
 /* Dedicated bearing-off lane between board and the three control cards. */
-.offPocketLabel{font-size:11px;font-weight:700;line-height:1.3}
-@media(max-width:900px){.offPocketLabel{font-size:9px}}
 /* Turn cue floats over the board without intercepting checker touches. */
 /* Compact the exit lane while retaining checker color and the off count. */
 /* Return a little more landscape width to the board. */
