@@ -328,9 +328,11 @@
 }
 .rightRail .avatarWrap{
   grid-column:1;grid-row:1;
-  display:flex;align-items:center;justify-content:flex-start;
+  display:flex;align-items:flex-start;justify-content:flex-start;
   gap:clamp(5px,1.2cqw,10px);
   min-width:0;min-height:0;
+  padding-top:0;
+  transform:translateY(-4px);
 }
 .rightRail .profileAvatar{
   display:grid;place-items:center;
