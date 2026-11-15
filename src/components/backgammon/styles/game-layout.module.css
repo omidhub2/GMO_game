@@ -137,3 +137,17 @@
 @media(prefers-reduced-motion:reduce){
   .gameToast{transition:none}
 }
+
+/* Chat toast is positioned at the board's right-center, not at the top. */
+.gameToast{
+  top:50%;
+  left:auto;
+  right:clamp(150px,24vw,205px);
+  max-width:min(38vw,360px);
+  white-space:normal;
+  border-radius:14px;
+  transform:translate(0,-50%) translateX(8px);
+}
+.gameToast[data-visible="true"]{transform:translate(0,-50%)}
+@media(max-width:900px){.gameToast{right:clamp(126px,25vw,174px);max-width:42vw}}
+@media(max-width:560px){.gameToast{right:124px;max-width:calc(100vw - 145px);font-size:10px}}
