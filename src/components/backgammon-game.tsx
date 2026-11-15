@@ -233,7 +233,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         <div className={diceStageStyles.diceStage} dir="ltr">
           <DiceBox dice={dice} usedDice={state.phase === "move" ? state.usedDice : []} canRoll={canAct && !pending && !moving && ["opening","roll"].includes(state.phase)} opening={state.phase === "opening"} onRoll={roll} onBusy={value => { busy.current=value; setRolling(value); }}/>
           <div className={`${diceStageStyles.turnPrompt} ${state.phase === "roll" ? diceStageStyles.turnPromptRolling : ""}`} data-visible={state.phase !== "opening"} role="status" aria-live="polite" dir="rtl">
-            {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + playerRailStyles.railChecker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
+            {state.phase !== "opening" && <i aria-hidden="true" className={styles.checker + " " + diceStageStyles.railChecker + " " + (turn === "light" ? styles.lightChecker : styles.darkChecker)}/>}
             <span>{!canAct ? playMode === "computer" ? "نوبت کامپیوتر" : "منتظر حریف" : state.phase === "move" ? "بازی کن" : "تاس بریز"}</span>
           </div>
         </div>
