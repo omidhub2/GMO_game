@@ -1,3 +1,9 @@
+/* Shared checker visuals live in checkers.module.css; these local exports keep existing component APIs stable. */
+.checker { composes: checker from "./backgammon/styles/checkers.module.css"; }
+.lightChecker { composes: lightChecker from "./backgammon/styles/checkers.module.css"; }
+.darkChecker { composes: darkChecker from "./backgammon/styles/checkers.module.css"; }
+.emptyChecker { composes: emptyChecker from "./backgammon/styles/checkers.module.css"; }
+
 .page{--gold:#d4b270;color:#f2ecdf;font-family:Tahoma,"Segoe UI",sans-serif;line-height:1.7;background:radial-gradient(ellipse at 50% 35%,#24362d,#101713 60%,#090d0b)}
 .colorSelectionStatus{display:flex;align-items:center;justify-content:center;gap:10px;min-height:84px;font-size:12px;text-align:center}
 .colorSelectionStatus>span:last-child{max-width:260px}
@@ -12,10 +18,6 @@
 .page button{cursor:pointer;touch-action:manipulation}
 .page button:disabled{opacity:.42;cursor:default}
 .page button:focus-visible, .page select:focus-visible, .page a:focus-visible, .drawer button:focus-visible, .drawer a:focus-visible{outline:3px solid #ffe6a0;outline-offset:3px}
-.checker{position:relative;flex:none;display:block;aspect-ratio:1;border-radius:50%;box-shadow:0 3px 5px #0008,inset 0 2px 3px #fff7,inset 0 -3px 4px #0008}
-.checker::after{content:"";position:absolute;inset:19%;border-radius:50%;border:1px solid #81634255;box-shadow:inset 0 2px 3px #0004,0 1px 1px #fff4}
-.lightChecker{background:radial-gradient(circle at 34% 26%,#fff7df,#e8d2a5 48%,#b48d54);border:2px solid #eddbb7}
-.darkChecker{background:radial-gradient(circle at 34% 24%,#66615b,#292724 48%,#111);border:2px solid #a48b5e}
 .setupPage{height:100%;overflow:auto;padding:28px clamp(16px,5vw,70px) 48px}
 .setupHeader{max-width:1060px;margin:0 auto 35px;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:12px;color:#cdbb96}
 .setupHeader a{display:flex;gap:8px;align-items:center;min-height:44px}
@@ -39,7 +41,6 @@
 .assignedColor .checker, .emptyChecker{width:52px}
 .assignedColor strong{font-size:17px;font-weight:500}
 .assignedColor>span:last-child{font-size:11px;color:#c0bdab;text-align:center}
-.emptyChecker{height:52px;display:grid;place-items:center;border:1px dashed #99845c;border-radius:50%;color:#d7c6a3;font-size:25px}
 .readyButton, .startButton{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border:1px solid #e0bd76;border-radius:12px;background:linear-gradient(140deg,#e0c38b,#ac8345);color:#1e1b13;font-weight:700!important}
 .readyButton{width:100%;font-size:13px!important}
 .confirmed{background:#283c28;color:#d8efb9;border-color:#8fbc71}
@@ -61,8 +62,6 @@
 .headerTurn small{display:block;font-size:10px;color:#c4bfaa}
 .playArena{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:8px;min-height:0}
 .railTop, .railBottom{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:9px;line-height:1.2;color:#e1c68d;direction:rtl}
-.checker b{position:absolute;inset:0;z-index:2;display:grid;place-items:center;font-style:normal;font-size:15px;color:#100d09}
-.darkChecker b{color:#fff6dc}
 .statsNumbers{display:grid;gap:3px;margin:8px 0;color:#d9d0bb;font-size:10px}
 .statsNumbers span{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .statsNumbers b{font-size:15px;color:#f3dfb2}
@@ -122,16 +121,21 @@
 .drawerResume{width:100%;min-height:46px;margin-top:24px;border:1px solid #c7a260;border-radius:10px;background:#c7a76b;color:#201e15;font:inherit;cursor:pointer}
 
 
+
 @keyframes orbitRoll{from{transform:rotateX(0) rotateY(0) rotateZ(0)}to{transform:rotateX(720deg) rotateY(360deg) rotateZ(180deg)}}
+
 
 
 @keyframes bounceRoll{0%{transform:translateY(0) rotateX(0) rotateY(0)}50%{transform:translateY(-9px) rotateX(360deg) rotateY(180deg)}100%{transform:translateY(0) rotateX(720deg) rotateY(360deg)}}
 
 
+
 @keyframes swirlRoll{from{transform:rotateZ(0) rotateX(45deg) rotateY(0)}to{transform:rotateZ(360deg) rotateX(405deg) rotateY(720deg)}}
 
 
+
 @keyframes dieLand{from{transform:translateY(-7px) scale(1.06)}to{transform:translateY(0) scale(1)}}
+
 
 
 @keyframes drawerIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
@@ -197,10 +201,6 @@
 .inviteLink button{display:grid;place-items:center;width:42px;border:1px solid #c6a24677;border-radius:8px;background:#1a1916;color:#f0b90b}
 .inviteMessage{margin:4px 0;color:#f0d98c;font-size:11px}
 .localNotice{color:#aaa69b}
-.checker{overflow:hidden;border:1px solid #b99c5d;box-shadow:0 5px 9px #000c,inset 0 2px 3px #fff8,inset 0 -5px 7px #000b;transform:translateZ(0)}
-.checker::after{inset:13%;border:2px solid #e6cb8b77;box-shadow:inset 0 2px 4px #0008,0 1px 2px #fff8}
-.lightChecker{background:radial-gradient(circle at 31% 23%,#fffdf0 0,#f1e2b4 35%,#caa852 74%,#7c5a16 100%);border-color:#f6e6ad}
-.darkChecker{background:radial-gradient(circle at 31% 23%,#76777b 0,#36373b 37%,#191a1d 76%,#08090b 100%);border-color:#d2b45e}
 .turnChecker{width:48px;box-shadow:0 7px 12px #000d,inset 0 3px 5px #fff9,inset 0 -6px 9px #000d,0 0 0 3px #f0b90b35}
 .diceBox{width:202px;min-height:124px;padding:10px 13px;box-shadow:0 18px 45px #000d,inset 0 1px #ffffff2c,inset 0 -3px 0 #000,0 0 0 1px #f0b90b70,0 0 36px #f0b90b28}
 .diceContent{min-height:92px;gap:14px}
@@ -292,81 +292,11 @@
 .guestColor>svg{right:10px;top:10px}
 
 
+
 @keyframes modeDropdownIn{from{opacity:0;transform:translateY(-7px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.modeOptions{animation:none}
 .modeTrigger, .modeTrigger svg, .guestColor{transition:none}}
 /* Glossy, lathed bowl checkers based on the supplied reference. */
-.checker{
-  overflow:hidden;
-  border:2px solid #343434;
-  box-shadow:
-    0 5px 9px #000c,
-    inset 0 2px 2px #ffffffb0,
-    inset 0 -2px 3px #000b,
-    0 0 0 1px #050505;
-}
-.checker::before{
-  content:"";
-  position:absolute;
-  inset:3%;
-  border-radius:50%;
-  border:1px solid #ffffff65;
-  box-shadow:inset 0 1px 2px #0009,0 1px 1px #fff8;
-  pointer-events:none;
-}
-.checker::after{
-  content:"";
-  position:absolute;
-  inset:12%;
-  border-radius:50%;
-  border:1px solid #ffffff77;
-  background:radial-gradient(ellipse at 32% 20%,#ffffff55,transparent 44%);
-  box-shadow:
-    inset 0 3px 6px #0008,
-    inset 0 -2px 4px #ffffff45,
-    0 1px 2px #fff7;
-  pointer-events:none;
-}
-.lightChecker{
-  border-color:#f5f5f5;
-  background:
-    radial-gradient(ellipse at 30% 17%,#ffffff 0 4%,#ffffffa8 10%,transparent 25%),
-    radial-gradient(ellipse at 50% 57%,#fdfdfd 0%,#ededed 29%,#c9c9c9 47%,#f8f8f8 60%,#9a9a9a 69%,#f4f4f4 79%,#737373 91%,#e5e5e5 100%);
-  box-shadow:
-    0 5px 9px #000c,
-    inset 0 2px 3px #fff,
-    inset 0 -3px 5px #777,
-    0 0 0 1px #5c5c5c;
-}
-.lightChecker::before{border-color:#ffffffd9;box-shadow:inset 0 1px 3px #6668,0 1px 2px #fff}
-.lightChecker::after{border-color:#ffffffc7;box-shadow:inset 0 4px 8px #7778,inset 0 -2px 4px #fff9,0 1px 2px #fff}
-.darkChecker{
-  border-color:#151515;
-  background:
-    radial-gradient(ellipse at 30% 17%,#ffffffd9 0 3%,#d5d5d57d 9%,transparent 24%),
-    radial-gradient(ellipse at 50% 58%,#55565a 0%,#333438 28%,#111214 48%,#44454a 61%,#090a0c 73%,#303135 82%,#050506 94%,#202124 100%);
-  box-shadow:
-    0 5px 10px #000e,
-    inset 0 2px 3px #ffffff70,
-    inset 0 -4px 6px #000,
-    0 0 0 1px #8b8b8b;
-}
-.darkChecker::before{border-color:#d9d9d977;box-shadow:inset 0 1px 3px #000c,0 1px 2px #fff7}
-.darkChecker::after{border-color:#c8c8c877;background:radial-gradient(ellipse at 32% 20%,#fff5,transparent 44%);box-shadow:inset 0 4px 8px #000d,inset 0 -2px 4px #fff7,0 1px 2px #fff8}
-.lightChecker{
-  border-color:#593916;
-  background:
-    radial-gradient(ellipse at 30% 16%,#fff5d9 0 3%,#f1d09a 8%,#d5a85d60 18%,transparent 28%),
-    repeating-conic-gradient(from 14deg at 50% 50%,#f0cb8b0a 0deg 5deg,#5936150c 5deg 11deg,transparent 11deg 17deg),
-    radial-gradient(ellipse at 50% 57%,#d1a15d 0%,#b5813e 28%,#825625 46%,#c3944c 59%,#70481f 68%,#bd8b42 78%,#58391c 91%,#d0a05b 100%);
-  box-shadow:
-    0 5px 9px #000c,
-    inset 0 2px 3px #fff3d8,
-    inset 0 -3px 5px #5b3a1b,
-    0 0 0 1px #33200f;
-}
-.lightChecker::before{border-color:#edc987c9;box-shadow:inset 0 1px 3px #4a2e1666,0 1px 2px #fff2cf}
-.lightChecker::after{border-color:#f1d39a99;background:radial-gradient(ellipse at 32% 20%,#fff7dc55,transparent 44%);box-shadow:inset 0 4px 8px #68441e77,inset 0 -2px 4px #f0cf9277,0 1px 2px #fff1c8}
 /* Landscape match table with the score panels anchored at lower right. */
 .playArena{grid-template-columns:minmax(0,1fr) 214px;grid-template-rows:minmax(0,1fr);gap:10px}
 @media(max-width:900px){.playArena{grid-template-columns:minmax(0,1fr) 178px;grid-template-rows:minmax(0,1fr);gap:6px}
@@ -432,8 +362,10 @@
 .drawerResume{margin-top:16px}
 
 
+
 @keyframes drawerFromRight{from{transform:translateX(100%);opacity:.9}to{transform:translateX(0);opacity:1}}
 @media(orientation:portrait) and (max-width:900px){.drawer{--drawer-width:min(380px,86dvh);inset:auto auto auto auto;top:calc(100dvh - var(--drawer-width));left:100dvw;width:var(--drawer-width);max-width:none;height:100dvw;max-height:100dvw;border-radius:16px 0 0 16px;transform-origin:top left;transform:rotate(90deg);animation:drawerFromRightRotated .26s cubic-bezier(.2,.8,.2,1)}
+
 
 
   @keyframes drawerFromRightRotated{from{transform:rotate(90deg) translateX(100%);opacity:.9}to{transform:rotate(90deg);opacity:1}}}
@@ -496,7 +428,6 @@
 .onlineLobby .onlineError{color:#ffb8ad}
 @media(max-width:480px){.playModeChoices{grid-template-columns:1fr}
 .playModeChoices label{min-height:68px}}
-
 /* Telegram WebApp responsive canvas: reserve stable grid tracks and let
    the board take the remaining width on narrow and short devices. */
 .gameShell{
@@ -517,15 +448,11 @@
 }
 .offLane{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr))}
 .offPocket{min-width:0;min-height:0;overflow:hidden}
-@media(max-width:900px){
-  .playArena,.playPage .playArena{
+@media(max-width:900px){.playArena,.playPage .playArena{
     grid-template-columns:minmax(0,1fr) clamp(36px,7vw,52px) clamp(124px,24vw,164px);
     gap:clamp(3px,.8vw,6px);
-  }
-}
-@media(max-width:360px){
-  .playArena,.playPage .playArena{
+  }}
+@media(max-width:360px){.playArena,.playPage .playArena{
     grid-template-columns:minmax(0,1fr) 34px 122px;
     gap:3px;
-  }
-}
+  }}
