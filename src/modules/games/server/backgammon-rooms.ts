@@ -63,7 +63,7 @@ export function roomAction(id: string, token: string, action: GameAction) {
   if (!state) throw new RoomError("بازی هنوز شروع نشده است.", 409);
   const side = room.lobby.colors[seat];
   if (action.type === "timeout") {
-    if (Date.now() - room.turnStartedAt < 30_000) throw new RoomError("هنوز زمان این نوبت تمام نشده است.", 409);
+    if (state.phase !== "move" || Date.now() - room.turnStartedAt < 30_000) throw new RoomError("زمان نوبت هنوز تمام نشده است.", 409);
   } else {
     const allowed = state.phase === "opening" || state.phase === "finished"
       ? seat === "requester" : state.phase === "double" ? side !== state.turn : side === state.turn;
@@ -74,6 +74,6 @@ export function roomAction(id: string, token: string, action: GameAction) {
   const next = gameReducer(state, action);
   if (next === state) throw new RoomError("وضعیت بازی تغییر کرده است؛ دوباره تلاش کن.", 409);
   room.game = next;
-  if (next.turn !== state.turn || next.turnNumber !== state.turnNumber) room.turnStartedAt = Date.now();
+  if ((action.type === "roll" && next.phase === "move") || next.turn !== state.turn || next.turnNumber !== state.turnNumber) room.turnStartedAt = Date.now();
   return roomSnapshot(id, token);
 }
