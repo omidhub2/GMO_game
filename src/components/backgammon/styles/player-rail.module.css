@@ -378,3 +378,105 @@
   .rightRail .profileName strong{font-size:9px}
   .rightRail .scoreValue{font-size:10px}
 }
+
+
+/* Approved compact player-card composition. The .playerStats surface colors above
+   are intentionally untouched; only its internal layout is changed. */
+.rightRail{
+  --profile-avatar-size:clamp(34px,18cqh,52px);
+  --profile-checker-size:clamp(22px,8cqh,30px);
+}
+.rightRail .playerStats{
+  direction:ltr;
+  grid-template-columns:var(--profile-avatar-size) var(--profile-checker-size) minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr) auto;
+  align-items:center;
+  column-gap:clamp(3px,.9cqw,7px);
+  row-gap:clamp(2px,.7cqh,5px);
+  padding:clamp(4px,1.1cqh,7px);
+}
+.rightRail .profileAvatar{
+  grid-column:1;grid-row:1;
+  display:grid;place-items:center;
+  width:var(--profile-avatar-size);height:var(--profile-avatar-size);
+  max-width:100%;aspect-ratio:1;box-sizing:border-box;border-radius:50%;
+  border:1.5px solid #b99556;
+  background:radial-gradient(circle at 35% 28%,#3c3429,#171513 72%);
+  color:#f0dfb9;
+  box-shadow:0 0 0 1px #b9955620,inset 0 1px 3px #fff2;
+  font-size:clamp(14px,5cqh,23px);font-weight:700;
+  overflow:hidden;
+}
+.rightRail .profileChecker{
+  grid-column:2;grid-row:1;
+  display:block;flex:none;
+  width:var(--profile-checker-size);height:var(--profile-checker-size);
+  max-width:100%;aspect-ratio:1;align-self:center;
+}
+.rightRail .profileInfo{
+  grid-column:3;grid-row:1;
+  display:flex;flex-direction:column;justify-content:center;
+  gap:clamp(3px,.9cqh,7px);
+  min-width:0;min-height:0;overflow:hidden;
+}
+.rightRail .profileHeading{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:3px;min-width:0;
+}
+.rightRail .profileName{
+  display:flex;flex-direction:column;gap:2px;
+  min-width:0;overflow:hidden;text-align:right;
+}
+.rightRail .profileName strong{
+  color:#f2e4c4;font-size:clamp(9px,3.2cqh,14px);
+  line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.rightRail .profileName small{
+  color:#bcb4a3;font-size:clamp(7px,2.1cqh,9px);
+  line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.rightRail .messageButton{
+  display:grid;place-items:center;flex:none;
+  width:clamp(23px,7.5cqh,31px);height:clamp(23px,7.5cqh,31px);
+  padding:0;border:1px solid #b9955666;border-radius:8px;
+  background:#171719;color:#e6cc91;
+}
+.rightRail .messageButton:disabled{opacity:.8;cursor:not-allowed}
+.rightRail .profileScore{
+  display:flex;align-items:center;justify-content:flex-start;
+  gap:4px;min-width:0;
+}
+.rightRail .scoreValue{
+  display:flex;align-items:center;gap:4px;
+  min-width:0;color:#f0dfb5;
+  font-size:clamp(9px,2.8cqh,13px);font-weight:700;white-space:nowrap;
+}
+.rightRail .scoreValue svg{color:#d7b66c;flex:none}
+.rightRail .profileMeta{
+  grid-column:1/-1;grid-row:2;
+  display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1fr);
+  align-items:center;gap:clamp(3px,.8cqw,7px);
+  min-width:0;max-width:100%;
+}
+.rightRail .profileMetaItem{
+  display:flex;align-items:center;justify-content:center;
+  gap:3px;min-width:0;min-height:clamp(17px,5.8cqh,24px);
+  padding:1px 4px;box-sizing:border-box;
+  border:1px solid #b9955644;border-radius:999px;
+  color:#ead39e;white-space:nowrap;overflow:hidden;
+  font-size:clamp(8px,2.6cqh,11px);
+}
+.rightRail .profileMetaItem svg{flex:none;color:#d7b66c}
+.rightRail .profileMetaItem small{font-size:inherit;line-height:1}
+@media(max-width:360px){
+  .rightRail{--profile-avatar-size:clamp(30px,16cqh,43px);--profile-checker-size:clamp(19px,7cqh,25px)}
+  .rightRail .playerStats{column-gap:3px;padding:3px}
+  .rightRail .profileMeta{gap:2px}
+  .rightRail .profileMetaItem{padding-inline:2px;font-size:8px}
+  .rightRail .profileName strong{font-size:9px}
+  .rightRail .messageButton{width:22px;height:22px}
+}
+@media(max-height:360px){
+  .rightRail{--profile-avatar-size:clamp(28px,15cqh,40px);--profile-checker-size:clamp(18px,7cqh,24px)}
+  .rightRail .profileMetaItem{min-height:16px}
+}
