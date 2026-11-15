@@ -16,7 +16,7 @@
 .page button, .page select{font:inherit}
 .page button{cursor:pointer;touch-action:manipulation}
 .page button:disabled{opacity:.42;cursor:default}
-.page button:focus-visible, .page select:focus-visible, .page a:focus-visible, .drawer button:focus-visible, .drawer a:focus-visible{outline:3px solid #ffe6a0;outline-offset:3px}
+.page button:focus-visible, .page select:focus-visible, .page a:focus-visible{outline:3px solid #ffe6a0;outline-offset:3px}
 .setupPage{height:100%;overflow:auto;padding:28px clamp(16px,5vw,70px) 48px}
 .setupHeader{max-width:1060px;margin:0 auto 35px;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:12px;color:#cdbb96}
 .setupHeader a{display:flex;gap:8px;align-items:center;min-height:44px}
@@ -81,27 +81,6 @@
 .result h2{font-size:24px}
 .result p{font-size:14px;color:#d8cbb0}
 .result button{min-height:44px;padding:8px 15px;margin:5px;border:1px solid #c8a563;border-radius:10px;background:#3e4529;color:#f7e7bd}
-.drawer{position:fixed;inset:0 auto 0 0;width:min(350px,88vw);height:100dvh;max-height:100dvh;max-width:100%;padding:24px 20px;margin:0;border:0;border-right:1px solid #bca16a66;background:linear-gradient(145deg,#243225,#111b15 60%);color:#f5ead2;box-shadow:20px 0 90px #0009;font-family:Tahoma,"Segoe UI",sans-serif;direction:rtl;animation:drawerIn .27s ease-out;overflow:auto}
-.drawer::backdrop{background:#030805a8;backdrop-filter:blur(5px)}
-.drawer header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:20px;border-bottom:1px solid #b59a5b33;font-size:18px}
-.drawer header small{display:block;font-size:8px;color:#bfa777;letter-spacing:.16em}
-.drawer header button{display:grid;place-items:center;width:44px;height:44px;background:#ffffff09;border:1px solid #baa47755;border-radius:12px;color:#f1dfb9}
-.drawerPlayer{padding:25px 0;text-align:center}
-.drawerPlayer>svg{margin:auto;color:#dcb775}
-.drawerPlayer h2{font-size:24px;margin:10px 0 4px}
-.drawerPlayer p{font-size:13px;color:#d8c6a2;margin:4px 0}
-.drawerPlayer small{font-size:10px;color:#c1b9a4}
-.drawerItem{display:flex;align-items:center;gap:14px;min-height:66px;padding:12px 10px;width:100%;border:0;border-bottom:1px solid #b59a5b22;background:transparent;color:#eadcbe;text-align:right;cursor:pointer;font-size:14px}
-.drawerItem>svg{color:#c7ab72;flex:none}
-.drawerItem small{display:block;font-size:10px;color:#b4b5a4;margin-top:5px}
-.drawerItem:hover{background:#d2b3740d}
-.drawerHelp{padding:15px;color:#d5ccb6;font-size:12px;line-height:2}
-.drawerResume{width:100%;min-height:46px;margin-top:24px;border:1px solid #c7a260;border-radius:10px;background:#c7a76b;color:#201e15;font:inherit;cursor:pointer}
-
-
-
-
-@keyframes drawerIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
 @media(max-width:700px){.setupPage{padding:18px 12px 30px}
 .setupHeader{margin-bottom:18px}
 .setupCard{padding:22px 15px;border-radius:20px}
@@ -176,8 +155,7 @@
 .guide p{display:none}
 .headerTurn .checker{width:24px}
 .actions small{display:none}}
-@media(prefers-reduced-motion:reduce){.drawer{animation:none}
-.page *{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){.page *{scroll-behavior:auto}}
 /* Compact play layout refinements. */
 .playFooter{max-height:18dvh;padding-top:5px}
 .doubleProgress{font-size:10px;color:#d7c18f}
@@ -206,6 +184,7 @@
 .guestCheckerLabel small{color:#c9c3b3;font-size:11px}
 .guestColorReady .guestCheckerLabel small{color:#f0b90b}
 .guestColor>svg{right:10px;top:10px}
+
 
 
 
@@ -263,24 +242,6 @@
 /* Slight rim overlap keeps larger checkers readable within each half-board. */
 /* Give hit checkers a visible home on the central bar. */
 /* The drawer follows the menu button on the physical right edge. */
-.drawer{position:fixed;inset:0 0 0 auto;box-sizing:border-box;width:min(380px,86vw);height:100dvh;max-height:100dvh;padding:clamp(12px,2.5vw,22px);border:0;border-left:1px solid #f0b90b6b;border-radius:16px 0 0 16px;background:linear-gradient(155deg,#292723 0%,#19191b 42%,#0d0d0f 100%);box-shadow:-18px 0 70px #000b,inset 1px 0 #ffffff12;color:#f4e9cf;animation:drawerFromRight .26s cubic-bezier(.2,.8,.2,1);overflow-y:auto;overscroll-behavior:contain}
-.drawer::backdrop{background:#050507ba;backdrop-filter:blur(4px)}
-.drawer header{padding-bottom:14px;border-bottom-color:#f0b90b40}
-.drawerPlayer{padding:16px 0}
-.drawerItem{min-height:58px;padding:9px 8px}
-.drawerResume{margin-top:16px}
-
-
-
-
-@keyframes drawerFromRight{from{transform:translateX(100%);opacity:.9}to{transform:translateX(0);opacity:1}}
-@media(orientation:portrait) and (max-width:900px){.drawer{--drawer-width:min(380px,86dvh);inset:auto auto auto auto;top:calc(100dvh - var(--drawer-width));left:100dvw;width:var(--drawer-width);max-width:none;height:100dvw;max-height:100dvw;border-radius:16px 0 0 16px;transform-origin:top left;transform:rotate(90deg);animation:drawerFromRightRotated .26s cubic-bezier(.2,.8,.2,1)}
-
-
-
-
-  @keyframes drawerFromRightRotated{from{transform:rotate(90deg) translateX(100%);opacity:.9}to{transform:rotate(90deg);opacity:1}}}
-@media(prefers-reduced-motion:reduce){.drawer{animation:none}}
 /* Keep spent-die checks above the cube so every pip remains legible. */
 .setupPage .colorChoices{align-items:stretch}
 .setupPage .colorChoices button{flex:1 1 0;box-sizing:border-box}
