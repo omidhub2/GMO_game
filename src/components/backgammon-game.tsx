@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, Trophy, MessageCircle } from "lucide-react";
+import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, Trophy, MessageCircle, Flag, Clock3 } from "lucide-react";
 import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
 import type { GameSession, OnlineSnapshot } from "@/modules/games/domain/backgammon-session";
 import { computerMove } from "@/modules/games/domain/backgammon-computer";
@@ -247,24 +247,29 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         <div className={playerRailStyles.statsPair}>
         {(["dark","light"] as Side[]).map(side => {
           const options=side === turn ? destinations.filter(m=>m.to === "off") : [];
-          return <section key={side} className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`شمارش مهره ${names[side]}`}>
-            <div className={playerRailStyles.profileAvatar} data-player-avatar aria-hidden="true">
-              <span>{playerName(side).slice(0, 1)}</span>
+          return <section key={side} dir="ltr" className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`پروفایل بازیکن ${names[side]}`}>
+            <div className={playerRailStyles.profileAvatar} data-player-avatar aria-label={`آواتار ${playerName(side)}`}>
+              <span aria-hidden="true">{playerName(side).slice(0, 1)}</span>
             </div>
-            <div className={playerRailStyles.profileInfo}>
+            <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
+            <div className={playerRailStyles.profileInfo} dir="rtl">
               <div className={playerRailStyles.profileHeading}>
                 <div className={playerRailStyles.profileName}>
                   <strong>{playerName(side)}</strong>
                   <small>{names[side] === "سفید" ? "مهره سفید" : "مهره سیاه"}</small>
                 </div>
                 <button type="button" data-player-message className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}؛ قابلیت پیام‌رسانی هنوز فعال نیست`} disabled title="پیام‌رسانی به‌زودی">
-                  <MessageCircle size={16} strokeWidth={1.8}/>
+                  <MessageCircle size={15} strokeWidth={1.8}/>
                 </button>
               </div>
               <div className={playerRailStyles.profileScore} data-player-score>
-                <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} aria-hidden="true"/>
-                <span className={playerRailStyles.scoreValue}><Trophy size={13} aria-hidden="true"/>{fa(state.scores[side])}</span>
+                <span className={playerRailStyles.scoreValue}><Trophy size={12} aria-hidden="true"/>{fa(state.scores[side])}</span>
               </div>
+            </div>
+            <div className={playerRailStyles.profileMeta} dir="ltr">
+              <span className={playerRailStyles.profileMetaItem} data-player-country aria-label="کشور بازیکن مشخص نشده"><Flag size={12}/><small>—</small></span>
+              <span className={playerRailStyles.profileMetaItem} data-player-timer aria-label="زمان باقی‌مانده در این نسخه موجود نیست"><Clock3 size={12}/><small>—:—</small></span>
+              <span className={playerRailStyles.profileMetaItem} data-player-level><small>Level —</small></span>
             </div>
           </section>;
         })}
