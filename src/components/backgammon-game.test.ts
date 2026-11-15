@@ -62,6 +62,22 @@ describe("Persian manual board interactions", () => {
     click(point(23)); click(point(23)); expect(point(23).getAttribute("aria-pressed")).toBe("false");
     click(point(23)); click(point(12)); expect(point(12).getAttribute("aria-pressed")).toBe("true");
   });
+  it("undoes from the center bar and allows a different move until the last die is used", () => {
+    rolls=[3,2]; roll();
+    const start=point(23).getAttribute("aria-label");
+    click(point(23)); click(point(20)); settle();
+    const centerUndo=container.querySelector<HTMLButtonElement>("[data-undo-bar]");
+    expect(centerUndo).not.toBeNull();
+    expect(centerUndo!.disabled).toBe(false);
+    expect(centerUndo!.closest("div")?.className).toContain("bar");
+    click(centerUndo!);
+    expect(point(23).getAttribute("aria-label")).toBe(start);
+    click(point(23)); click(point(21)); settle();
+    expect(point(21).getAttribute("aria-label")).toContain("۱ مهره سفید");
+    expect(centerUndo!.disabled).toBe(false);
+    click(point(12)); click(point(9)); settle();
+    expect(centerUndo!.disabled).toBe(true);
+  });
   it("uses one die per destination, undoes exactly and commits the second move", () => {
     rolls=[3,2]; roll(); const start=point(23).getAttribute("aria-label");
     click(point(23)); click(point(20)); settle();
