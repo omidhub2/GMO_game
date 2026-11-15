@@ -480,3 +480,86 @@
   .rightRail{--profile-avatar-size:clamp(28px,15cqh,40px);--profile-checker-size:clamp(18px,7cqh,24px)}
   .rightRail .profileMetaItem{min-height:16px}
 }
+
+
+/* Final narrow-rail tuning: reserve enough width for the name and message,
+   keep the checker secondary to the avatar, and give metadata equal columns. */
+.rightRail{
+  --profile-avatar-size:clamp(40px,15cqh,48px);
+  --profile-checker-size:clamp(24px,7.5cqh,28px);
+}
+.rightRail .playerStats{
+  grid-template-columns:var(--profile-avatar-size) var(--profile-checker-size) minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr) auto;
+  column-gap:clamp(4px,1cqw,6px);
+  row-gap:6px;
+  padding:6px;
+}
+.rightRail .profileAvatar{
+  width:var(--profile-avatar-size);
+  height:var(--profile-avatar-size);
+  font-size:clamp(16px,4.5cqh,21px);
+}
+.rightRail .profileChecker{
+  width:var(--profile-checker-size);
+  height:var(--profile-checker-size);
+}
+.rightRail .profileInfo{
+  justify-content:center;
+  gap:5px;
+}
+.rightRail .profileHeading{
+  gap:4px;
+}
+.rightRail .profileName{
+  flex:1 1 auto;
+  min-width:0;
+}
+.rightRail .profileName strong{
+  font-size:clamp(10px,3cqh,13px);
+  line-height:1.25;
+}
+.rightRail .profileName small{
+  font-size:clamp(8px,2.2cqh,9px);
+  line-height:1.25;
+}
+.rightRail .messageButton{
+  width:26px;height:26px;
+}
+.rightRail .profileScore{
+  justify-content:flex-start;
+}
+.rightRail .scoreValue{
+  font-size:clamp(10px,2.7cqh,12px);
+}
+.rightRail .profileMeta{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+}
+.rightRail .profileMetaItem{
+  min-height:23px;
+  gap:4px;
+  padding:2px 4px;
+  font-size:clamp(9px,2.5cqh,10px);
+}
+.rightRail .profileMetaItem svg{
+  width:11px;height:11px;
+}
+@media(max-width:360px){
+  .rightRail{
+    --profile-avatar-size:clamp(38px,14cqh,44px);
+    --profile-checker-size:clamp(23px,7cqh,26px);
+  }
+  .rightRail .playerStats{
+    column-gap:4px;
+    row-gap:5px;
+    padding:5px;
+  }
+  .rightRail .profileMeta{gap:4px}
+  .rightRail .profileMetaItem{
+    min-height:22px;
+    padding-inline:3px;
+    font-size:9px;
+  }
+  .rightRail .messageButton{width:25px;height:25px}
+}
