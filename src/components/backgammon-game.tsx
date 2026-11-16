@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, MessageCircle, Clock3, Send, X, Settings2 } from "lucide-react";
+import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, MessageCircle, Clock3, Send, X, Settings2, Trophy, Crown, Sparkles } from "lucide-react";
 import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
 import type { GameSession, OnlineSnapshot } from "@/modules/games/domain/backgammon-session";
 import { computerMove } from "@/modules/games/domain/backgammon-computer";
@@ -367,6 +367,10 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
               </div>
             </div>
             <div className={playerRailStyles.profileMeta} dir="ltr">
+              <span className={playerRailStyles.profileMetaItem} data-player-match-score aria-label={`امتیاز مسابقه ${fa(state.scores[side])}`}>
+                <Trophy size={12}/>
+                <small>{fa(state.scores[side])}</small>
+              </span>
               <span className={playerRailStyles.profileMetaItem} data-player-timer aria-label={`زمان باقی‌مانده ${fa(turn === side ? turnSeconds : 30)} ثانیه`}>
                 <Clock3 size={12}/>
                 <small>{`00:${String(turn === side ? turnSeconds : 30).padStart(2,"0")}`}</small>
@@ -382,7 +386,44 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       <div className={matchControlsStyles.actions}><button disabled={locked || !canDouble(state)} onClick={()=>send({type:"offerDouble",revision:state.revision})}>پیشنهاد دوبل ×{fa(state.cube * 2)}</button></div>
     </footer>}
     {state.phase === "double" && <section className={matchControlsStyles.result} aria-label="پاسخ دوبل"><h2>{names[opponent(turn)]}؛ پیشنهاد دوبل ×{fa(state.cube * 2)}</h2><p>با رد، {fa(state.cube)} امتیاز به {names[turn]} می‌رسد.</p><button disabled={locked} onClick={()=>send({type:"acceptDouble",revision:state.revision})}>پذیرش دوبل</button><button disabled={locked} onClick={()=>send({type:"rejectDouble",revision:state.revision})}>رد دوبل</button></section>}
-    {state.result && <section className={matchControlsStyles.result} role="status"><h2>{names[state.result.winner]} برنده شد</h2><p>{state.result.dropped ? "برد با رد دوبل" : ["","برد عادی","مارس","بک‌گمون"][state.result.multiplier]} • {fa(state.result.points)} امتیاز{complete ? " • پایان مسابقه" : ""}</p>{state.target && !complete ? <button disabled={locked} onClick={()=>send({type:"nextGame",revision:state.revision})}>دست بعدی مسابقه</button> : <button onClick={onLeave}>بازی جدید</button>}</section>}
+    {state.result && <div className={matchControlsStyles.resultOverlay}>
+      <section className={matchControlsStyles.resultModal} role="dialog" aria-modal="true" aria-labelledby="backgammon-result-title" aria-describedby="backgammon-result-description" dir="rtl">
+        <div className={matchControlsStyles.resultOrnament} aria-hidden="true"><Sparkles/><span/><Sparkles/></div>
+        <div className={matchControlsStyles.resultBadge}><Crown size={16}/> {complete ? "قهرمان مسابقه" : "پایان دست"}</div>
+        <div className={matchControlsStyles.resultWinner}>
+          <div className={matchControlsStyles.resultAvatar} aria-label={`آواتار ${playerName(state.result.winner)}`}>
+            <span>{playerName(state.result.winner).slice(0,1)}</span>
+            <i className={`${boardStyles.checker} ${state.result.winner === "light" ? boardStyles.lightChecker : boardStyles.darkChecker}`} aria-label={`مهره ${names[state.result.winner]}`}/>
+          </div>
+          <div className={matchControlsStyles.resultWinnerText}>
+            <span>آفرین!</span>
+            <h2 id="backgammon-result-title">{playerName(state.result.winner)} برنده شد</h2>
+            <p id="backgammon-result-description">مهره {names[state.result.winner]} این دست را برد.</p>
+          </div>
+        </div>
+        <div className={matchControlsStyles.resultScoreGrid}>
+          <div className={matchControlsStyles.resultScoreCard}>
+            <span>امتیاز این دست</span>
+            <strong>+{fa(state.result.points)}</strong>
+            <small>{state.result.dropped ? "برد با رد دوبل" : ["","برد عادی","مارس","بک‌گمون"][state.result.multiplier]}</small>
+          </div>
+          <div className={matchControlsStyles.resultScoreCard}>
+            <span>امتیاز مسابقه</span>
+            <strong>{fa(state.scores[state.result.winner])}<small>{state.target ? ` / ${fa(state.target)}` : ""}</small></strong>
+            <small>{complete ? "هدف مسابقه تکمیل شد" : "امتیاز ثبت‌شده"}</small>
+          </div>
+        </div>
+        <div className={matchControlsStyles.resultStandings} aria-label="امتیاز هر دو بازیکن">
+          <span>سفید <b>{fa(state.scores.light)}</b></span>
+          <span>سیاه <b>{fa(state.scores.dark)}</b></span>
+        </div>
+        <div className={matchControlsStyles.resultActions}>
+          {state.target && !complete && <button type="button" className={matchControlsStyles.resultPrimary} disabled={locked} onClick={()=>send({type:"nextGame",revision:state.revision})}>دست بعدی مسابقه</button>}
+          <button type="button" className={matchControlsStyles.resultSecondary} onClick={onLeave}>{complete ? "شروع مسابقه جدید" : "پایان بازی"}</button>
+        </div>
+        <button type="button" className={matchControlsStyles.resultReset} onClick={onLeave}>انتخاب دوباره مهره‌ها</button>
+      </section>
+    </div>}
     {menuOpen && <BackgammonDrawer onClose={()=>setMenuOpen(false)}>
       <div className={drawerStyles.drawerPlayer}><Dices size={30}/><h2>تخته‌نرد</h2><p>{state.target ? `مسابقه تا ${fa(state.target)} امتیاز` : "بازی ساده • بدون دوبل"}</p><small>درخواست‌دهنده: {names[lobby.colors.requester!]} • حریف: {names[lobby.colors.guest!]}</small></div>
       <button className={drawerStyles.drawerItem} onClick={()=>{onFullscreen();setMenuOpen(false);}}><Maximize size={20}/><span>نمایش تمام‌صفحه<small>تمرکز روی تخته</small></span></button>
