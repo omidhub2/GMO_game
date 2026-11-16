@@ -272,10 +272,10 @@
   width: 100%;
   min-width: 0;
   min-height: 30px;
-  padding: 4px 10px;
-  border: 1px solid #b9955688;
-  border-radius: 999px;
-  background: linear-gradient(145deg, #302719, #171513);
+  padding: 4px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: #ead39e;
   font-size: var(--player-meta-font-size);
   line-height: 1;
