@@ -1,6 +1,14 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
-const databaseConnectionStorage = new AsyncLocalStorage<string>();
+type DatabaseContextGlobal = typeof globalThis & {
+  __gmoDatabaseConnectionStorage?: AsyncLocalStorage<string>;
+};
+
+// Keep one store per Worker isolate, even if the bundler evaluates this module
+// through more than one server/worker entry chunk.
+const globalForDatabaseContext = globalThis as DatabaseContextGlobal;
+const databaseConnectionStorage =
+  (globalForDatabaseContext.__gmoDatabaseConnectionStorage ??= new AsyncLocalStorage<string>());
 
 /**
  * Run a request inside its Cloudflare Hyperdrive connection context.
