@@ -127,12 +127,11 @@ describe("Persian manual board interactions", () => {
     const trays = [...container.querySelectorAll('aside[aria-label="فضای خروج مهره‌ها"] > div')];
     expect(trays).toHaveLength(2);
     expect(trays.map(tray => tray.querySelector("strong")?.textContent?.trim())).toEqual(["۰", "۰"]);
-    expect(trays.every(tray => tray.querySelector(".offPocketStack"))).toBe(true);
-    expect(trays.every(tray => tray.querySelector(".offPocketStack")?.children.length === 0)).toBe(true);
+    expect(trays.every(tray => tray.querySelector("[data-off-stack]"))).toBe(true);
+    expect(trays.every(tray => tray.querySelector("[data-off-stack]")?.children.length === 0)).toBe(true);
     expect(trays.every(tray => tray.getAttribute("role") === "button")).toBe(true);
     expect(trays.every(tray => tray.getAttribute("aria-disabled") === "true")).toBe(true);
     expect(trays.every(tray => tray.getAttribute("tabindex") === "-1")).toBe(true);
-    expect(container.querySelectorAll(".offPocketMoves")).toHaveLength(0);
     expect(container.textContent).not.toContain("از ۱۵ مهره");
     expect(container.textContent).not.toContain("مهره سفید");
     expect(container.textContent).not.toContain("مهره سیاه");
