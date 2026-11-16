@@ -37,6 +37,28 @@
 }
 .coverLines { position: absolute; inset: 0; pointer-events: none; opacity: .12; background: repeating-linear-gradient(135deg, transparent 0 12px, #fff 12px 13px); mask-image: linear-gradient(90deg, transparent 40%, #000); }
 .playerAvatar { position: relative; display: grid; width: 92px; height: 92px; flex: none; place-items: center; border: 1px solid #d9ba746b; border-radius: 18px; background: linear-gradient(145deg, #e6c27b22, #e6c27b08); color: #f2d69f; font-family: Impact, "Arial Narrow", sans-serif; font-size: 43px; box-shadow: 0 0 36px #e8c17d14, inset 0 1px #fff2; }
+.playerAvatar { overflow: hidden; border-radius: 50%; }
+.playerAvatar > img { width: 100%; height: 100%; object-fit: cover; }
+.avatarPicker {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #ffffff20;
+  border-radius: 12px;
+}
+.avatarPicker legend { padding: 0 7px; color: #e8c17d; font-size: 12px; font-weight: 800; }
+.avatarChoices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.avatarChoices label { display: grid; justify-items: center; gap: 7px; padding: 10px 6px; border: 1px solid #ffffff1c; border-radius: 12px; background: #ffffff05; cursor: pointer; }
+.avatarChoices label.avatarChoiceSelected { border-color: #e8c17d; background: #e8c17d14; box-shadow: 0 0 0 1px #e8c17d35; }
+.avatarChoices input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.avatarChoices img { width: 68px; height: 68px; border: 2px solid #b99556; border-radius: 50%; object-fit: cover; }
+.avatarChoices span { color: #e9d5aa; font-size: 10px; font-weight: 700; }
+.avatarPicker > small { color: #aeb2b6; font-size: 10px; }
+@media (max-width: 540px) { .avatarChoices img { width: 56px; height: 56px; } }
+
 .playerAvatar > span { position: absolute; right: -6px; bottom: -6px; display: grid; width: 27px; height: 27px; place-items: center; border: 3px solid #121416; border-radius: 50%; background: #c7a562; color: #111; }
 .identity { position: relative; min-width: 0; }
 .levelTag { display: inline-flex; align-items: center; gap: 6px; color: #ddbd7c; font-size: 9px; font-weight: 800; letter-spacing: .13em; }
