@@ -51,6 +51,19 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const requestPending = useRef(false);
   const mounted = useRef(true);
   const humanSide = lobby.colors[session.snapshot?.seat ?? "requester"]!;
+  const [playerAvatar, setPlayerAvatar] = useState("/avatars/gmo-avatar-3.webp");
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/profile", { cache: "no-store", signal: controller.signal })
+      .then(async response => response.ok ? response.json() : null)
+      .then(result => {
+        if (!result?.data || controller.signal.aborted) return;
+        const data = result.data;
+        setPlayerAvatar(data.avatarUrl || `/avatars/gmo-${data.avatarChoice || "avatar-3"}.webp`);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
   const canAct = playMode === "local" || (state.phase === "opening" || state.phase === "finished"
     ? playMode === "computer" || session.snapshot?.seat === "requester"
     : state.phase === "double" ? state.turn !== humanSide : state.turn === humanSide);
@@ -408,7 +421,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
           return <section key={side} dir="ltr" className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`پروفایل بازیکن ${names[side]}`}>
             <div className={playerRailStyles.avatarWrap}>
               <div className={playerRailStyles.profileAvatar} data-player-avatar aria-label={`آواتار ${playerName(side)}`}>
-                <span aria-hidden="true">{playerName(side).slice(0, 1)}</span>
+                <img src={side === humanSide ? playerAvatar : "/avatars/gmo-avatar-3.webp"} alt="" aria-hidden="true" />
               </div>
               <span className={`${playerRailStyles.profileMetaItem} ${playerRailStyles.playerTimer}`} data-player-timer aria-label={`زمان باقی‌مانده ${turn === side ? turnSeconds : 30} ثانیه`}>
                 <Clock3 size={13}/>
