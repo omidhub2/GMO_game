@@ -47,21 +47,11 @@
   padding:5px 0;
 }
 .offPocket{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  min-width:0;
-  min-height:0;
-  padding:7px 2px;
-  overflow:hidden;
-  border:1px solid #b995564d;
-  border-radius:12px;
-  background:linear-gradient(145deg,#272320,#111113);
-  box-shadow:inset 0 1px #ffffff12;
-  color:#f1dfad;
-  text-align:center;
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  gap:0;min-width:0;min-height:0;padding:7px 1px 5px;overflow:hidden;
+  border:1px solid #b995564d;border-radius:12px;
+  background:linear-gradient(145deg,#272320,#111113);box-shadow:inset 0 1px #ffffff12;
+  color:#f1dfad;text-align:center;
 }
 .offPocketTotal{font-size:11px;line-height:1;color:#c7bba5;font-weight:700}
 .offPocket > i{width:clamp(28px,3vw,38px)}
@@ -91,31 +81,14 @@
 }
 
 .gameToast{
-  position:absolute;
-  z-index:45;
-  top:calc(8px + env(safe-area-inset-top));
-  left:50%;
-  max-width:min(80vw,420px);
-  padding:8px 16px;
-  border:1px solid #f0b90b88;
-  border-radius:999px;
-  background:linear-gradient(145deg,#252527f5,#101012f5);
-  color:#ffe7a1;
-  font-size:13px;
-  font-weight:700;
-  text-align:center;
-  white-space:nowrap;
-  box-shadow:0 9px 24px #000b,0 0 22px #f0b90b20;
-  opacity:0;
-  visibility:hidden;
-  transform:translate(-50%,-6px);
+  position:absolute;z-index:45;top:50%;left:auto;right:clamp(150px,24vw,205px);
+  max-width:min(38vw,360px);padding:8px 16px;border:1px solid #f0b90b88;border-radius:14px;
+  background:linear-gradient(145deg,#252527f5,#101012f5);color:#ffe7a1;font-size:13px;font-weight:700;
+  text-align:center;white-space:normal;box-shadow:0 9px 24px #000b,0 0 22px #f0b90b20;
+  opacity:0;visibility:hidden;transform:translate(0,-50%) translateX(8px);
   transition:opacity .45s ease,transform .45s ease,visibility .45s;
 }
-.gameToast[data-visible="true"]{
-  opacity:1;
-  visibility:visible;
-  transform:translate(-50%,0);
-}
+.gameToast[data-visible="true"]{opacity:1;visibility:visible;transform:translate(0,-50%)}
 
 @media(max-width:900px){
   .playArena{
@@ -138,17 +111,6 @@
   .gameToast{transition:none}
 }
 
-/* Chat toast is positioned at the board's right-center, not at the top. */
-.gameToast{
-  top:50%;
-  left:auto;
-  right:clamp(150px,24vw,205px);
-  max-width:min(38vw,360px);
-  white-space:normal;
-  border-radius:14px;
-  transform:translate(0,-50%) translateX(8px);
-}
-.gameToast[data-visible="true"]{transform:translate(0,-50%)}
 @media(max-width:900px){.gameToast{right:clamp(126px,25vw,174px);max-width:42vw}}
 @media(max-width:560px){.gameToast{right:124px;max-width:calc(100vw - 145px);font-size:10px}}
 
@@ -156,13 +118,7 @@
 
 
 
-/* Borne-off trays use board-checker sizing only; dice and player avatars are untouched. */
-.offPocket{
-  position:relative;
-  justify-content:flex-start;
-  gap:0;
-  padding:7px 1px 5px;
-}
+/* Borne-off tray count, stack, and interactions. */
 .offPocketCount{
   position:relative;
   z-index:20;
@@ -184,26 +140,16 @@
   font-variant-numeric:tabular-nums;
 }
 .offPocketStack{
-  /* Keep the exact board point checker-size formula. */
-  --off-piece-size:min(90cqw,calc((100cqh - 12px)/5),62px);
-  /* Spread 15 pieces evenly from the bottom to the top of the available stack area. */
+  container-type:size;
+  --off-piece-size:min(92cqw,calc((100cqh - 4px)/5),62px);
   --off-stack-step:calc((100% - var(--off-piece-size))/14);
-  position:relative;
-  display:block;
-  flex:1 1 auto;
-  width:100%;
-  min-height:0;
-  overflow:hidden;
+  position:relative;display:block;flex:1 1 auto;width:100%;min-height:0;overflow:hidden;
 }
 .offPocketStack .checker{
-  position:absolute;
-  left:50%;
-  bottom:0;
-  width:var(--off-piece-size);
-  height:var(--off-piece-size);
-  box-sizing:border-box;
-  transform:translateX(-50%);
+  position:absolute;left:50%;bottom:0;width:var(--off-piece-size);height:var(--off-piece-size);
+  max-width:none;box-sizing:border-box;transform:translateX(-50%);scale:.49;
   filter:drop-shadow(0 2px 2px #0009);
+  box-shadow:0 2px 3px #0009,inset 0 2px 3px #fff6,inset 0 -3px 5px #0009;
 }
 .offPocketLegal .offPocketCount{
   border-color:#f0b90b;
@@ -228,19 +174,3 @@
 .offPocket[role="button"][aria-disabled="true"]{cursor:default}
 
 
-/* Match the board point's exact final checker sizing formula.
-   The tray stack is its own size container, just like each board point. */
-.offPocketStack{
-  container-type:size;
-  --off-piece-size:min(92cqw,calc((100cqh - 4px)/5),62px);
-  --off-stack-step:calc((100% - var(--off-piece-size))/14);
-}
-.offPocketStack .checker{
-  width:var(--off-piece-size);
-  height:var(--off-piece-size);
-  max-width:none;
-  box-sizing:border-box;
-  box-shadow:0 2px 3px #0009,inset 0 2px 3px #fff6,inset 0 -3px 5px #0009;
-}
-/* Exit-tray checkers: 30% smaller than their current rendered size. */
-.offPocketStack .checker{scale:.49}
