@@ -198,6 +198,9 @@
   min-width: 0;
 }
 
+.profileChecker.darkPlayerChecker {
+  box-shadow: none;
+}
 .profileChecker {
   display: block;
   flex: 0 0 auto;
