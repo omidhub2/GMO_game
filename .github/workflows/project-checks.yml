@@ -2,7 +2,10 @@ name: Project checks
 
 on:
   push:
-    branches: [main, fix/local-ui-regressions]
+    branches:
+      - main
+      - cloudflare-clean
+      - fix/local-ui-regressions
   pull_request:
     branches: [main]
 
