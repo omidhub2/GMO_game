@@ -213,11 +213,12 @@
 .board{height:100%;grid-template-columns:minmax(0,1fr) clamp(28px,3.5vw,40px) minmax(0,1fr)}
 .point{min-width:0;min-height:0;overflow:hidden}
 .checkerStack{
-  --piece-gap:-2px;
+  /* Keep the 20% increase inside each point instead of clipping into neighbors. */
   --piece-inset:clamp(2px,1cqh,5px);
-  /* Board pieces are 20% larger; off-tray sizing is defined separately. */
-  --piece-size:calc(min(90cqw,calc((100cqh - 12px)/5),62px) * 1.2);
-  overflow:hidden;
+  --piece-size:calc(min(83.333cqw,calc((100cqh - 12px)/5),62px) * 1.2);
+  /* Five visible checkers fit vertically while overlapping by about 21% each. */
+  --piece-gap:calc(var(--piece-size) * -0.21);
+  overflow:visible;
 }
 .checkerStack .checker{
   width:var(--piece-size);
