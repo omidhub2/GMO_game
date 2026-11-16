@@ -457,7 +457,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
           <div className={matchControlsStyles.resultOrnament} aria-hidden="true"><Sparkles/><span/><Sparkles/></div>
           <div className={matchControlsStyles.resultBadge}><Crown size={16}/> انتخاب رنگ مهره‌ها</div>
           <h2 className={matchControlsStyles.rematchTitle}>بازیکنان رنگ مهره‌ها را انتخاب کنند</h2>
-          <p className={matchControlsStyles.rematchDescription}>بازیکن اول رنگ خود را انتخاب می‌کند؛ رنگ بازیکن دوم به‌صورت خودکار مخالف خواهد بود. امتیازهای مسابقه حفظ می‌شوند.</p>
+          <p id="backgammon-result-description" className={matchControlsStyles.rematchDescription}>بازیکن اول رنگ خود را انتخاب می‌کند؛ رنگ بازیکن دوم به‌صورت خودکار مخالف خواهد بود. امتیازهای مسابقه حفظ می‌شوند.</p>
           <div className={matchControlsStyles.rematchChoices} role="group" aria-label="انتخاب رنگ بازیکن اول">
             <button type="button" aria-pressed={rematchColor === "light"} className={rematchColor === "light" ? matchControlsStyles.rematchChoiceSelected : ""} onClick={()=>setRematchColor("light")}><i className={`${boardStyles.checker} ${boardStyles.lightChecker}`}/> سفید</button>
             <button type="button" aria-pressed={rematchColor === "dark"} className={rematchColor === "dark" ? matchControlsStyles.rematchChoiceSelected : ""} onClick={()=>setRematchColor("dark")}><i className={`${boardStyles.checker} ${boardStyles.darkChecker}`}/> سیاه</button>
