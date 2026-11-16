@@ -384,11 +384,11 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
             </div>
             <div className={playerRailStyles.profileMeta} dir="ltr">
               <span className={playerRailStyles.profileMetaItem} data-player-match-score aria-label={`امتیاز مسابقه ${fa(state.scores[side])}`}>
-                <Trophy size={12}/>
+                <Trophy size={13}/>
                 <small>{fa(state.scores[side])}</small>
               </span>
               <span className={playerRailStyles.profileMetaItem} data-player-timer aria-label={`زمان باقی‌مانده ${fa(turn === side ? turnSeconds : 30)} ثانیه`}>
-                <Clock3 size={12}/>
+                <Clock3 size={13}/>
                 <small>{`00:${String(turn === side ? turnSeconds : 30).padStart(2,"0")}`}</small>
               </span>
             </div>
