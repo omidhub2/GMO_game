@@ -1,0 +1,246 @@
+/* Backgammon game viewport, board/off-lane composition and turn toast. */
+
+.gameShell{
+  position:fixed;
+  inset:0;
+  z-index:40;
+  width:100vw;
+  width:100dvw;
+  height:var(--tg-viewport-height,100dvh);
+  min-width:0;
+  min-height:0;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  background:#0b0b0c;
+  color:#f2ecdf;
+}
+.gameShell:fullscreen{width:100%;height:100%}
+
+.playArena{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) clamp(38px,5vw,62px) clamp(132px,22vw,188px);
+  grid-template-rows:minmax(0,1fr);
+  gap:clamp(3px,.9vw,8px);
+  width:100%;
+  height:auto;
+  min-width:0;
+  min-height:0;
+  margin:0;
+  overflow:hidden;
+}
+.playArena > :first-child,
+.playArena > :nth-child(2),
+.playArena > :nth-child(3){
+  height:100%;
+  min-width:0;
+  min-height:0;
+}
+
+.offLane{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:repeat(2,minmax(0,1fr));
+  min-width:0;
+  min-height:0;
+  gap:8px;
+  padding:5px 0;
+}
+.offPocket{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  min-width:0;
+  min-height:0;
+  padding:7px 2px;
+  overflow:hidden;
+  border:1px solid #b995564d;
+  border-radius:12px;
+  background:linear-gradient(145deg,#272320,#111113);
+  box-shadow:inset 0 1px #ffffff12;
+  color:#f1dfad;
+  text-align:center;
+}
+.offPocketTotal{font-size:11px;line-height:1;color:#c7bba5;font-weight:700}
+.offPocket > i{width:clamp(28px,3vw,38px)}
+.offPocket strong{font-size:19px;line-height:1.1}
+.offPocket strong small{font-size:10px;color:#c7bba5}
+.offPocketLegal{
+  border:2px dashed #f0b90b;
+  box-shadow:0 0 18px #f0b90b33,inset 0 1px #ffffff18;
+}
+.offPocketMoves{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  width:100%;
+  padding:0 3px;
+  box-sizing:border-box;
+}
+.offPocketMoves button{
+  min-height:32px;
+  padding-inline:1px;
+  border:1px solid #f0b90b;
+  border-radius:7px;
+  background:#f0b90b27;
+  color:#ffe8a1;
+  font-size:11px;
+  font-weight:700;
+}
+
+.gameToast{
+  position:absolute;
+  z-index:45;
+  top:calc(8px + env(safe-area-inset-top));
+  left:50%;
+  max-width:min(80vw,420px);
+  padding:8px 16px;
+  border:1px solid #f0b90b88;
+  border-radius:999px;
+  background:linear-gradient(145deg,#252527f5,#101012f5);
+  color:#ffe7a1;
+  font-size:13px;
+  font-weight:700;
+  text-align:center;
+  white-space:nowrap;
+  box-shadow:0 9px 24px #000b,0 0 22px #f0b90b20;
+  opacity:0;
+  visibility:hidden;
+  transform:translate(-50%,-6px);
+  transition:opacity .45s ease,transform .45s ease,visibility .45s;
+}
+.gameToast[data-visible="true"]{
+  opacity:1;
+  visibility:visible;
+  transform:translate(-50%,0);
+}
+
+@media(max-width:900px){
+  .playArena{
+    grid-template-columns:minmax(0,1fr) clamp(36px,7vw,52px) clamp(124px,24vw,164px);
+    gap:clamp(3px,.8vw,6px);
+  }
+  .offLane{gap:5px;padding:2px 0}
+  .offPocket{gap:3px;padding:3px 1px;border-radius:8px}
+  .offPocketTotal{font-size:9px}
+  .offPocket > i{width:24px}
+  .offPocket strong{font-size:14px}
+  .offPocket strong small{font-size:8px}
+  .offPocketMoves button{min-height:26px;font-size:8px}
+  .gameToast{padding:6px 11px;font-size:11px}
+}
+@media(max-width:360px){
+  .playArena{grid-template-columns:minmax(0,1fr) 34px 122px;gap:3px}
+}
+@media(prefers-reduced-motion:reduce){
+  .gameToast{transition:none}
+}
+
+/* Chat toast is positioned at the board's right-center, not at the top. */
+.gameToast{
+  top:50%;
+  left:auto;
+  right:clamp(150px,24vw,205px);
+  max-width:min(38vw,360px);
+  white-space:normal;
+  border-radius:14px;
+  transform:translate(0,-50%) translateX(8px);
+}
+.gameToast[data-visible="true"]{transform:translate(0,-50%)}
+@media(max-width:900px){.gameToast{right:clamp(126px,25vw,174px);max-width:42vw}}
+@media(max-width:560px){.gameToast{right:124px;max-width:calc(100vw - 145px);font-size:10px}}
+
+
+
+
+
+/* Borne-off trays use board-checker sizing only; dice and player avatars are untouched. */
+.offPocket{
+  position:relative;
+  justify-content:flex-start;
+  gap:0;
+  padding:7px 1px 5px;
+}
+.offPocketCount{
+  position:relative;
+  z-index:20;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  min-width:27px;
+  min-height:24px;
+  margin-bottom:5px;
+  padding:1px 7px;
+  border:1px solid #e3bd64a8;
+  border-radius:999px;
+  background:linear-gradient(145deg,#4a3a1b,#171613);
+  color:#ffe6a0;
+  box-shadow:0 3px 9px #0008,0 0 12px #e2b64a20;
+  font-size:15px;
+  font-weight:900;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.offPocketStack{
+  /* Keep the exact board point checker-size formula. */
+  --off-piece-size:min(90cqw,calc((100cqh - 12px)/5),62px);
+  /* Spread 15 pieces evenly from the bottom to the top of the available stack area. */
+  --off-stack-step:calc((100% - var(--off-piece-size))/14);
+  position:relative;
+  display:block;
+  flex:1 1 auto;
+  width:100%;
+  min-height:0;
+  overflow:hidden;
+}
+.offPocketStack .checker{
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:var(--off-piece-size);
+  height:var(--off-piece-size);
+  box-sizing:border-box;
+  transform:translateX(-50%);
+  filter:drop-shadow(0 2px 2px #0009);
+}
+.offPocketLegal .offPocketCount{
+  border-color:#f0b90b;
+  color:#fff0b5;
+  box-shadow:0 0 14px #f0b90b55;
+}
+@media(max-width:900px){
+  .offPocket{padding:5px 1px 4px}
+  .offPocketCount{min-width:23px;min-height:21px;margin-bottom:3px;padding-inline:5px;font-size:12px}
+}
+@media(max-height:420px){
+  .offPocket{padding-block:3px}
+  .offPocketCount{min-height:19px;margin-bottom:2px}
+}
+
+
+.offPocket[role="button"]{cursor:default;outline:none;transition:border-color .16s ease,box-shadow .16s ease}
+.offPocket[role="button"][aria-disabled="false"]{cursor:pointer}
+.offPocket[role="button"][aria-disabled="false"]:hover{border-color:#e3bd64;box-shadow:inset 0 0 14px #e3bd641c,0 0 12px #e3bd6422}
+.offPocket[role="button"][aria-disabled="false"]:active{box-shadow:inset 0 0 18px #e3bd6430}
+.offPocket[role="button"]:focus-visible{outline:2px solid #f0c65f;outline-offset:2px}
+.offPocket[role="button"][aria-disabled="true"]{cursor:default}
+
+
+/* Match the board point's exact final checker sizing formula.
+   The tray stack is its own size container, just like each board point. */
+.offPocketStack{
+  container-type:size;
+  --off-piece-size:min(92cqw,calc((100cqh - 4px)/5),62px);
+  --off-stack-step:calc((100% - var(--off-piece-size))/14);
+}
+.offPocketStack .checker{
+  width:var(--off-piece-size);
+  height:var(--off-piece-size);
+  max-width:none;
+  box-sizing:border-box;
+  box-shadow:0 2px 3px #0009,inset 0 2px 3px #fff6,inset 0 -3px 5px #0009;
+}
+/* Exit-tray checkers: 30% smaller than their current rendered size. */
+.offPocketStack .checker{scale:.49}
