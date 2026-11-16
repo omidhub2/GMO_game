@@ -218,3 +218,11 @@
   .offPocket{padding-block:3px}
   .offPocketCount{min-height:19px;margin-bottom:2px}
 }
+
+
+.offPocket[role="button"]{cursor:default;outline:none;transition:border-color .16s ease,box-shadow .16s ease}
+.offPocket[role="button"][aria-disabled="false"]{cursor:pointer}
+.offPocket[role="button"][aria-disabled="false"]:hover{border-color:#e3bd64;box-shadow:inset 0 0 14px #e3bd641c,0 0 12px #e3bd6422}
+.offPocket[role="button"][aria-disabled="false"]:active{box-shadow:inset 0 0 18px #e3bd6430}
+.offPocket[role="button"]:focus-visible{outline:2px solid #f0c65f;outline-offset:2px}
+.offPocket[role="button"][aria-disabled="true"]{cursor:default}
