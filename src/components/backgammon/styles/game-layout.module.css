@@ -156,7 +156,7 @@
 
 
 
-/* Borne-off stack uses the same responsive piece-size formula as board points. */
+/* Borne-off trays use board-checker sizing only; dice and player avatars are untouched. */
 .offPocket{
   position:relative;
   justify-content:flex-start;
@@ -184,17 +184,16 @@
   font-variant-numeric:tabular-nums;
 }
 .offPocketStack{
-  --off-piece-gap:-2px;
-  --off-piece-inset:2px;
+  /* Keep the exact board point checker-size formula. */
   --off-piece-size:min(90cqw,calc((100cqh - 12px)/5),62px);
-  --off-stack-step:clamp(7px,1.8cqh,13px);
+  /* Spread 15 pieces evenly from the bottom to the top of the available stack area. */
+  --off-stack-step:calc((100% - var(--off-piece-size))/14);
   position:relative;
   display:block;
   flex:1 1 auto;
   width:100%;
   min-height:0;
   overflow:hidden;
-  container-type:size;
 }
 .offPocketStack .checker{
   position:absolute;
@@ -214,10 +213,8 @@
 @media(max-width:900px){
   .offPocket{padding:5px 1px 4px}
   .offPocketCount{min-width:23px;min-height:21px;margin-bottom:3px;padding-inline:5px;font-size:12px}
-  .offPocketStack{--off-stack-step:clamp(6px,1.6cqh,10px)}
 }
 @media(max-height:420px){
   .offPocket{padding-block:3px}
   .offPocketCount{min-height:19px;margin-bottom:2px}
-  .offPocketStack{--off-piece-size:min(90cqw,calc((100cqh - 8px)/5),42px);--off-stack-step:6px}
 }
