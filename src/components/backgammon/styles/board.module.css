@@ -28,6 +28,7 @@
 }
 .board {
   --chat-panel-width:min(217px,29.4%);
+  --chat-horizontal-offset:30%;
   --chat-quick-stack-height:min(82%,320px);
   position:relative;
   display:grid;
@@ -366,11 +367,11 @@
 .chatPanel {
   position:absolute;
   z-index:40;
-  right:10px;
+  right:calc(10px - var(--chat-horizontal-offset));
   top:50%;
   display:flex;
   flex-direction:column;
-  width:min(217px,29.4%);
+  width:var(--chat-panel-width);
   height:var(--chat-quick-stack-height);
   max-height:var(--chat-quick-stack-height);
   box-sizing:border-box;
@@ -394,7 +395,7 @@
   position:absolute;
   z-index:41;
   top:50%;
-  right:calc(10px + var(--chat-panel-width) + 3px);
+  right:calc(10px + var(--chat-panel-width) + 3px - var(--chat-horizontal-offset));
   height:var(--chat-quick-stack-height);
   max-height:var(--chat-quick-stack-height);
   box-sizing:border-box;
@@ -458,14 +459,14 @@
 }
 @media(max-width:700px) {
   .table { border-radius:10px; }
-   .board { --chat-panel-width:min(189px,38.5%); --chat-quick-stack-height:min(82%,320px); grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr); border-width:2px; }
+   .board { --chat-panel-width:min(189px,38.5%); --chat-horizontal-offset:30%; --chat-quick-stack-height:min(82%,320px); grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr); border-width:2px; }
   .bar { font-size:6px; }
   .moveBadge { padding:1px 2px; font-size:9px; }
   .checkerStack { --board-piece-size:calc(min(92cqw,46px) * 1.68); --board-piece-inset:clamp(4px,1cqh,8px); }
   .playerRollPrompt { gap:5px; padding:6px 8px; font-size:10px; }
   .playerRollPrompt i { width:20px; }
-  .chatPanel { right:5px; width:var(--chat-panel-width); padding:8px; }
-  .quickMessages { height:var(--chat-quick-stack-height); max-height:var(--chat-quick-stack-height); right:calc(5px + var(--chat-panel-width) + 3px); gap:3px; padding:2px; }
+  .chatPanel { right:calc(5px - var(--chat-horizontal-offset)); width:var(--chat-panel-width); padding:8px; }
+  .quickMessages { height:var(--chat-quick-stack-height); max-height:var(--chat-quick-stack-height); right:calc(5px + var(--chat-panel-width) + 3px - var(--chat-horizontal-offset)); gap:3px; padding:2px; }
   .quickMessages button { padding:6px 8px; font-size:10px; }
   .chatMessages { max-height:none; }
 }
