@@ -27,7 +27,7 @@
     inset 0 0 0 1px #f0b90b12;
 }
 .board {
-  --chat-panel-width:var(--chat-panel-width);
+  --chat-panel-width:min(217px,29.4%);
   --chat-quick-stack-height:min(82%,320px);
   position:relative;
   display:grid;
