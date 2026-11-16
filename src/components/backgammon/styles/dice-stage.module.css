@@ -92,14 +92,14 @@
 
 
 /* Slightly larger dice, balanced against the taller dice station. */
-.diceStageRail .diceStage .railDieScene{--size:clamp(28px,13cqh,48px)}
+.diceStageRail .diceStage .railDieScene{--size:clamp(30px,14cqh,52px)}
 .diceStageRail .diceStage [data-dice-box] [role="img"]{--size:clamp(28px,13cqh,48px)}
 .diceStageRail .diceStage .railCenterDice{gap:clamp(4px,1.2cqh,8px)}
 @media(max-width:900px){
-  .diceStageRail .diceStage .railDieScene{--size:clamp(27px,12.5cqh,44px)}
+  .diceStageRail .diceStage .railDieScene{--size:clamp(29px,13.5cqh,48px)}
   .diceStageRail .diceStage [data-dice-box] [role="img"]{--size:clamp(27px,12.5cqh,44px)}
 }
 @media(max-height:400px){
-  .diceStageRail .diceStage .railDieScene{--size:34px}
+  .diceStageRail .diceStage .railDieScene{--size:36px}
   .diceStageRail .diceStage [data-dice-box] [role="img"]{--size:34px}
 }
