@@ -343,7 +343,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
           >
             <strong className={gameLayoutStyles.offPocketCount} aria-live="polite">{fa(board.off[side])}</strong>
             <div className={gameLayoutStyles.offPocketStack} data-off-stack aria-hidden="true">
-              {Array.from({length: board.off[side]}, (_, index) => <i key={index} className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} style={{ bottom: `calc(${index} * var(--off-stack-step))` }}/>) }
+              {Array.from({length: board.off[side]}, (_, index) => <i key={index} className={`${styles.checker} ${gameLayoutStyles.offPocketChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} style={{ bottom: `calc(${index} * var(--off-stack-step))` }}/>) }
             </div>
           </div>;
         })}
