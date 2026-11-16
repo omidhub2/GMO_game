@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight, ChevronRight, Crosshair, Gamepad2, Trophy, UserRound, UsersRound, Wallet, X, Volume2, VolumeX } from "lucide-react";
 import LobbyWalletPanel, { type LobbyWalletData } from "./lobby-wallet-panel";
 import styles from "./game-menu.module.css";
@@ -107,7 +108,7 @@ export default function GameMenu() {
       <Link href="/" className={styles.brand} aria-label="GMO Arena home"><span className={styles.brandMark}>G</span><span>GMO<small>ARENA</small></span></Link>
       <div className={styles.headerCenter}>PLAYER HUB <span>/</span> 01</div>
       <button onClick={() => setDialog("wallet")} className={styles.wallet} aria-label="Open wallet"><Wallet size={17} /><span>{formatGmo(totalBalance)} <b>GMO</b><small>≈ {formatUsd(totalBalance)}{walletData.demo ? " · Demo" : ""}</small></span><ChevronRight size={14} /></button>
-      <Link href="/account" className={styles.profile} aria-label="Open profile">{playerAvatar ? <img src={playerAvatar} alt="" /> : <UserRound size={20} />}</Link>
+      <Link href="/account" className={styles.profile} aria-label="Open profile">{playerAvatar ? <Image src={playerAvatar} alt="" width={44} height={44} unoptimized /> : <UserRound size={20} />}</Link>
     </header>
     <aside className={styles.side}><span>GMO / OPERATIONS</span><i /><span>PLAY. COMPETE. PREDICT.</span></aside>
     <div className={styles.stage}>
