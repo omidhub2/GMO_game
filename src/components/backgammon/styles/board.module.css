@@ -182,7 +182,7 @@
 .lowerPoint::before { bottom:0; transform:rotate(180deg); }
 .checkerStack {
   /* Match the original board sizing formula, then apply the requested +20% once. */
-  --board-piece-size:calc(min(92cqw,calc((100cqh - 4px)/5),62px) * 1.2);
+  --board-piece-size:calc(min(92cqw,calc((100cqh - 4px)/5),62px) * 2.4);
   --board-piece-gap:calc(var(--board-piece-size) * -0.21);
   --board-piece-inset:clamp(5px,1cqh,10px);
   position:absolute;
@@ -439,7 +439,7 @@
   .board { grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr); border-width:2px; }
   .bar { font-size:6px; }
   .moveBadge { padding:1px 2px; font-size:9px; }
-  .checkerStack { --board-piece-size:calc(min(92cqw,46px) * 1.2); --board-piece-inset:clamp(4px,1cqh,8px); }
+  .checkerStack { --board-piece-size:calc(min(92cqw,46px) * 2.4); --board-piece-inset:clamp(4px,1cqh,8px); }
   .playerRollPrompt { gap:5px; padding:6px 8px; font-size:10px; }
   .playerRollPrompt i { width:20px; }
   .chatPanel { right:5px; width:min(270px,55%); padding:8px; }
@@ -449,7 +449,7 @@
 }
 @media(max-width:560px) {
   .board { grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr); }
-  .checkerStack { --board-piece-size:calc(min(92cqw,42px) * 1.2); }
+  .checkerStack { --board-piece-size:calc(min(92cqw,42px) * 2.4); }
 }
 @media(max-width:460px) {
   .quickMessages { max-width:calc(100% - 220px); padding:4px; }
@@ -460,7 +460,7 @@
 }
 @media(max-height:500px) and (min-width:600px) {
   .table { padding:4px; }
-  .checkerStack { --board-piece-size:calc(min(92cqw,25px) * 1.2); --board-piece-inset:4px; }
+  .checkerStack { --board-piece-size:calc(min(92cqw,25px) * 2.4); --board-piece-inset:4px; }
 }
 @media(max-height:450px) {
   .rollHologram { min-height:100px; padding:5px 9px; gap:2px; }
