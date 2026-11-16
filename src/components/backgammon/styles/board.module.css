@@ -349,10 +349,16 @@
   text-shadow:0 0 10px #f0b90b9c;
 }
 .rollHologramLine { width:54%; height:1px; background:linear-gradient(90deg,transparent,#f0b90b,transparent); }
+/* Lift the complete board above neighboring game layers while chat is open.
+   The board normally clips its contents; release that clip for the chat drawer. */
+.board:has([data-chat-panel]) {
+  z-index:10000;
+  overflow:visible;
+}
 .chatBackdrop {
   position:fixed;
   inset:0;
-  z-index:39;
+  z-index:10001;
   display:block;
   width:100vw;
   height:100dvh;
@@ -366,7 +372,7 @@
 }
 .chatPanel {
   position:absolute;
-  z-index:40;
+  z-index:10002;
   right:calc(10px - var(--chat-horizontal-offset));
   top:50%;
   display:flex;
@@ -393,7 +399,7 @@
 .chatMessages p span { display:block; margin-bottom:3px; color:#d6b76f; font-size:9px; }
 .quickMessages {
   position:absolute;
-  z-index:41;
+  z-index:10003;
   top:50%;
   right:calc(10px + var(--chat-panel-width) + 3px - var(--chat-horizontal-offset));
   height:var(--chat-quick-stack-height);
@@ -465,8 +471,8 @@
   .checkerStack { --board-piece-size:calc(min(92cqw,46px) * 1.68); --board-piece-inset:clamp(4px,1cqh,8px); }
   .playerRollPrompt { gap:5px; padding:6px 8px; font-size:10px; }
   .playerRollPrompt i { width:20px; }
-  .chatPanel { right:calc(5px - var(--chat-horizontal-offset)); width:var(--chat-panel-width); padding:8px; }
-  .quickMessages { height:var(--chat-quick-stack-height); max-height:var(--chat-quick-stack-height); right:calc(5px + var(--chat-panel-width) + 3px - var(--chat-horizontal-offset)); gap:3px; padding:2px; }
+  .chatPanel { z-index:10002; right:calc(5px - var(--chat-horizontal-offset)); width:var(--chat-panel-width); padding:8px; }
+  .quickMessages { z-index:10003; height:var(--chat-quick-stack-height); max-height:var(--chat-quick-stack-height); right:calc(5px + var(--chat-panel-width) + 3px - var(--chat-horizontal-offset)); gap:3px; padding:2px; }
   .quickMessages button { padding:6px 8px; font-size:10px; }
   .chatMessages { max-height:none; }
 }
