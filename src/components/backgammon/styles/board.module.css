@@ -354,7 +354,7 @@
   top:50%;
   display:flex;
   flex-direction:column;
-  width:min(310px,42%);
+  width:min(217px,29.4%);
   height:var(--chat-quick-stack-height);
   max-height:var(--chat-quick-stack-height);
   box-sizing:border-box;
@@ -378,21 +378,21 @@
   position:absolute;
   z-index:41;
   top:50%;
-  right:calc(10px + min(310px,42%) + 12px);
+  right:calc(10px + min(217px,29.4%) + 3px);
   height:var(--chat-quick-stack-height);
   max-height:var(--chat-quick-stack-height);
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
   align-items:stretch;
-  gap:7px;
+  gap:4px;
   width:max-content;
-  max-width:calc(100% - 350px);
-  padding:9px;
+  max-width:calc(100% - 245px);
+  padding:2px;
   transform:translateY(-50%);
 }
-.quickMessages button { flex:1 1 0; min-height:0; padding:8px 12px; border:1px solid #c4a05a35; border-radius:11px 11px 3px 11px; background:#ffffff0c; color:#f3e6c7; font-size:11px; white-space:nowrap; text-align:center; cursor:pointer; transition:background .16s ease,border-color .16s ease; }
-.quickMessages button:hover { background:#ffffff18; border-color:#c4a05a65; }
+.quickMessages button { flex:1 1 0; min-height:0; padding:8px 12px; border:1px solid #c4a05a35; border-radius:11px 11px 3px 11px; background:linear-gradient(145deg,#29292def,#111115f2); color:#f3e6c7; font-size:11px; white-space:nowrap; text-align:center; cursor:pointer; transition:background .16s ease,border-color .16s ease; }
+.quickMessages button:hover { background:linear-gradient(145deg,#34342fef,#19191df2); border-color:#c4a05a65; }
 .chatComposer { display:flex; gap:6px; margin-top:5px; }
 .chatComposer input { flex:1; min-width:0; height:38px; padding:0 10px; border:1px solid #d5ad5555; border-radius:10px; background:#0d0d10; color:#fff1ce; outline:none; }
 .chatComposer input:focus { border-color:#f0c75e; }
@@ -448,8 +448,8 @@
   .checkerStack { --board-piece-size:calc(min(92cqw,46px) * 1.68); --board-piece-inset:clamp(4px,1cqh,8px); }
   .playerRollPrompt { gap:5px; padding:6px 8px; font-size:10px; }
   .playerRollPrompt i { width:20px; }
-  .chatPanel { right:5px; width:min(270px,55%); padding:8px; }
-  .quickMessages { height:var(--chat-quick-stack-height); max-height:var(--chat-quick-stack-height); right:calc(5px + min(270px,55%) + 7px); gap:5px; padding:6px; }
+  .chatPanel { right:5px; width:min(189px,38.5%); padding:8px; }
+  .quickMessages { height:var(--chat-quick-stack-height); max-height:var(--chat-quick-stack-height); right:calc(5px + min(189px,38.5%) + 3px); gap:3px; padding:2px; }
   .quickMessages button { padding:6px 8px; font-size:10px; }
   .chatMessages { max-height:none; }
 }
@@ -458,7 +458,7 @@
   .checkerStack { --board-piece-size:calc(min(92cqw,42px) * 1.68); }
 }
 @media(max-width:460px) {
-  .quickMessages { max-width:calc(100% - 220px); padding:4px; }
+  .quickMessages { max-width:calc(100% - 155px); padding:2px; }
   .quickMessages button { white-space:normal; overflow-wrap:anywhere; }
 }
 @media(max-width:600px) {
