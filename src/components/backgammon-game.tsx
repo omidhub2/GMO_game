@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, MessageCircle, Clock3, Send, X, Settings2, Trophy, Crown, Sparkles } from "lucide-react";
 import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
@@ -421,7 +422,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
           return <section key={side} dir="ltr" className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`پروفایل بازیکن ${names[side]}`}>
             <div className={playerRailStyles.avatarWrap}>
               <div className={playerRailStyles.profileAvatar} data-player-avatar aria-label={`آواتار ${playerName(side)}`}>
-                <img src={side === humanSide ? playerAvatar : "/avatars/gmo-avatar-3.webp"} alt="" aria-hidden="true" />
+                <Image src={side === humanSide ? playerAvatar : "/avatars/gmo-avatar-3.webp"} alt="" aria-hidden="true" width={64} height={64} unoptimized />
               </div>
               <span className={`${playerRailStyles.profileMetaItem} ${playerRailStyles.playerTimer}`} data-player-timer aria-label={`زمان باقی‌مانده ${turn === side ? turnSeconds : 30} ثانیه`}>
                 <Clock3 size={13}/>
