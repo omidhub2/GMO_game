@@ -123,6 +123,13 @@ describe("Persian manual board interactions", () => {
     click(button("پذیرش دوبل")); expect(container.textContent).toContain("مالک: سفید");
     expect(button("پیشنهاد دوبل ×۴").disabled).toBe(true);
   });
+  it("renders borne-off trays with live counts and a stacked checker area", () => {
+    const trays = [...container.querySelectorAll('[aria-label^="مهره‌های خارج‌شدهٔ"]')];
+    expect(trays).toHaveLength(2);
+    expect(trays.map(tray => tray.querySelector("strong")?.textContent?.trim())).toEqual(["۰", "۰"]);
+    expect(trays.every(tray => tray.querySelector(".offPocketStack"))).toBe(true);
+    expect(trays.every(tray => tray.querySelector(".offPocketStack")?.children.length === 0)).toBe(true);
+  });
   it("renders refreshed player profile cards without hit or borne-off labels", () => {
     const cards = [...container.querySelectorAll('section[class*="playerStats"]')];
     expect(cards).toHaveLength(2);
