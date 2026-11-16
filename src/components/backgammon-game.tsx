@@ -373,7 +373,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
             data-off-tray={side}
             role="button"
             tabIndex={canBearOff ? 0 : -1}
-            aria-label={`خروج مهره‌های ${names[side]}؛ ${fa(board.off[side])} مهره خارج‌شده`}
+            aria-label={`خروج مهره‌های ${names[side]}؛ ${board.off[side]} مهره خارج‌شده`}
             aria-disabled={!canBearOff}
             onClick={() => { if (canBearOff) move(options[0]); }}
             onKeyDown={event => {
@@ -383,7 +383,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
               }
             }}
           >
-            <strong className={gameLayoutStyles.offPocketCount} aria-live="polite">{fa(board.off[side])}</strong>
+            <strong className={gameLayoutStyles.offPocketCount} aria-live="polite">{String(board.off[side])}</strong>
             <div className={gameLayoutStyles.offPocketStack} data-off-stack aria-hidden="true">
               {Array.from({length: board.off[side]}, (_, index) => <i key={index} className={`${styles.checker} ${gameLayoutStyles.offPocketChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} style={{ bottom: `calc(${index} * var(--off-stack-step))` }}/>) }
             </div>
@@ -421,7 +421,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
                 <button type="button" data-player-message className={playerRailStyles.messageButton} aria-label={`پیام به ${playerName(side)}`} onClick={()=>setChatOpen(true)} title="ارسال پیام">
                   <MessageCircle className={messagePulse ? playerRailStyles.messagePulse : ""} size={19} strokeWidth={1.9}/>
                 </button>
-                <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
+                <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker} ${side === "dark" ? playerRailStyles.darkPlayerChecker : ""}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
               </div>
             </div>
             <div className={playerRailStyles.profileMeta} dir="ltr">
