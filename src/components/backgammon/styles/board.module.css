@@ -273,7 +273,7 @@
   font-weight:800;
   text-align:center;
   white-space:normal;
-  box-shadow:0 4px 16px #0009,0 0 18px #d5b5538;
+  box-shadow:0 4px 16px #0009,0 0 18px #d5ad5538;
   transform:translate(-50%,-50%);
   pointer-events:none;
   animation:playerRollPromptIn .28s ease-out;
