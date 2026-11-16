@@ -119,8 +119,8 @@
   height:44px!important;
 }
 @media(max-width:900px){
-  .diceBox.railDiceBox .dieScene.railDieScene{--size:42px!important;width:42px!important;height:42px!important}
+  .diceBox.railDiceBox .dieScene.railDieScene{--size:46px!important;width:46px!important;height:46px!important}
 }
 @media(max-height:400px){
-  .diceBox.railDiceBox .dieScene.railDieScene{--size:36px!important;width:36px!important;height:36px!important}
+  .diceBox.railDiceBox .dieScene.railDieScene{--size:40px!important;width:40px!important;height:40px!important}
 }
