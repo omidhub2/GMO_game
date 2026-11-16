@@ -27,6 +27,7 @@
     inset 0 0 0 1px #f0b90b12;
 }
 .board {
+  --chat-quick-stack-height:min(82%,320px);
   position:relative;
   display:grid;
   grid-template-columns:minmax(0,1fr) clamp(28px,3.5vw,40px) minmax(0,1fr);
@@ -347,7 +348,6 @@
 }
 .rollHologramLine { width:54%; height:1px; background:linear-gradient(90deg,transparent,#f0b90b,transparent); }
 .chatPanel {
-  --chat-quick-stack-height:min(82%,320px);
   position:absolute;
   z-index:40;
   right:10px;
@@ -444,7 +444,7 @@
 }
 @media(max-width:700px) {
   .table { border-radius:10px; }
-  .board { grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr); border-width:2px; }
+   .board { --chat-quick-stack-height:min(82%,320px); grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr); border-width:2px; }
   .bar { font-size:6px; }
   .moveBadge { padding:1px 2px; font-size:9px; }
   .checkerStack { --board-piece-size:calc(min(92cqw,46px) * 1.68); --board-piece-inset:clamp(4px,1cqh,8px); }
