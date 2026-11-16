@@ -1,0 +1,293 @@
+/* Backgammon board layout, points, checker stacks and board interactions. */
+.playPage { composes: playPage from "../../backgammon-game.module.css"; }
+.checker { composes: checker from "../../backgammon-game.module.css"; }
+.lightChecker { composes: lightChecker from "../../backgammon-game.module.css"; }
+.darkChecker { composes: darkChecker from "../../backgammon-game.module.css"; }
+
+
+.table{min-width:0;min-height:0;height:100%;display:grid;grid-template-rows:22px minmax(0,1fr) 22px;padding:7px 10px;border:1px solid #b1884b;border-radius:16px;background:linear-gradient(135deg,#6a4b2f,#312118 30%,#533923 72%,#2b1b14);box-shadow:0 14px 40px #0007,inset 0 1px #f8db9c66,inset 0 -3px 9px #0009}
+
+.board{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr));overflow:hidden;border:4px solid #8d6338;border-radius:7px;background:#38251a;box-shadow:inset 0 0 30px #0008,0 3px 8px #0008}
+
+.half{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));min-height:0;background:repeating-linear-gradient(92deg,#3e281c 0,#493022 4%,#3a251b 8%)}
+.topLeft{grid-column:1;grid-row:1}
+.topRight{grid-column:3;grid-row:1}
+.bottomLeft{grid-column:1;grid-row:2}
+.bottomRight{grid-column:3;grid-row:2}
+
+.bar{grid-column:2;grid-row:1/3;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px 1px;background:linear-gradient(90deg,#21140e,#725039 48%,#2f1e14);border-inline:1px solid #d0ad6c66;color:#d9bc7e;font-size:8px;letter-spacing:.2em}
+.bar span{writing-mode:vertical-rl}
+.barUndo{position:absolute;z-index:6;left:50%;top:50%;width:min(100%,32px);aspect-ratio:1;height:auto;box-sizing:border-box;display:grid;place-items:center;padding:0;border:2px solid #f0b90b;border-radius:50%;background:linear-gradient(145deg,#3a301d,#17130c);color:#ffe6a0;box-shadow:0 3px 8px #000b,0 0 10px #f0b90b35;transform:translate(-50%,-50%);cursor:pointer;touch-action:manipulation}
+.barUndo svg{width:82%;height:82%;stroke-width:2.8}
+.barUndo:disabled{opacity:.28;cursor:default;box-shadow:none}
+.barUndo:not(:disabled){animation:undoButtonGlow 3s ease-in-out infinite}
+.barUndo:not(:disabled):hover{background:linear-gradient(145deg,#5a4722,#27200f);box-shadow:0 2px 10px #000b,0 0 14px #f0b90b88;transform:translate(-50%,-50%) scale(1.06)}
+.barUndo:focus-visible{outline:2px solid #ffe6a0;outline-offset:2px}
+@keyframes undoButtonGlow{0%,100%{box-shadow:0 3px 8px #000b,0 0 8px #f0b90b30}50%{box-shadow:0 3px 9px #000b,0 0 13px #f0b90b70}}
+
+.point{position:relative;min-width:0;min-height:0;padding:0;border:0;background:transparent;display:flex;justify-content:center;overflow:hidden}
+.point:disabled{opacity:1!important}
+.point::before{content:"";position:absolute;left:8%;width:84%;height:80%;background:linear-gradient(110deg,#a33f2d,#d27b48);clip-path:polygon(0 0,100% 0,50% 100%);filter:drop-shadow(0 3px 2px #0008)}
+.goldPoint::before{background:linear-gradient(110deg,#b18b48,#ecd08b)}
+.upperPoint::before{top:0}
+.lowerPoint::before{bottom:0;transform:rotate(180deg)}
+
+.checkerStack{z-index:2;position:absolute;inset:0;pointer-events:none}
+.checkerStack .checker{position:absolute;left:50%;width:min(86%,49px);transform:translateX(-50%)}
+.stackTop{top:calc(13px + var(--stack)*12%)}
+.stackBottom{bottom:calc(13px + var(--stack)*12%)}
+.selectedPoint .checker{filter:brightness(1.2);outline:2px solid #ffe287}
+.legalPoint{background:#f3d77d25}
+.legalPoint::after{content:"";position:absolute;z-index:4;top:54%;left:50%;width:min(65%,30px);aspect-ratio:1;border:2px dashed #ffe28c;border-radius:50%;background:#ffdc6b30;box-shadow:0 0 16px #ffd75d;transform:translate(-50%,-50%)}
+.moveBadge{position:absolute;top:59%;z-index:20;border-radius:5px;padding:1px 3px;background:#f5d98f;color:#21180a;font-size:11px;font-weight:bold;line-height:1.5;direction:rtl;box-shadow:0 1px 6px #0009}
+
+.boardMoving .checker{animation:checkerPlaced .18s ease-out}
+
+@keyframes checkerPlaced{from{filter:brightness(1.3)}to{filter:brightness(1)}}
+@media(max-width:700px){.table{padding:5px;border-radius:10px;grid-template-rows:18px minmax(0,1fr) 18px}
+.board{grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr);border-width:2px}
+.bar{font-size:6px}
+.moveBadge{font-size:9px;padding:1px 2px}
+.checkerStack .checker{width:91%}
+.stackTop{top:calc(11px + var(--stack)*11%)}
+.stackBottom{bottom:calc(11px + var(--stack)*11%)}}
+@media(max-height:500px) and (min-width:600px){.table{grid-template-rows:14px minmax(0,1fr) 14px;padding:4px}
+.checkerStack .checker{width:min(80%,25px)}
+.stackTop{top:calc(10px + var(--stack)*12%)}
+.stackBottom{bottom:calc(10px + var(--stack)*12%)}}
+@media(prefers-reduced-motion:reduce){.boardMoving .checker{animation:none}}
+
+.checkerStack .checker{width:min(125%,88px)}
+
+.stackTop{top:calc(5px + var(--stack)*13%)}
+
+.stackBottom{bottom:calc(5px + var(--stack)*13%)}
+
+.point::before{opacity:.4}
+
+.half{background:repeating-linear-gradient(92deg,#3e281c 0,#432c20 4%,#3d291e 8%)}
+@media(max-width:900px){
+  .checkerStack .checker{width:min(126%,72px)}
+
+  .stackTop{top:calc(3px + var(--stack)*13%)}
+
+  .stackBottom{bottom:calc(3px + var(--stack)*13%)}}
+@media(max-width:560px){
+  .checkerStack .checker{width:min(132%,66px)}}
+
+.checkerStack .checker{width:min(88%,58px)}
+
+.stackTop{top:calc(10px + var(--stack)*11%)}
+
+.stackBottom{bottom:calc(10px + var(--stack)*11%)}
+@media(max-width:900px){
+  .checkerStack .checker{width:min(96%,54px)}
+
+  .stackTop{top:calc(8px + var(--stack)*11%)}
+
+  .stackBottom{bottom:calc(8px + var(--stack)*11%)}}
+
+.stackTop{top:calc(7px + var(--stack)*14%)}
+
+.stackBottom{bottom:calc(7px + var(--stack)*14%)}
+@media(max-width:900px){
+  .stackTop{top:calc(5px + var(--stack)*14%)}
+
+  .stackBottom{bottom:calc(5px + var(--stack)*14%)}}
+
+.table{height:100%;min-height:0;border-radius:0}
+
+.table{grid-template-rows:minmax(0,1fr);padding-block:0}
+
+.point{container-type:size}
+
+.checkerStack{--piece-gap:-2px;--piece-inset:6px;--piece-size:calc(min(92cqw,calc((100cqh - 4px)/5),62px) * 1.2)}
+
+.checkerStack .checker{width:var(--piece-size);height:var(--piece-size);box-sizing:border-box;box-shadow:0 2px 3px #0009,inset 0 2px 3px #fff6,inset 0 -3px 5px #0009}
+
+.checkerStack .stackTop{top:calc(var(--piece-inset) + var(--stack)*(var(--piece-size) + var(--piece-gap)))}
+
+.checkerStack .stackBottom{bottom:calc(var(--piece-inset) + var(--stack)*(var(--piece-size) + var(--piece-gap)))}
+
+.selectedPoint .checkerStack .checker:not(.selectedChecker){filter:none;outline:0}
+
+.checkerStack .selectedChecker{z-index:12;outline:2px solid #f0b90b;outline-offset:2px;filter:brightness(1.14);animation:checkerSelectPulse 1.25s ease-in-out infinite;box-shadow:0 4px 8px #000b,0 0 0 3px #f0b90b45,0 0 18px #f0b90b99}
+
+.boardMoving .checkerStack .movedChecker{z-index:13;animation:checkerMoveLand .24s cubic-bezier(.18,.9,.35,1.2)}
+
+@keyframes checkerSelectPulse{0%,100%{transform:translateX(-50%) scale(1.08)}50%{transform:translateX(-50%) scale(1.15)}}
+
+@keyframes checkerMoveLand{0%{transform:translateX(-50%) scale(.82);filter:brightness(1.45)}65%{transform:translateX(-50%) scale(1.15)}100%{transform:translateX(-50%) scale(1);filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){.checkerStack .selectedChecker,.boardMoving .checkerStack .movedChecker{animation:none}
+.checkerStack .selectedChecker{transform:translateX(-50%) scale(1.08)}}
+
+.board{grid-template-columns:minmax(0,1fr) clamp(28px,3.5vw,40px) minmax(0,1fr)}
+
+.bar{position:relative;isolation:isolate;padding:10px 0}
+
+.barBrand{writing-mode:vertical-rl;opacity:.5}
+
+.barHit{position:absolute;z-index:3;left:50%;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;width:100%;padding:2px 0;border:0;background:transparent;color:#ffe5a0;transform:translateX(-50%)}
+
+.barHitTop{top:20%}
+.barHitBottom{bottom:20%}
+
+.barHit b{position:relative;z-index:1;border-radius:7px;background:#161413e8;padding:0 4px;font-size:clamp(10px,1.2vw,15px);line-height:1.4;font-weight:800;letter-spacing:0}
+
+.barHit .checker{width:min(88%,36px);height:auto;box-shadow:0 3px 7px #000b}
+
+.barHit:disabled{opacity:1;cursor:default}
+
+.barHitSelected .checker{outline:2px solid #f0b90b;outline-offset:2px;filter:brightness(1.15)}
+
+.checkerStack .checker b{inset:auto 1px auto auto;top:50%;z-index:5;min-width:17px;height:17px;display:grid;place-items:center;padding:0 2px;border:1px solid #f0b90b;border-radius:50%;background:#17130a;color:#ffe4a0;font-size:12px;line-height:1;box-shadow:0 2px 5px #000b;transform:translateY(-50%)}
+
+.rollHologram{position:absolute;z-index:22;top:50%;left:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:clamp(132px,22vw,210px);min-height:clamp(88px,15vh,130px);padding:10px 12px;box-sizing:border-box;border:1px solid #f0b90b9c;border-radius:18px;background:linear-gradient(145deg,#23251dea,#0d1010ef);box-shadow:0 0 0 4px #f0b90b1b,0 0 36px #f0b90b55,inset 0 1px #fff5c14d;transform:translate(-50%,-50%);pointer-events:none;overflow:hidden;animation:rollHologramEnter .35s ease-out}
+
+.rollHologram::before{content:"";position:absolute;inset:-100% 0 auto;height:90%;background:linear-gradient(180deg,transparent,#f0b90b28,transparent);animation:rollHologramScan 2.4s linear infinite}
+
+.rollHologramHalo{position:relative;display:grid;place-items:center;width:clamp(39px,5vw,55px);aspect-ratio:1;border:1px solid #f0b90b96;border-radius:50%;background:#f0b90b16;box-shadow:0 0 20px #f0b90b88,inset 0 0 10px #f0b90b44;animation:rollHologramPulse 1.5s ease-in-out infinite}
+
+.rollHologramHalo .checker{width:78%}
+
+.rollHologram strong{position:relative;color:#ffe6a0;font-size:clamp(12px,1.5vw,17px);white-space:nowrap;text-shadow:0 0 10px #f0b90b9c}
+
+.rollHologramLine{width:54%;height:1px;background:linear-gradient(90deg,transparent,#f0b90b,transparent)}
+
+@keyframes rollHologramEnter{from{opacity:0;transform:translate(-50%,-44%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+
+@keyframes rollHologramPulse{50%{transform:scale(1.08);box-shadow:0 0 30px #f0b90bcc,inset 0 0 15px #f0b90b66}}
+
+@keyframes rollHologramScan{to{transform:translateY(400%)}}
+@media(max-height:450px){.rollHologram{min-height:78px;padding:5px 9px;gap:2px}
+.rollHologramHalo{width:36px}
+.rollHologram strong{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.rollHologram,.rollHologram::before,.rollHologramHalo{animation:none}}
+
+.barEntryCue .checker{outline:2px solid #f0b90b;outline-offset:2px;animation:barEntryPulse 1.25s ease-in-out infinite}
+
+.barEntryCue::after{content:"←";position:absolute;z-index:4;left:calc(100% + 2px);top:45%;color:#ffe09a;font-size:25px;font-weight:900;line-height:1;text-shadow:0 0 10px #f0b90b;animation:barEntryPoint 1.1s ease-in-out infinite;pointer-events:none}
+
+@keyframes barEntryPulse{50%{filter:brightness(1.25);box-shadow:0 0 16px #f0b90bbd}}
+
+@keyframes barEntryPoint{50%{transform:translateX(-5px)}}
+@media(prefers-reduced-motion:reduce){.barEntryCue .checker,.barEntryCue::after{animation:none}}
+
+.rollHologram{min-height:clamp(112px,18vh,154px)}
+
+.rollHologramHalo{width:clamp(58px,7vw,72px)}
+
+.rollHologramHalo .checker{width:84%}
+@media(max-height:450px){.rollHologram{min-height:100px}
+.rollHologramHalo{width:50px}}
+
+.table{border-color:#252527;box-shadow:0 14px 40px #0007,inset 0 1px #ffffff12,inset 0 -3px 9px #0009}
+
+.board{border-color:#252527}
+
+.table{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+
+.board{border:0;border-radius:0;box-shadow:none}
+
+
+.barHit b{min-width:24px;min-height:24px;box-sizing:border-box;display:grid;place-items:center;padding:1px 3px;border:1px solid #f0b90b88;font-size:clamp(15px,1.7vw,20px);line-height:1;font-weight:900;letter-spacing:0}
+@media(max-width:900px){.barHit b{min-width:22px;min-height:22px;font-size:16px}}
+
+.playPage[data-board-theme="simple"]{--board-base:#202124;--half-surface:#202124;--point-a:#81858b;--point-b:#bda76d;--point-opacity:.12;--bar-surface:#2b2c2f}
+
+.playPage .board{background:var(--board-base)}
+
+.playPage .half{background:var(--half-surface)}
+
+.playPage .point::before{background:var(--point-a);opacity:var(--point-opacity,.4)}
+
+.playPage .goldPoint::before{background:var(--point-b)}
+
+.playPage .bar{background:var(--bar-surface)}
+
+
+@media(prefers-reduced-motion:reduce){.barUndo:not(:disabled){animation:none}}
+
+/* Keep checker stacks inside their point on compact and short viewports. */
+.table,.board{width:100%;min-width:0;min-height:0}
+.board{height:100%;grid-template-columns:minmax(0,1fr) clamp(28px,3.5vw,40px) minmax(0,1fr)}
+.point{min-width:0;min-height:0;overflow:hidden}
+.checkerStack{
+  /* Keep the 20% increase inside each point instead of clipping into neighbors. */
+  --piece-inset:clamp(2px,1cqh,5px);
+  --piece-size:calc(min(83.333cqw,calc((100cqh - 12px)/5),62px) * 1.2);
+  /* Five visible checkers fit vertically while overlapping by about 21% each. */
+  --piece-gap:calc(var(--piece-size) * -0.21);
+  overflow:visible;
+}
+.checkerStack .checker{
+  width:var(--piece-size);
+  height:var(--piece-size);
+  max-width:none;
+  box-sizing:border-box;
+}
+@media(max-width:560px){
+  .board{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr)}
+}
+
+
+/* Turn-to-roll announcement stays inside the active player's own board half. */
+.half{position:relative}
+.playerRollPrompt{
+  position:absolute;z-index:18;left:50%;top:50%;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:max-content;max-width:calc(100% - 12px);
+  padding:8px 12px;box-sizing:border-box;
+  border:1px solid #d5ad55;border-radius:999px;
+  background:linear-gradient(145deg,#17191beF,#29251eeF);
+  color:#ffe4a0;font-size:clamp(10px,1.15vw,14px);font-weight:800;
+  text-align:center;white-space:normal;
+  box-shadow:0 4px 16px #0009,0 0 18px #d5ad5538;
+  transform:translate(-50%,-50%);
+  pointer-events:none;animation:playerRollPromptIn .28s ease-out;
+}
+.playerRollPrompt i{width:clamp(20px,2.5vw,30px);height:auto;aspect-ratio:1;flex:none}
+@keyframes playerRollPromptIn{from{opacity:0;transform:translate(-50%,-44%) scale(.94)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@media(max-width:560px){.playerRollPrompt{gap:5px;padding:6px 8px;font-size:10px}.playerRollPrompt i{width:20px}}
+@media(prefers-reduced-motion:reduce){.playerRollPrompt{animation:none}}
+
+/* Centered turn hologram and charcoal glass chat on the right side of the board. */
+.rollHologram{left:25%;top:50%;z-index:24}
+.chatPanel{position:absolute;z-index:40;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;width:min(310px,42%);max-height:min(82%,520px);padding:12px;border:1px solid #d5ad5580;border-radius:18px;background:linear-gradient(145deg,#29292deF,#111115f2);backdrop-filter:blur(16px);box-shadow:0 18px 55px #000c,inset 0 1px #fff2;color:#f3e6c7;direction:rtl}
+.chatPanel header{display:flex;align-items:center;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid #d5ad5540;font-weight:800}
+.chatPanel header small{display:block;color:#bda66f;font-size:8px;letter-spacing:.15em}
+.chatPanel header button,.chatComposer button{display:grid;place-items:center;width:34px;height:34px;border:1px solid #d5ad5566;border-radius:10px;background:#ffffff0b;color:#f3d98f}
+.chatMessages{display:flex;flex-direction:column;gap:7px;min-height:70px;max-height:220px;overflow:auto;padding:10px 2px}
+.chatMessages p{align-self:flex-start;max-width:90%;margin:0;padding:7px 10px;border:1px solid #c4a05a35;border-radius:11px 11px 3px 11px;background:#ffffff0c;font-size:12px;overflow-wrap:anywhere}
+.chatMessages p span{display:block;margin-bottom:3px;color:#d6b76f;font-size:9px}
+.quickMessages{position:absolute;z-index:41;top:50%;right:calc(10px + min(310px,42%) + 12px);transform:translateY(-50%);display:flex;flex-direction:column;align-items:stretch;gap:7px;width:max-content;max-width:calc(100% - 350px);padding:9px;border:1px solid #d5ad5570;border-radius:15px;background:linear-gradient(145deg,#242428eF,#111115f2);backdrop-filter:blur(14px);box-shadow:0 12px 32px #000a}
+.quickMessages button{padding:8px 12px;border:1px solid #c4a05a35;border-radius:11px 11px 3px 11px;background:#ffffff0c;color:#f3e6c7;font-size:11px;white-space:nowrap;text-align:center;cursor:pointer;transition:background .16s ease,border-color .16s ease}.quickMessages button:hover{background:#ffffff18;border-color:#c4a05a65}
+.chatComposer{display:flex;gap:6px;margin-top:5px}
+.chatComposer input{flex:1;min-width:0;height:38px;padding:0 10px;border:1px solid #d5ad5555;border-radius:10px;background:#0d0d10;color:#fff1ce;outline:none}
+.chatComposer input:focus{border-color:#f0c75e}
+@media(max-width:700px){.chatPanel{right:5px;width:min(270px,55%);padding:8px}.quickMessages{right:calc(5px + min(270px,55%) + 7px);gap:5px;padding:6px}.quickMessages button{padding:6px 8px;font-size:10px}.chatMessages{max-height:140px}}
+@media(max-width:460px){.quickMessages{max-width:calc(100% - 220px);padding:4px}.quickMessages button{white-space:normal;overflow-wrap:anywhere}}
+@media(prefers-reduced-motion:reduce){.rollHologram{animation:none}}
+
+/* Make the active side's checker visibly render inside the turn hologram. */
+.rollHologramHalo .hologramChecker{
+  display:block!important;position:relative;z-index:2;
+  width:clamp(34px,4vw,46px);height:clamp(34px,4vw,46px);
+  min-width:34px;aspect-ratio:1;border-radius:50%;flex:none;
+  opacity:1;visibility:visible;
+}
+/* Sent and received chat messages appear at the right-center of the board. */
+.chatToast{
+  position:absolute;z-index:48;top:50%;right:clamp(8px,2%,22px);
+  width:max-content;max-width:min(38%,300px);box-sizing:border-box;
+  padding:10px 14px;border:1px solid #d5ad55a8;border-radius:14px;
+  background:linear-gradient(145deg,#29292df2,#111115f5);
+  color:#ffe7a1;font-size:clamp(11px,1.2vw,14px);font-weight:800;
+  text-align:center;overflow-wrap:anywhere;box-shadow:0 12px 32px #000c,0 0 20px #d5ad5533;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translateY(-50%) translateX(10px);
+  transition:opacity .2s ease,transform .2s ease,visibility .2s;
+}
+.chatToast[data-visible="true"]{opacity:1;visibility:visible;transform:translateY(-50%)}
+@media(max-width:600px){.chatToast{right:4px;max-width:42%;padding:7px 9px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.chatToast{transition:none}}
