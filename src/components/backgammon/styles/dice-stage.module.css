@@ -32,7 +32,7 @@
 .diceStageRail .turnPrompt .railChecker{width:54px}}
 .diceStageRail .diceStage{grid-column:1;grid-row:2;width:100%;height:var(--rail-card-height);margin:8px 0 0}
 @media(max-height:400px){.diceStageRail .turnPrompt .railChecker{width:48px}}
-.diceStageRail .diceStage{height:var(--stats-card-height)}
+.diceStageRail .diceStage{height:100%;min-height:0}
 .diceStageRail .turnPrompt .railChecker{width:var(--turn-checker-size)}
 
 .diceStageRail .diceStage .railCenterDice{gap:6px}
