@@ -101,7 +101,7 @@
 
 .point{container-type:size}
 
-.checkerStack{--piece-gap:-2px;--piece-inset:6px;--piece-size:calc(min(92cqw,calc((100cqh - 4px)/5),62px) * 1.1)}
+.checkerStack{--piece-gap:-2px;--piece-inset:6px;--piece-size:calc(min(92cqw,calc((100cqh - 4px)/5),62px) * 1.2)}
 
 .checkerStack .checker{width:var(--piece-size);height:var(--piece-size);box-sizing:border-box;box-shadow:0 2px 3px #0009,inset 0 2px 3px #fff6,inset 0 -3px 5px #0009}
 
