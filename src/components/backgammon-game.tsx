@@ -324,10 +324,12 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       <aside className={gameLayoutStyles.offLane} dir="rtl" aria-label="فضای خروج مهره‌ها">
         {(["dark", "light"] as Side[]).map(side => {
           const options = side === turn ? destinations.filter(option => option.to === "off") : [];
-          return <div key={side} className={`${gameLayoutStyles.offPocket} ${options.length ? gameLayoutStyles.offPocketLegal : ""}`} aria-label={`خروج ${names[side]}: ${fa(board.off[side])} از ۱۵ مهره`}>
-            <small className={gameLayoutStyles.offPocketTotal}>۱۵</small>
-            <i aria-hidden="true" className={`${styles.checker} ${playerRailStyles.railChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/>
-            <strong>{fa(board.off[side])}</strong>
+          return <div key={side} className={`${gameLayoutStyles.offPocket} ${options.length ? gameLayoutStyles.offPocketLegal : ""}`} aria-label={`مهره‌های خارج‌شدهٔ ${names[side]}: ${fa(board.off[side])} از ۱۵`}>
+            <strong className={gameLayoutStyles.offPocketCount} aria-live="polite">{fa(board.off[side])}</strong>
+            <div className={gameLayoutStyles.offPocketStack} aria-hidden="true" data-stack-count={Math.min(board.off[side], 6)}>
+              {Array.from({length: Math.min(board.off[side], 6)}, (_, index) => <i key={index} className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`}/>) }
+            </div>
+            <small className={gameLayoutStyles.offPocketTotal}>از ۱۵ مهره</small>
             {options.length > 0 && <div className={gameLayoutStyles.offPocketMoves}>{options.map(option => <button key={option.die} type="button" disabled={locked} aria-label={`خروج مهرهٔ ${names[side]} با تاس ${fa(option.die)}`} onClick={() => move(option)}>تاس {fa(option.die)}</button>)}</div>}
           </div>;
         })}
