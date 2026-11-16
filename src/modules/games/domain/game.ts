@@ -9,6 +9,7 @@ export function toGameSummary(game: GameRecord): GameSummary {
 
 const games: readonly GameSummary[] = [
   { id: "demo-backgammon", slug: "backgammon", name: "BACKGAMMON", category: "Board game", platforms: ["Web", "Telegram"], activeTournamentCount: 0, integrationStatus: "MANUAL", demo: true },
+  { id: "demo-rock-paper-scissors", slug: "rock-paper-scissors", name: "سنگ، کاغذ، قیچی", category: "بازی رقابتی", platforms: ["Web"], activeTournamentCount: 0, integrationStatus: "MANUAL", demo: true },
   { id: "demo-valorant", slug: "valorant", name: "VALORANT", category: "تیراندازی رقابتی", platforms: ["PC"], activeTournamentCount: 2, integrationStatus: "MANUAL", demo: true },
   { id: "demo-fc25", slug: "fc-25", name: "EA SPORTS FC 25", category: "ورزشی", platforms: ["PlayStation", "Xbox", "PC"], activeTournamentCount: 1, integrationStatus: "MANUAL", demo: true },
   { id: "demo-pubg-mobile", slug: "pubg-mobile", name: "PUBG MOBILE", category: "بتل رویال", platforms: ["iOS", "Android"], activeTournamentCount: 0, integrationStatus: "MANUAL", demo: true },
