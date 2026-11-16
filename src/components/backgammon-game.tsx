@@ -466,8 +466,8 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
           <span>سیاه <b>{fa(state.scores.dark)}</b></span>
         </div>
         <div className={matchControlsStyles.resultActions}>
-          <button type="button" className={matchControlsStyles.resultPrimary} disabled={!rematchAllowed} onClick={startRematch}>شروع مجدد</button>
-          <button type="button" className={matchControlsStyles.resultSecondary} disabled={!rematchAllowed} onClick={()=>{setRematchColor(lobby.colors.requester ?? "light");setResultView("colors");}}>انتخاب دوباره مهره‌ها</button>
+          <button type="button" className={matchControlsStyles.resultPrimary} disabled={!rematchAllowed || previewResult} onClick={startRematch}>شروع مجدد</button>
+          <button type="button" className={matchControlsStyles.resultSecondary} disabled={!rematchAllowed || previewResult} onClick={()=>{setRematchColor(lobby.colors.requester ?? "light");setResultView("colors");}}>انتخاب دوباره مهره‌ها</button>
           <button type="button" className={matchControlsStyles.resultExit} onClick={()=>{window.location.assign("/games");}}>پایان بازی</button>
         </div>
         {playMode === "online" && <p className={matchControlsStyles.resultOnlineNote}>برای شروع مجدد بازی آنلاین، هماهنگی و تأیید هر دو بازیکن لازم است.</p>}
