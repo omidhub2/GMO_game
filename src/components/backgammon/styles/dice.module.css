@@ -110,3 +110,17 @@
 @media(max-height:400px){
   .diceBox .dieScene{--size:36px!important}
 }
+
+
+/* Actual rendered 3D dice size in the compact right-side game rail. */
+.diceBox.railDiceBox .dieScene.railDieScene{
+  --size:44px!important;
+  width:44px!important;
+  height:44px!important;
+}
+@media(max-width:900px){
+  .diceBox.railDiceBox .dieScene.railDieScene{--size:42px!important;width:42px!important;height:42px!important}
+}
+@media(max-height:400px){
+  .diceBox.railDiceBox .dieScene.railDieScene{--size:36px!important;width:36px!important;height:36px!important}
+}
