@@ -213,7 +213,7 @@
   min-height:0;
   height:100%;
   overflow:hidden;
-  --rail-dice-height:clamp(64px,22cqh,92px);
+  --rail-dice-height:clamp(78px,25cqh,108px);
   --rail-checker-size:clamp(26px,14cqh,50px);
   --rail-inner-gap:clamp(3px,1cqh,7px);
   display:grid;
@@ -467,5 +467,5 @@
 
 /* Slightly taller dice station; player cards retain the flexible two-row layout above. */
 .rightRail{--rail-dice-height:clamp(76px,24cqh,98px)}
-@media(max-width:360px){.rightRail{--rail-dice-height:clamp(72px,22cqh,88px)}}
-@media(max-height:400px){.rightRail{--rail-dice-height:68px}}
+@media(max-width:360px){.rightRail{--rail-dice-height:clamp(74px,24cqh,96px)}}
+@media(max-height:400px){.rightRail{--rail-dice-height:74px}}
