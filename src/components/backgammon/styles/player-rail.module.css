@@ -130,7 +130,7 @@
 @media(max-height:400px){.rightRail{--rail-card-height:68px;gap:4px}
 .rightRail .statsPair{grid-auto-rows:var(--rail-card-height);gap:4px}
 .rightRail .railControls{min-height:30px}}
-.rightRail{--stats-card-height:116px;--turn-checker-size:58px}
+.rightRail{--stats-card-height:108px;--turn-checker-size:58px}
 .rightRail .statsPair{grid-auto-rows:var(--stats-card-height);gap:8px}
 .rightRail .playerStats{height:var(--stats-card-height);min-height:var(--stats-card-height)}
 .rightRail .statsIdentity .railChecker{width:var(--turn-checker-size)}
@@ -142,7 +142,7 @@
 .rightRail .hitCount{min-width:32px;min-height:32px}
 .rightRail .hitCount b, .rightRail .offTray b{font-size:18px}
 
-@media(max-width:900px){.rightRail{--stats-card-height:100px;--turn-checker-size:54px}
+@media(max-width:900px){.rightRail{--stats-card-height:94px;--turn-checker-size:54px}
 .rightRail .statsPair{grid-auto-rows:var(--stats-card-height);gap:7px}
 .rightRail .playerStats{height:var(--stats-card-height);min-height:var(--stats-card-height)}
 .rightRail .statsIdentity .railChecker{width:var(--turn-checker-size)}
@@ -153,7 +153,7 @@
 .rightRail .barSource>span:first-child, .rightRail .offTray>span>span{font-size:11px}
 .rightRail .hitCount{min-width:29px;min-height:29px}
 .rightRail .hitCount b, .rightRail .offTray b{font-size:16px}}
-@media(max-height:400px){.rightRail{--stats-card-height:84px}
+@media(max-height:400px){.rightRail{--stats-card-height:80px}
 .rightRail .statsPair{grid-auto-rows:var(--stats-card-height);gap:5px}
 .rightRail .playerStats{height:var(--stats-card-height);min-height:var(--stats-card-height)}
 .rightRail{--turn-checker-size:48px}
@@ -469,11 +469,11 @@
 /* Give the dice station a little more vertical room; player cards share
    the remaining rail height and become slightly shorter. */
 .rightRail{
-  --rail-dice-height:clamp(78px,25cqh,106px);
+  --rail-dice-height:clamp(88px,28cqh,116px);
 }
 @media(max-width:360px){
-  .rightRail{--rail-dice-height:clamp(72px,23cqh,92px)}
+  .rightRail{--rail-dice-height:clamp(80px,26cqh,100px)}
 }
 @media(max-height:400px){
-  .rightRail{--rail-dice-height:68px}
+  .rightRail{--rail-dice-height:72px}
 }
