@@ -477,3 +477,31 @@
 @media(max-height:400px){
   .rightRail{--rail-dice-height:72px}
 }
+
+
+/* Final compact-rail geometry: reserve a real grid row for the dice station. */
+.rightRail{
+  --rail-dice-height:92px;
+  --rail-card-height:86px;
+  --stats-card-height:86px;
+  grid-template-rows:auto var(--rail-dice-height) auto minmax(0,1fr) auto!important;
+}
+.rightRail .statsPair{
+  grid-column:1!important;
+  grid-row:4!important;
+  grid-auto-rows:var(--rail-card-height)!important;
+  grid-template-rows:repeat(2,var(--rail-card-height))!important;
+  align-content:start!important;
+  gap:6px!important;
+  height:auto!important;
+}
+.rightRail .playerStats{
+  height:var(--rail-card-height)!important;
+  min-height:var(--rail-card-height)!important;
+}
+@media(max-width:900px){
+  .rightRail{--rail-dice-height:88px;--rail-card-height:78px;--stats-card-height:78px}
+}
+@media(max-height:400px){
+  .rightRail{--rail-dice-height:76px;--rail-card-height:68px;--stats-card-height:68px}
+}
