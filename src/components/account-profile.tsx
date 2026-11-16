@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import Image from "next/image";
 import { CalendarDays, Check, ChevronRight, Crown, Gamepad2, LogOut, Pencil, Save, Send, ShieldCheck, Target, Trophy, X } from "lucide-react";
 import styles from "./account-profile.module.css";
 
@@ -104,7 +105,7 @@ export default function AccountProfile() {
 
     <section className={styles.hero}>
       <div className={styles.coverLines} aria-hidden="true" />
-      <div className={styles.playerAvatar}>{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : <img src={`/avatars/gmo-${profile.avatarChoice || "avatar-3"}.webp`} alt="" />}<span><ShieldCheck size={14} /></span></div>
+      <div className={styles.playerAvatar}>{profile.avatarUrl ? <Image src={profile.avatarUrl} alt="" width={92} height={92} unoptimized /> : <Image src={`/avatars/gmo-${profile.avatarChoice || "avatar-3"}.webp`} alt="" width={92} height={92} unoptimized />}<span><ShieldCheck size={14} /></span></div>
       <div className={styles.identity}><span className={styles.levelTag}><Crown size={13} /> OPERATOR · LEVEL {profile.level}</span><h2>{playerName}</h2><span className={styles.gamerTag}>@{profile.username}</span>{profile.bio && <p>{profile.bio}</p>}</div>
       <div className={styles.memberDate}><CalendarDays size={14} /><span>IN THE ARENA SINCE</span><strong>{new Date(profile.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</strong></div>
     </section>
@@ -126,7 +127,7 @@ export default function AccountProfile() {
           <div className={styles.avatarChoices}>
             {(["avatar-1", "avatar-2", "avatar-3"] as const).map((choice, index) => <label key={choice} className={avatarChoice === choice ? styles.avatarChoiceSelected : ""}>
               <input type="radio" name="avatarChoice" value={choice} checked={avatarChoice === choice} onChange={() => setAvatarChoice(choice)} />
-              <img src={`/avatars/gmo-${choice}.webp`} alt={[`Avatar 1`, `Avatar 2`, `Avatar 3`][index]} />
+              <Image src={`/avatars/gmo-${choice}.webp`} alt={[`Avatar 1`, `Avatar 2`, `Avatar 3`][index]} width={68} height={68} unoptimized />
               <span>{index === 2 ? "Default" : `Avatar ${index + 1}`}</span>
             </label>)}
           </div>
