@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, Trophy, MessageCircle, Flag, Clock3, Send, X, Settings2 } from "lucide-react";
+import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, MessageCircle, Clock3, Send, X, Settings2 } from "lucide-react";
 import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
 import type { GameSession, OnlineSnapshot } from "@/modules/games/domain/backgammon-session";
 import { computerMove } from "@/modules/games/domain/backgammon-computer";
@@ -347,7 +347,6 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
         <p className={playerRailStyles.sessionStatus} role="status">{playMode === "computer" ? "تک‌نفره • آفلاین" : playMode === "online" ? "دونفره • آنلاین" : "دونفره • آفلاین"}{networkError && <span role="alert">{networkError}</span>}</p>
         <div className={playerRailStyles.statsPair}>
         {(["dark","light"] as Side[]).map(side => {
-          const options=side === turn ? destinations.filter(m=>m.to === "off") : [];
           return <section key={side} dir="ltr" className={`${playerRailStyles.playerStats} ${turn === side ? playerRailStyles.activeStats : ""}`} aria-label={`پروفایل بازیکن ${names[side]}`}>
             <div className={playerRailStyles.avatarWrap}>
               <div className={playerRailStyles.profileAvatar} data-player-avatar aria-label={`آواتار ${playerName(side)}`}>
