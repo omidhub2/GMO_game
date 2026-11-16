@@ -216,6 +216,18 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const destinations = selected === null ? [] : moves.filter(m => m.from === selected);
   const locked = rolling || moving || pending || !canAct;
   const complete = !!state.target && Math.max(state.scores.light, state.scores.dark) >= state.target;
+  const [resultView, setResultView] = useState<"winner" | "colors">("winner");
+  const [rematchColor, setRematchColor] = useState<Side>(lobby.colors.requester ?? "light");
+  const rematchAllowed = playMode !== "online";
+  function startRematch() {
+    if (!rematchAllowed) return;
+    const nextLobby = { ...lobby, colors: { requester: rematchColor, guest: opponent(rematchColor) }, ready: { requester: true, guest: true }, started: true, revision: lobby.revision + 1 };
+    const nextGame = { ...newGame(state.target, state.result?.winner ?? null), scores: { ...state.scores }, crawfordUsed: state.crawfordUsed, crawford: !state.crawfordUsed && !!state.target && Math.max(state.scores.light, state.scores.dark) === state.target - 1 };
+    current.current = nextGame; setState(nextGame);
+    setTurnSeconds(30); setChatOpen(false); setMenuOpen(false); setToastText(""); setToastVisible(false);
+    session.lobby = nextLobby;
+    setResultView("winner");
+  }
 
   function send(action: GameAction): boolean {
     if ((busy.current && action.type !== "roll") || requestPending.current || !canAct) return false;
@@ -404,6 +416,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
     {state.phase === "double" && <section className={matchControlsStyles.result} aria-label="پاسخ دوبل"><h2>{names[opponent(turn)]}؛ پیشنهاد دوبل ×{fa(state.cube * 2)}</h2><p>با رد، {fa(state.cube)} امتیاز به {names[turn]} می‌رسد.</p><button disabled={locked} onClick={()=>send({type:"acceptDouble",revision:state.revision})}>پذیرش دوبل</button><button disabled={locked} onClick={()=>send({type:"rejectDouble",revision:state.revision})}>رد دوبل</button></section>}
     {state.result && <div className={matchControlsStyles.resultOverlay}>
       <section className={matchControlsStyles.resultModal} role="dialog" aria-modal="true" aria-labelledby="backgammon-result-title" aria-describedby="backgammon-result-description" dir="rtl">
+        {resultView === "winner" ? <>
         <div className={matchControlsStyles.resultOrnament} aria-hidden="true"><Sparkles/><span/><Sparkles/></div>
         <div className={matchControlsStyles.resultBadge}><Crown size={16}/> {complete ? "قهرمان مسابقه" : "پایان دست"}</div>
         <div className={matchControlsStyles.resultWinner}>
@@ -434,10 +447,27 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
           <span>سیاه <b>{fa(state.scores.dark)}</b></span>
         </div>
         <div className={matchControlsStyles.resultActions}>
-          {state.target && !complete && <button type="button" className={matchControlsStyles.resultPrimary} disabled={locked} onClick={()=>send({type:"nextGame",revision:state.revision})}>دست بعدی مسابقه</button>}
-          <button type="button" className={matchControlsStyles.resultSecondary} onClick={onLeave}>{complete ? "شروع مسابقه جدید" : "پایان بازی"}</button>
+          <button type="button" className={matchControlsStyles.resultPrimary} disabled={!rematchAllowed} onClick={startRematch}>شروع مجدد</button>
+          <button type="button" className={matchControlsStyles.resultSecondary} disabled={!rematchAllowed} onClick={()=>{setRematchColor(lobby.colors.requester ?? "light");setResultView("colors");}}>انتخاب دوباره مهره‌ها</button>
+          <button type="button" className={matchControlsStyles.resultExit} onClick={()=>{window.location.assign("/games");}}>پایان بازی</button>
         </div>
-        <button type="button" className={matchControlsStyles.resultReset} onClick={onLeave}>انتخاب دوباره مهره‌ها</button>
+        {playMode === "online" && <p className={matchControlsStyles.resultOnlineNote}>برای شروع مجدد بازی آنلاین، هماهنگی و تأیید هر دو بازیکن لازم است.</p>}
+        {state.target && !complete && <button type="button" className={matchControlsStyles.resultContinue} disabled={locked} onClick={()=>send({type:"nextGame",revision:state.revision})}>دست بعدی مسابقه بدون تغییر مهره‌ها</button>}
+        </> : <>
+          <div className={matchControlsStyles.resultOrnament} aria-hidden="true"><Sparkles/><span/><Sparkles/></div>
+          <div className={matchControlsStyles.resultBadge}><Crown size={16}/> انتخاب رنگ مهره‌ها</div>
+          <h2 className={matchControlsStyles.rematchTitle}>بازیکنان رنگ مهره‌ها را انتخاب کنند</h2>
+          <p className={matchControlsStyles.rematchDescription}>بازیکن اول رنگ خود را انتخاب می‌کند؛ رنگ بازیکن دوم به‌صورت خودکار مخالف خواهد بود. امتیازهای مسابقه حفظ می‌شوند.</p>
+          <div className={matchControlsStyles.rematchChoices} role="group" aria-label="انتخاب رنگ بازیکن اول">
+            <button type="button" aria-pressed={rematchColor === "light"} className={rematchColor === "light" ? matchControlsStyles.rematchChoiceSelected : ""} onClick={()=>setRematchColor("light")}><i className={`${boardStyles.checker} ${boardStyles.lightChecker}`}/> سفید</button>
+            <button type="button" aria-pressed={rematchColor === "dark"} className={rematchColor === "dark" ? matchControlsStyles.rematchChoiceSelected : ""} onClick={()=>setRematchColor("dark")}><i className={`${boardStyles.checker} ${boardStyles.darkChecker}`}/> سیاه</button>
+          </div>
+          <div className={matchControlsStyles.rematchActions}>
+            <button type="button" className={matchControlsStyles.resultPrimary} onClick={startRematch}>شروع مجدد</button>
+            <button type="button" className={matchControlsStyles.resultSecondary} onClick={()=>setResultView("winner")}>بازگشت</button>
+          </div>
+          {playMode === "online" && <p className={matchControlsStyles.resultOnlineNote}>تغییر رنگ در بازی آنلاین نیازمند تأیید هر دو بازیکن است.</p>}
+        </> }
       </section>
     </div>}
     {menuOpen && <BackgammonDrawer onClose={()=>setMenuOpen(false)}>
