@@ -142,7 +142,8 @@
 .offPocketStack{
   container-type:size;
   /* Match the playable-board checker formula and its responsive size exactly. */
-  --off-piece-size:calc(min(92cqw,calc((100cqh - 4px)/5),62px) * 1.68);
+  --off-checker-scale:1.68;
+  --off-piece-size:calc(min(92cqw,calc((100cqh - 4px)/5),62px) * var(--off-checker-scale));
   --off-stack-step:calc((100% - var(--off-piece-size))/14);
   position:relative;display:block;flex:1 1 auto;width:100%;min-height:0;overflow:hidden;
 }
@@ -161,13 +162,13 @@
 }
 /* Keep tray checker dimensions in sync with the board at every breakpoint. */
 @media(max-width:700px){
-  .offPocketStack{--off-piece-size:calc(min(92cqw,46px) * 1.68)}
+  .offPocketStack{--off-piece-size:calc(min(92cqw,46px) * var(--off-checker-scale))}
 }
 @media(max-width:560px){
-  .offPocketStack{--off-piece-size:calc(min(92cqw,42px) * 1.68)}
+  .offPocketStack{--off-piece-size:calc(min(92cqw,42px) * var(--off-checker-scale))}
 }
 @media(max-height:500px) and (min-width:600px){
-  .offPocketStack{--off-piece-size:calc(min(92cqw,25px) * 1.68)}
+  .offPocketStack{--off-piece-size:calc(min(92cqw,25px) * var(--off-checker-scale))}
 }
 .offPocketLegal .offPocketCount{
   border-color:#f0b90b;
