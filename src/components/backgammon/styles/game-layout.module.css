@@ -141,13 +141,21 @@
 }
 .offPocketStack{
   container-type:size;
-  --off-piece-size:min(92cqw,calc((100cqh - 4px)/5),62px);
+  /* Match the playable-board checker formula and its responsive size exactly. */
+  --off-piece-size:calc(min(92cqw,calc((100cqh - 4px)/5),62px) * 1.68);
   --off-stack-step:calc((100% - var(--off-piece-size))/14);
   position:relative;display:block;flex:1 1 auto;width:100%;min-height:0;overflow:hidden;
 }
 .offPocketStack .offPocketChecker{
-  position:absolute;left:50%;bottom:0;width:var(--off-piece-size);height:var(--off-piece-size);
-  max-width:none;box-sizing:border-box;transform:translateX(-50%);scale:.245;
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:var(--off-piece-size);
+  height:var(--off-piece-size);
+  max-width:none;
+  box-sizing:border-box;
+  transform:translateX(-50%);
+  transform-origin:center center;
   filter:drop-shadow(0 2px 2px #0009);
   box-shadow:0 2px 3px #0009,inset 0 2px 3px #fff6,inset 0 -3px 5px #0009;
 }
