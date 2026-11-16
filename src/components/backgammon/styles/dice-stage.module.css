@@ -103,3 +103,16 @@
   .diceStageRail .diceStage .railDieScene{--size:36px}
   .diceStageRail .diceStage [data-dice-box] [role="img"]{--size:34px}
 }
+
+
+/* Final authoritative sizing: override legacy dice rules above. */
+.diceStageRail .diceStage .railDieScene{--size:52px!important}
+.diceStageRail .diceStage [data-dice-box] [role="img"]{--size:52px!important}
+@media(max-width:900px){
+  .diceStageRail .diceStage .railDieScene{--size:48px!important}
+  .diceStageRail .diceStage [data-dice-box] [role="img"]{--size:48px!important}
+}
+@media(max-height:400px){
+  .diceStageRail .diceStage .railDieScene{--size:36px!important}
+  .diceStageRail .diceStage [data-dice-box] [role="img"]{--size:36px!important}
+}
