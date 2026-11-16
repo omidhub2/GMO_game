@@ -6,6 +6,8 @@ import styles from "./account-profile.module.css";
 
 type PlayerProfile = {
   username: string;
+  avatarUrl: string | null;
+  avatarChoice: "avatar-1" | "avatar-2" | "avatar-3";
   displayName: string;
   bio: string;
   level: number;
@@ -19,6 +21,7 @@ type PlayerProfile = {
 export default function AccountProfile() {
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const [form, setForm] = useState({ username: "", displayName: "", bio: "" });
+  const [avatarChoice, setAvatarChoice] = useState<PlayerProfile["avatarChoice"]>("avatar-3");
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -42,6 +45,7 @@ export default function AccountProfile() {
       const player = result.data as PlayerProfile;
       setNeedsTelegramLogin(false);
       setProfile(player);
+      setAvatarChoice(player.avatarChoice || "avatar-3");
       setForm({ username: player.username, displayName: player.displayName, bio: player.bio });
     } catch (cause) { setNeedsTelegramLogin(false); setError(cause instanceof Error ? cause.message : "Profile could not be loaded."); }
     finally { setLoading(false); }
@@ -59,7 +63,7 @@ export default function AccountProfile() {
     setMessage("");
     setError("");
     try {
-      const response = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+      const response = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, avatarChoice }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? "Profile could not be saved.");
       await loadProfile();
@@ -100,7 +104,7 @@ export default function AccountProfile() {
 
     <section className={styles.hero}>
       <div className={styles.coverLines} aria-hidden="true" />
-      <div className={styles.playerAvatar}>{initial}<span><ShieldCheck size={14} /></span></div>
+      <div className={styles.playerAvatar}>{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : <img src={`/avatars/gmo-${profile.avatarChoice || "avatar-3"}.webp`} alt="" />}<span><ShieldCheck size={14} /></span></div>
       <div className={styles.identity}><span className={styles.levelTag}><Crown size={13} /> OPERATOR · LEVEL {profile.level}</span><h2>{playerName}</h2><span className={styles.gamerTag}>@{profile.username}</span>{profile.bio && <p>{profile.bio}</p>}</div>
       <div className={styles.memberDate}><CalendarDays size={14} /><span>IN THE ARENA SINCE</span><strong>{new Date(profile.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</strong></div>
     </section>
@@ -117,10 +121,21 @@ export default function AccountProfile() {
     <section className={styles.section}>
       <div className={styles.sectionHeading}><div><span>PLAYER SETTINGS</span><h2>Account details</h2></div>{!editing && <button type="button" className={styles.editLink} onClick={() => { setEditing(true); setMessage(""); }}>Edit profile <Pencil size={14} /></button>}</div>
       {editing ? <form className={styles.form} onSubmit={saveProfile}>
+        <fieldset className={styles.avatarPicker}>
+          <legend>Choose your Arena avatar</legend>
+          <div className={styles.avatarChoices}>
+            {(["avatar-1", "avatar-2", "avatar-3"] as const).map((choice, index) => <label key={choice} className={avatarChoice === choice ? styles.avatarChoiceSelected : ""}>
+              <input type="radio" name="avatarChoice" value={choice} checked={avatarChoice === choice} onChange={() => setAvatarChoice(choice)} />
+              <img src={`/avatars/gmo-${choice}.webp`} alt={[`Avatar 1`, `Avatar 2`, `Avatar 3`][index]} />
+              <span>{index === 2 ? "Default" : `Avatar ${index + 1}`}</span>
+            </label>)}
+          </div>
+          {profile.avatarUrl && <small>Your uploaded profile photo is currently displayed instead of this selection.</small>}
+        </fieldset>
         <label>Player tag<input autoComplete="username" minLength={3} maxLength={32} pattern="[a-zA-Z0-9_]+" required value={form.username} onChange={event => setForm({ ...form, username: event.target.value })} /><small>3–32 letters, numbers, or underscores</small></label>
         <label>Display name<input maxLength={64} placeholder="How players see you" value={form.displayName} onChange={event => setForm({ ...form, displayName: event.target.value })} /></label>
         <label>Player bio<textarea maxLength={500} rows={3} placeholder="Add a short introduction" value={form.bio} onChange={event => setForm({ ...form, bio: event.target.value })} /></label>
-        <div className={styles.formActions}><button type="button" className={styles.secondaryButton} onClick={() => { setEditing(false); setError(""); setForm({ username: profile.username, displayName: profile.displayName, bio: profile.bio }); }}>Cancel</button><button type="submit" className={styles.primaryButton} disabled={busy}>{busy ? "Saving…" : <><Save size={16} />Save profile</>}</button></div>
+        <div className={styles.formActions}><button type="button" className={styles.secondaryButton} onClick={() => { setEditing(false); setError(""); setForm({ username: profile.username, displayName: profile.displayName, bio: profile.bio }); setAvatarChoice(profile.avatarChoice || "avatar-3"); }}>Cancel</button><button type="submit" className={styles.primaryButton} disabled={busy}>{busy ? "Saving…" : <><Save size={16} />Save profile</>}</button></div>
       </form> : <div className={styles.detailList}><div><span>PLAYER TAG</span><strong>@{profile.username}</strong></div><div><span>DISPLAY NAME</span><strong>{profile.displayName || "Add a display name"}</strong></div><div><span>LANGUAGE</span><strong>English</strong></div></div>}
     </section>
 
