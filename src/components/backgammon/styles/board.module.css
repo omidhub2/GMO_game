@@ -251,7 +251,6 @@
 }
 
 /* Turn and interaction overlays */
-.half { position:relative; }
 .playerRollPrompt {
   position:absolute;
   z-index:18;
