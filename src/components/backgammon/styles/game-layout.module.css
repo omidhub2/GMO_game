@@ -155,7 +155,8 @@
 
 
 
-/* Full-size borne-off stacks: 15 checkers, overlapping vertically inside each tray. */
+
+/* Borne-off stack uses the same responsive piece-size formula as board points. */
 .offPocket{
   position:relative;
   justify-content:flex-start;
@@ -183,22 +184,25 @@
   font-variant-numeric:tabular-nums;
 }
 .offPocketStack{
-  --off-checker-size:clamp(30px,3vw,42px);
-  --off-stack-step:clamp(8px,1.8cqh,12px);
+  --off-piece-gap:-2px;
+  --off-piece-inset:2px;
+  --off-piece-size:min(90cqw,calc((100cqh - 12px)/5),62px);
+  --off-stack-step:clamp(7px,1.8cqh,13px);
   position:relative;
   display:block;
   flex:1 1 auto;
   width:100%;
   min-height:0;
   overflow:hidden;
+  container-type:size;
 }
 .offPocketStack .checker{
   position:absolute;
   left:50%;
   bottom:0;
-  width:var(--off-checker-size);
-  height:auto;
-  aspect-ratio:1;
+  width:var(--off-piece-size);
+  height:var(--off-piece-size);
+  box-sizing:border-box;
   transform:translateX(-50%);
   filter:drop-shadow(0 2px 2px #0009);
 }
@@ -210,10 +214,10 @@
 @media(max-width:900px){
   .offPocket{padding:5px 1px 4px}
   .offPocketCount{min-width:23px;min-height:21px;margin-bottom:3px;padding-inline:5px;font-size:12px}
-  .offPocketStack{--off-checker-size:clamp(28px,3vw,36px);--off-stack-step:clamp(7px,1.7cqh,10px)}
+  .offPocketStack{--off-stack-step:clamp(6px,1.6cqh,10px)}
 }
 @media(max-height:420px){
   .offPocket{padding-block:3px}
   .offPocketCount{min-height:19px;margin-bottom:2px}
-  .offPocketStack{--off-checker-size:clamp(25px,2.8vw,32px);--off-stack-step:7px}
+  .offPocketStack{--off-piece-size:min(90cqw,calc((100cqh - 8px)/5),42px);--off-stack-step:6px}
 }
