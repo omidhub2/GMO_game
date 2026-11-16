@@ -453,7 +453,7 @@
   .chatPanel { right:5px; width:min(270px,55%); padding:8px; }
   .quickMessages { right:calc(5px + min(270px,55%) + 7px); gap:5px; padding:6px; }
   .quickMessages button { padding:6px 8px; font-size:10px; }
-  .chatMessages { max-height:140px; }
+  .chatMessages { max-height:none; }
 }
 @media(max-width:560px) {
   .board { grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr); }
