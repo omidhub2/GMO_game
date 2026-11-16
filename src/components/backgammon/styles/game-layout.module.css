@@ -127,7 +127,7 @@
 
 
 /* Borne-off tray count, stack, and interactions. */
-.offPocketCount{
+.offPocket strong.offPocketCount{
   position:relative;
   z-index:20;
   display:grid;
