@@ -18,6 +18,7 @@
 .gameShell:fullscreen{width:100%;height:100%}
 
 .playArena{
+  --off-pocket-width-scale:1;
   display:grid;
   grid-template-columns:minmax(0,1fr) clamp(38px,5vw,62px) calc(clamp(132px,22vw,188px) * var(--off-pocket-width-scale));
   grid-template-rows:minmax(0,1fr);
