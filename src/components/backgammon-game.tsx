@@ -410,6 +410,10 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
               <div className={playerRailStyles.profileAvatar} data-player-avatar aria-label={`آواتار ${playerName(side)}`}>
                 <span aria-hidden="true">{playerName(side).slice(0, 1)}</span>
               </div>
+              <span className={`${playerRailStyles.profileMetaItem} ${playerRailStyles.playerTimer}`} data-player-timer aria-label={`زمان باقی‌مانده ${turn === side ? turnSeconds : 30} ثانیه`}>
+                <Clock3 size={13}/>
+                <small>{`00:${String(turn === side ? turnSeconds : 30).padStart(2,"0")}`}</small>
+              </span>
             </div>
             <div className={playerRailStyles.profileInfo} dir="rtl">
               <div className={playerRailStyles.profileHeading}>
@@ -423,15 +427,9 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
                 </button>
                 <span className={`${styles.checker} ${playerRailStyles.profileChecker} ${side === "light" ? styles.lightChecker : styles.darkChecker} ${side === "dark" ? playerRailStyles.darkPlayerChecker : ""}`} data-player-checker aria-label={`مهره ${names[side]}`} role="img"/>
               </div>
-            </div>
-            <div className={playerRailStyles.profileMeta} dir="ltr">
-              <span className={playerRailStyles.profileMetaItem} data-player-match-score aria-label={`امتیاز مسابقه ${state.scores[side]}`}>
+              <span className={`${playerRailStyles.profileMetaItem} ${playerRailStyles.playerMatchScore}`} data-player-match-score aria-label={`امتیاز مسابقه ${state.scores[side]}`}>
                 <Trophy size={13}/>
                 <small>{String(state.scores[side])}</small>
-              </span>
-              <span className={playerRailStyles.profileMetaItem} data-player-timer aria-label={`زمان باقی‌مانده ${turn === side ? turnSeconds : 30} ثانیه`}>
-                <Clock3 size={13}/>
-                <small>{`00:${String(turn === side ? turnSeconds : 30).padStart(2,"0")}`}</small>
               </span>
             </div>
           </section>;
