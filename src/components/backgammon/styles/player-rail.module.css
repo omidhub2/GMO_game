@@ -252,8 +252,12 @@
   grid-row: 2;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
   min-width: 0;
+  padding-inline: 8px;
+  box-sizing: border-box;
   direction: ltr;
 }
 
@@ -263,13 +267,13 @@
   justify-content: center;
   gap: 5px;
   min-width: 68px;
-  min-height: 25px;
-  padding: 3px 9px;
+  min-height: 28px;
+  padding: 4px 10px;
   border: 1px solid #b9955688;
   border-radius: 999px;
   background: linear-gradient(145deg, #302719, #171513);
   color: #ead39e;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1;
   white-space: nowrap;
 }
@@ -313,7 +317,7 @@
   .rightRail { grid-template-rows: auto clamp(64px, 22cqh, 84px) auto minmax(0, 1fr) auto; }
   .playerStats { gap: 4px; padding: 4px; }
   .profileAvatar { width: clamp(36px, 15cqh, 50px); height: clamp(36px, 15cqh, 50px); }
-  .profileMetaItem { min-width: 62px; min-height: 23px; padding-inline: 7px; }
+  .profileMetaItem { min-width: 62px; min-height: 25px; padding-inline: 7px; }
 }
 
 @media (max-height: 360px) {
