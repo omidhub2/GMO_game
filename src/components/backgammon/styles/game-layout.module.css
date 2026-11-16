@@ -242,4 +242,5 @@
   box-sizing:border-box;
   box-shadow:0 2px 3px #0009,inset 0 2px 3px #fff6,inset 0 -3px 5px #0009;
 }
-.offPocketStack .checker{scale:.7}
+/* Exit-tray checkers: 30% smaller than their current rendered size. */
+.offPocketStack .checker{scale:.49}
