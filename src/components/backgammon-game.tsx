@@ -367,9 +367,10 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
               </div>
             </div>
             <div className={playerRailStyles.profileMeta} dir="ltr">
-              <span className={playerRailStyles.profileMetaItem} data-player-country aria-label="ایران"><span>🇮🇷</span></span>
-              <span className={playerRailStyles.profileMetaItem} data-player-timer aria-label={`زمان باقی‌مانده ${fa(turn === side ? turnSeconds : 30)} ثانیه`}><Clock3 size={12}/><small>{`00:${String(turn === side ? turnSeconds : 30).padStart(2,"0")}`}</small></span>
-              <span className={playerRailStyles.profileMetaItem} data-player-level><small>{`Level ${side === "dark" ? 3 : 4}`}</small></span>
+              <span className={playerRailStyles.profileMetaItem} data-player-timer aria-label={`زمان باقی‌مانده ${fa(turn === side ? turnSeconds : 30)} ثانیه`}>
+                <Clock3 size={12}/>
+                <small>{`00:${String(turn === side ? turnSeconds : 30).padStart(2,"0")}`}</small>
+              </span>
             </div>
           </section>;
         })}
