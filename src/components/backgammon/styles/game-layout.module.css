@@ -19,7 +19,7 @@
 
 .playArena{
   display:grid;
-  grid-template-columns:minmax(0,1fr) clamp(38px,5vw,62px) clamp(132px,22vw,188px);
+  grid-template-columns:minmax(0,1fr) clamp(38px,5vw,62px) calc(clamp(132px,22vw,188px) * var(--off-pocket-width-scale));
   grid-template-rows:minmax(0,1fr);
   gap:clamp(3px,.9vw,8px);
   width:100%;
@@ -92,7 +92,7 @@
 
 @media(max-width:900px){
   .playArena{
-    grid-template-columns:minmax(0,1fr) clamp(36px,7vw,52px) clamp(124px,24vw,164px);
+    grid-template-columns:minmax(0,1fr) clamp(36px,7vw,52px) calc(clamp(124px,24vw,164px) * var(--off-pocket-width-scale));
     gap:clamp(3px,.8vw,6px);
   }
   .offLane{gap:5px;padding:2px 0}
@@ -105,7 +105,7 @@
   .gameToast{padding:6px 11px;font-size:11px}
 }
 @media(max-width:360px){
-  .playArena{grid-template-columns:minmax(0,1fr) 34px 122px;gap:3px}
+  .playArena{grid-template-columns:minmax(0,1fr) 34px calc(122px * var(--off-pocket-width-scale));gap:3px}
 }
 @media(prefers-reduced-motion:reduce){
   .gameToast{transition:none}
