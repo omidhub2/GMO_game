@@ -118,13 +118,3 @@
 }
 
 /* Dice size is controlled centrally by dice.module.css to avoid competing rules. */
-
-
-/* Bind the dice frame to the reserved rail grid row, not the player-card height. */
-.diceStageRail .diceStage{
-  grid-column:1!important;
-  grid-row:2!important;
-  height:var(--rail-dice-height)!important;
-  min-height:var(--rail-dice-height)!important;
-  margin:0!important;
-}
