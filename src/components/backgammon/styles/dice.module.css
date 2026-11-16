@@ -97,6 +97,11 @@
 [data-pattern="1"] .spinning .dieCube { animation-name: bounceRoll; }
 [data-pattern="2"] .spinning .dieCube { animation-name: swirlRoll; }
 .revealed { animation: dieLand .25s ease-out; }
+/* Keep the resting dice visibly three-dimensional, as in the earlier rail design. */
+.revealed .dieCube {
+  transform: rotateX(calc(var(--rx) - 13deg)) rotateY(calc(var(--ry) + 17deg));
+  transition: transform .3s cubic-bezier(.2,.8,.2,1);
+}
 
 .dieUsedMark {
   position: absolute;
