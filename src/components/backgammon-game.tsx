@@ -324,12 +324,27 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       <aside className={gameLayoutStyles.offLane} dir="rtl" aria-label="فضای خروج مهره‌ها">
         {(["dark", "light"] as Side[]).map(side => {
           const options = side === turn ? destinations.filter(option => option.to === "off") : [];
-          return <div key={side} className={`${gameLayoutStyles.offPocket} ${options.length ? gameLayoutStyles.offPocketLegal : ""}`} aria-label={`${names[side]}: ${fa(board.off[side])} مهره خارج‌شده`}>
+          const canBearOff = options.length > 0 && !locked;
+          return <div
+            key={side}
+            className={`${gameLayoutStyles.offPocket} ${canBearOff ? gameLayoutStyles.offPocketLegal : ""}`}
+            data-off-tray={side}
+            role="button"
+            tabIndex={canBearOff ? 0 : -1}
+            aria-label={`خروج مهره‌های ${names[side]}؛ ${fa(board.off[side])} مهره خارج‌شده`}
+            aria-disabled={!canBearOff}
+            onClick={() => { if (canBearOff) move(options[0]); }}
+            onKeyDown={event => {
+              if ((event.key === "Enter" || event.key === " ") && canBearOff) {
+                event.preventDefault();
+                move(options[0]);
+              }
+            }}
+          >
             <strong className={gameLayoutStyles.offPocketCount} aria-live="polite">{fa(board.off[side])}</strong>
             <div className={gameLayoutStyles.offPocketStack} aria-hidden="true">
               {Array.from({length: board.off[side]}, (_, index) => <i key={index} className={`${styles.checker} ${side === "light" ? styles.lightChecker : styles.darkChecker}`} style={{ bottom: `calc(${index} * var(--off-stack-step))` }}/>) }
             </div>
-            {options.length > 0 && <div className={gameLayoutStyles.offPocketMoves}>{options.map(option => <button key={option.die} type="button" disabled={locked} aria-label={`خروج مهرهٔ ${names[side]} با تاس ${fa(option.die)}`} onClick={() => move(option)}>تاس {fa(option.die)}</button>)}</div>}
           </div>;
         })}
       </aside>
