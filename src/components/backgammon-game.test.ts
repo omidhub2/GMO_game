@@ -132,10 +132,12 @@ describe("Persian manual board interactions", () => {
     expect(container.querySelectorAll("[data-player-checker]")).toHaveLength(2);
     expect(container.querySelectorAll(".chatPanel")).toHaveLength(0);
     expect(container.querySelectorAll(".chatToggle")).toHaveLength(0);
-    expect(container.querySelectorAll("[data-player-country]")).toHaveLength(2);
+    expect(container.querySelectorAll("[data-player-country]")).toHaveLength(0);
     expect(container.querySelectorAll("[data-player-timer]")).toHaveLength(2);
-    expect(container.querySelectorAll("[data-player-level]")).toHaveLength(2);
-    expect(container.textContent).toContain("Level");
+    expect(container.querySelectorAll("[data-player-match-score]")).toHaveLength(2);
+    expect([...container.querySelectorAll("[data-player-match-score]")].map(node => node.textContent?.trim())).toEqual(["۰", "۰"]);
+    expect(container.querySelectorAll("[data-player-level]")).toHaveLength(0);
+    expect(container.textContent).not.toContain("Level");
     expect(container.textContent).not.toContain("زده‌شده:");
     expect(container.textContent).not.toContain("خارج‌شده:");
   });
