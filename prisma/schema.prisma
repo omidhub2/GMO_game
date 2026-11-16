@@ -177,6 +177,7 @@ model User {
 model UserProfile {
   userId          String  @id @map("user_id") @db.Uuid
   displayName     String? @map("display_name") @db.VarChar(64)
+  avatarChoice    String  @default("avatar-3") @map("avatar_choice") @db.VarChar(16)
   bio             String? @db.VarChar(500)
   country         String? @db.Char(2)
   preferredLocale String  @default("fa") @map("preferred_locale") @db.VarChar(8)
