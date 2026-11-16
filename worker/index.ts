@@ -1,8 +1,10 @@
 import { handleImageOptimization, DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
+import { withDatabaseConnection } from "../src/lib/db-context";
 
 interface Env {
   ASSETS: Fetcher;
+  HYPERDRIVE: { connectionString: string };
   IMAGES: {
     input(stream: ReadableStream): {
       transform(options: Record<string, unknown>): {
@@ -29,6 +31,6 @@ export default {
       }, allowedWidths);
     }
 
-    return handler.fetch(request);
+    return withDatabaseConnection(env.HYPERDRIVE.connectionString, () => handler.fetch(request));
   },
 };
