@@ -389,11 +389,6 @@
   width:max-content;
   max-width:calc(100% - 350px);
   padding:9px;
-  border:1px solid #d5ad5570;
-  border-radius:15px;
-  background:linear-gradient(145deg,#242428ef,#111115f2);
-  backdrop-filter:blur(14px);
-  box-shadow:0 12px 32px #000a;
   transform:translateY(-50%);
 }
 .quickMessages button { flex:1 1 0; min-height:0; padding:8px 12px; border:1px solid #c4a05a35; border-radius:11px 11px 3px 11px; background:#ffffff0c; color:#f3e6c7; font-size:11px; white-space:nowrap; text-align:center; cursor:pointer; transition:background .16s ease,border-color .16s ease; }
