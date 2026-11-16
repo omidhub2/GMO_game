@@ -215,12 +215,15 @@
 .checkerStack{
   --piece-gap:-2px;
   --piece-inset:clamp(2px,1cqh,5px);
-  --piece-size:min(90cqw,calc((100cqh - 12px)/5),62px);
+  /* Board pieces are 20% larger; off-tray sizing is defined separately. */
+  --piece-size:calc(min(90cqw,calc((100cqh - 12px)/5),62px) * 1.2);
   overflow:hidden;
 }
 .checkerStack .checker{
-  width:var(--piece-size);height:var(--piece-size);
-  max-width:90%;box-sizing:border-box;
+  width:var(--piece-size);
+  height:var(--piece-size);
+  max-width:none;
+  box-sizing:border-box;
 }
 @media(max-width:560px){
   .board{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr)}
