@@ -145,7 +145,7 @@
   --off-stack-step:calc((100% - var(--off-piece-size))/14);
   position:relative;display:block;flex:1 1 auto;width:100%;min-height:0;overflow:hidden;
 }
-.offPocketStack .checker{
+.offPocketStack .offPocketChecker{
   position:absolute;left:50%;bottom:0;width:var(--off-piece-size);height:var(--off-piece-size);
   max-width:none;box-sizing:border-box;transform:translateX(-50%);scale:.245;
   filter:drop-shadow(0 2px 2px #0009);
