@@ -216,6 +216,23 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const destinations = selected === null ? [] : moves.filter(m => m.from === selected);
   const locked = rolling || moving || pending || !canAct;
   const complete = !!state.target && Math.max(state.scores.light, state.scores.dark) >= state.target;
+  const [previewResult, setPreviewResult] = useState(false);
+  const prePreviewState = useRef<typeof state | null>(null);
+  function closeResultPreview() {
+    if (!previewResult || !prePreviewState.current) return;
+    const restored = prePreviewState.current;
+    prePreviewState.current = null;
+    setPreviewResult(false);
+    current.current = restored; setState(restored);
+  }
+  function openWhiteWinnerPreview() {
+    if (process.env.NODE_ENV === "production" || online || playMode === "online" || state.result) return false;
+    if (!prePreviewState.current) prePreviewState.current = current.current;
+    const preview = { ...current.current, phase: "finished" as const, result: { winner: "light" as Side, multiplier: 1, points: 3, dropped: false }, message: "پیش‌نمایش آزمایشی پایان بازی؛ امتیاز واقعی ثبت نشده است" };
+    current.current = preview; setState(preview); setPreviewResult(true); setResultView("winner");
+    setChatText(""); setChatOpen(false);
+    return true;
+  }
   const [resultView, setResultView] = useState<"winner" | "colors">("winner");
   const [rematchColor, setRematchColor] = useState<Side>(lobby.colors.requester ?? "light");
   const rematchAllowed = playMode !== "online";
@@ -259,6 +276,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   }
   async function postChat(text: string) {
     const clean=text.trim().slice(0,120); if(!clean) return;
+    if (clean.replace(/[\u200c\s]+/g, " ").trim() === "پایان بازی سفید برنده" && openWhiteWinnerPreview()) return;
     if(online){
       try {
         const result=await onlineRequest({operation:"message",text:clean},online) as OnlineSnapshot;
@@ -416,6 +434,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
     {state.phase === "double" && <section className={matchControlsStyles.result} aria-label="پاسخ دوبل"><h2>{names[opponent(turn)]}؛ پیشنهاد دوبل ×{fa(state.cube * 2)}</h2><p>با رد، {fa(state.cube)} امتیاز به {names[turn]} می‌رسد.</p><button disabled={locked} onClick={()=>send({type:"acceptDouble",revision:state.revision})}>پذیرش دوبل</button><button disabled={locked} onClick={()=>send({type:"rejectDouble",revision:state.revision})}>رد دوبل</button></section>}
     {state.result && <div className={matchControlsStyles.resultOverlay}>
       <section className={matchControlsStyles.resultModal} role="dialog" aria-modal="true" aria-labelledby="backgammon-result-title" aria-describedby="backgammon-result-description" dir="rtl">
+        {previewResult && <div role="status" className={matchControlsStyles.resultOnlineNote}>پیش‌نمایش آزمایشی — هیچ امتیاز واقعی ثبت نشده است <button type="button" onClick={closeResultPreview}>بستن پیش‌نمایش و بازگشت به بازی</button></div>}
         {resultView === "winner" ? <>
         <div className={matchControlsStyles.resultOrnament} aria-hidden="true"><Sparkles/><span/><Sparkles/></div>
         <div className={matchControlsStyles.resultBadge}><Crown size={16}/> {complete ? "قهرمان مسابقه" : "پایان دست"}</div>
