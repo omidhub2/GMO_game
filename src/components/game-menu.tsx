@@ -27,9 +27,26 @@ export default function GameMenu() {
   const [walletNotice, setWalletNotice] = useState("");
   const [walletRefresh, setWalletRefresh] = useState(0);
   const [sound, setSound] = useState(false);
+  const [playerAvatar, setPlayerAvatar] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => { if (dialog) dialogRef.current?.showModal(); }, [dialog]);
+  useEffect(() => {
+    const controller = new AbortController();
+    async function loadPlayerAvatar() {
+      try {
+        const response = await fetch("/api/profile", { cache: "no-store", signal: controller.signal });
+        if (!response.ok) return;
+        const result = await response.json();
+        const data = result.data;
+        if (data) setPlayerAvatar(data.avatarUrl || `/avatars/gmo-${data.avatarChoice || "avatar-3"}.webp`);
+      } catch { /* the profile link remains available if profile data cannot load */ }
+    }
+    void loadPlayerAvatar();
+    window.addEventListener("gmo:session-changed", loadPlayerAvatar);
+    return () => { controller.abort(); window.removeEventListener("gmo:session-changed", loadPlayerAvatar); };
+  }, []);
+
   useEffect(() => {
     const refresh = () => setWalletRefresh(value => value + 1);
     window.addEventListener("gmo:session-changed", refresh);
@@ -90,7 +107,7 @@ export default function GameMenu() {
       <Link href="/" className={styles.brand} aria-label="GMO Arena home"><span className={styles.brandMark}>G</span><span>GMO<small>ARENA</small></span></Link>
       <div className={styles.headerCenter}>PLAYER HUB <span>/</span> 01</div>
       <button onClick={() => setDialog("wallet")} className={styles.wallet} aria-label="Open wallet"><Wallet size={17} /><span>{formatGmo(totalBalance)} <b>GMO</b><small>≈ {formatUsd(totalBalance)}{walletData.demo ? " · Demo" : ""}</small></span><ChevronRight size={14} /></button>
-      <Link href="/account" className={styles.profile} aria-label="Open profile"><UserRound size={20} /></Link>
+      <Link href="/account" className={styles.profile} aria-label="Open profile">{playerAvatar ? <img src={playerAvatar} alt="" /> : <UserRound size={20} />}</Link>
     </header>
     <aside className={styles.side}><span>GMO / OPERATIONS</span><i /><span>PLAY. COMPETE. PREDICT.</span></aside>
     <div className={styles.stage}>
