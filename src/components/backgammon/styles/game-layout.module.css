@@ -159,6 +159,16 @@
   filter:drop-shadow(0 2px 2px #0009);
   box-shadow:0 2px 3px #0009,inset 0 2px 3px #fff6,inset 0 -3px 5px #0009;
 }
+/* Keep tray checker dimensions in sync with the board at every breakpoint. */
+@media(max-width:700px){
+  .offPocketStack{--off-piece-size:calc(min(92cqw,46px) * 1.68)}
+}
+@media(max-width:560px){
+  .offPocketStack{--off-piece-size:calc(min(92cqw,42px) * 1.68)}
+}
+@media(max-height:500px) and (min-width:600px){
+  .offPocketStack{--off-piece-size:calc(min(92cqw,25px) * 1.68)}
+}
 .offPocketLegal .offPocketCount{
   border-color:#f0b90b;
   color:#fff0b5;
