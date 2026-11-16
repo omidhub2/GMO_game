@@ -348,6 +348,21 @@
   text-shadow:0 0 10px #f0b90b9c;
 }
 .rollHologramLine { width:54%; height:1px; background:linear-gradient(90deg,transparent,#f0b90b,transparent); }
+.chatBackdrop {
+  position:fixed;
+  inset:0;
+  z-index:39;
+  display:block;
+  width:100vw;
+  height:100dvh;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:rgba(5,6,9,.58);
+  backdrop-filter:brightness(.55) saturate(.72);
+  -webkit-backdrop-filter:brightness(.55) saturate(.72);
+  cursor:default;
+}
 .chatPanel {
   position:absolute;
   z-index:40;
