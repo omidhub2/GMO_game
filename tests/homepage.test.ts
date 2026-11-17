@@ -11,7 +11,7 @@ describe("GMO Arena homepage", () => {
     for (const label of ["PLAY", "COMPETE", "PREDICT", "WALLET"]) expect(html).toContain(label);
     expect(html).toContain('aria-label="Choose your game mode"');
     expect(html).toContain('href="/games"');
-    expect(html).toContain('href="/account"');
+    expect(html).toContain('aria-label="Change avatar"');
   });
   it("marks the initial preview wallet as a demo", () => {
     const html = renderToStaticMarkup(React.createElement(HomePage));
