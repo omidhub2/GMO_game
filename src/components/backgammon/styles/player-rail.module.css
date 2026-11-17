@@ -139,7 +139,9 @@
   place-items: center;
   width: clamp(46px, 19cqh, 68px);
   height: clamp(46px, 19cqh, 68px);
-  transform: translateY(3px);
+  transform: translateY(6px);
+  position: relative;
+  z-index: 1;
   max-width: 100%;
   aspect-ratio: 1;
   border: 0px solid #b99556;
@@ -164,7 +166,9 @@
   gap: 0;
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  z-index: 2;
   direction: rtl;
 }
 
@@ -187,8 +191,11 @@
 }
 
  .profileName strong {
+  position: relative;
+  z-index: 3;
+  display: block;
   max-width: 100%;
-  transform: translate(-4px, 3px);
+  transform: translate(-4px, 6px);
   overflow: hidden;
   color: #f2e4c4;
   font-size: clamp(11px, 3.4cqh, 15px);
