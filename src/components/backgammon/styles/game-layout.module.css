@@ -22,7 +22,7 @@
   --off-pocket-width-scale:1.1;
   --off-tray-width-scale:0.8;
   --arena-column-gap:0px;
-  --off-counter-font-size:16px;
+  --off-counter-font-size:14px;
   display:grid;
   grid-template-columns:minmax(0,1fr) clamp(38px,5vw,62px) calc(clamp(132px,22vw,188px) * var(--off-pocket-width-scale));
   grid-template-rows:minmax(0,1fr);
