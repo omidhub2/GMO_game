@@ -83,13 +83,14 @@
   display: grid;
   flex: 0 0 auto;
   place-items: center;
-  width: 76px;
-  height: 76px;
+  width: 104px;
+  height: 104px;
   border: 2px solid #d7b45f;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 25%, #51442d, #191a16 72%);
   box-shadow: 0 0 0 5px #d8b35c14, 0 8px 22px #0008;
 }
+.resultAvatarImage { width: 100%; height: 100%; display: block; border-radius: 50%; object-fit: cover; }
 .resultAvatar > span {
   color: #fff0c8;
   font-size: 31px;
@@ -157,7 +158,8 @@
 @media (max-width: 420px) {
   .resultModal { padding: 20px 14px 16px; border-radius: 20px; }
   .resultWinner { gap: 12px; }
-  .resultAvatar { width: 64px; height: 64px; }
+  .resultAvatar { width: 84px; height: 84px; }
+  .resultAvatarImage { width: 100%; height: 100%; }
   .resultAvatar > span { font-size: 26px; }
   .resultScoreCard { min-height: 100px; }
   .resultActions { grid-template-columns: 1fr; }
