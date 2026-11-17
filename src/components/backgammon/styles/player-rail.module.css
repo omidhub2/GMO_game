@@ -186,7 +186,7 @@
   flex: 1 1 auto;
   flex-direction: column;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   text-align: right;
 }
 
@@ -195,13 +195,15 @@
   z-index: 3;
   display: block;
   max-width: 100%;
-  transform: translate(-4px, 6px);
-  overflow: hidden;
+  margin: 0;
+  padding: 2px 0 3px;
+  transform: none;
+  overflow: visible;
   color: #f2e4c4;
   font-size: clamp(11px, 3.4cqh, 15px);
   font-weight: 800;
-  line-height: 1.25;
-  text-overflow: ellipsis;
+  line-height: 1.45;
+  text-overflow: clip;
   white-space: nowrap;
 }
 
