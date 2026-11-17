@@ -50,9 +50,11 @@ export async function POST(request: Request) {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     stage = "database_transaction";
     const userId = await getPrisma().$transaction(async tx => {
-      // Serialize first sign-in for the same Telegram identity across app instances.
+      // Keep first sign-ins for the same Telegram identity serialized. Return an
+      // integer from the outer SELECT because PostgreSQL's advisory-lock function
+      // returns void, which Prisma's raw-query decoder cannot deserialize.
       stage = "lock_telegram_identity";
-      await tx.$queryRaw`SELECT pg_advisory_xact_lock(${BigInt(telegram.id)})`;
+      await tx.$queryRaw`SELECT 1::int AS locked FROM (SELECT pg_advisory_xact_lock(${BigInt(telegram.id)})) AS advisory_lock`;
 
       stage = "upsert_external_account";
       const identity = await tx.externalAccount.upsert({
