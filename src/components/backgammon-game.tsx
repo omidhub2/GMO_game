@@ -30,15 +30,99 @@ function randomDie(): number {
 
 export default function BackgammonGame() {
   const [session, setSession] = useState<GameSession | null>(null);
+  const [orientationHint, setOrientationHint] = useState(false);
+  const [portraitViewport, setPortraitViewport] = useState(false);
   const shell = useRef<HTMLDivElement>(null);
+  const orientationLocked = useRef(false);
+
+  function startGame(nextSession: GameSession) {
+    setSession(nextSession);
+
+    const telegram = (window as Window & {
+      Telegram?: { WebApp?: {
+        requestFullscreen?: () => void;
+        exitFullscreen?: () => void;
+        lockOrientation?: () => void;
+        unlockOrientation?: () => void;
+      } };
+    }).Telegram?.WebApp;
+
+    // Telegram Bot API 8+ expands the Mini App without leaving Telegram.
+    // Keep the call in the game-start click handler to preserve user activation.
+    try {
+      if (telegram?.requestFullscreen) telegram.requestFullscreen();
+      else if (shell.current?.requestFullscreen) {
+        void shell.current.requestFullscreen().catch(() => {});
+      }
+    } catch {
+      // Fullscreen is an enhancement; the game remains usable without it.
+    }
+
+    // Unlike Telegram's lockOrientation(), the Screen Orientation API can
+    // request a specific orientation. It is not available in every WebView
+    // (notably some iOS versions), so show a rotate-device hint on failure.
+    const orientation = window.screen?.orientation as ScreenOrientation & {
+      lock?: (orientation: "landscape") => Promise<void>;
+      unlock?: () => void;
+    };
+    if (orientation?.lock) {
+      void orientation.lock("landscape").then(() => {
+        orientationLocked.current = true;
+        try { telegram?.lockOrientation?.(); } catch {}
+        setOrientationHint(false);
+      }).catch(() => setOrientationHint(true));
+    } else {
+      setOrientationHint(true);
+    }
+  }
+
   function leave() {
+    const telegram = (window as Window & {
+      Telegram?: { WebApp?: { exitFullscreen?: () => void; unlockOrientation?: () => void } };
+    }).Telegram?.WebApp;
+    try { telegram?.unlockOrientation?.(); } catch {}
+    try { telegram?.exitFullscreen?.(); } catch {}
+    try {
+      const orientation = window.screen?.orientation as ScreenOrientation & { unlock?: () => void };
+      if (orientationLocked.current) orientation?.unlock?.();
+    } catch {}
+    orientationLocked.current = false;
     if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
     const url = new URL(window.location.href);
     url.searchParams.delete("room"); url.searchParams.delete("invite");
     window.history.replaceState(null, "", url);
+    setOrientationHint(false);
     setSession(null);
   }
-  return <div ref={shell} className={gameLayoutStyles.gameShell}>{session ? <BackgammonTable session={session} onLeave={leave}/> : <BackgammonSetup onStart={setSession}/>}</div>;
+
+  useEffect(() => {
+    if (!session) return;
+    const updateOrientation = () => {
+      const portrait = window.matchMedia("(orientation: portrait)").matches;
+      setPortraitViewport(portrait);
+      if (!portrait) setOrientationHint(false);
+    };
+    updateOrientation();
+    window.addEventListener("orientationchange", updateOrientation);
+    window.addEventListener("resize", updateOrientation);
+    return () => {
+      window.removeEventListener("orientationchange", updateOrientation);
+      window.removeEventListener("resize", updateOrientation);
+    };
+  }, [session]);
+
+  return (
+    <div ref={shell} className={gameLayoutStyles.gameShell}>
+      {session ? <BackgammonTable session={session} onLeave={leave}/> : <BackgammonSetup onStart={startGame}/>}
+      {session && orientationHint && portraitViewport && (
+        <div role="status" dir="rtl" style={{ position: "fixed", zIndex: 100, inset: "auto 12px 18px", display: "flex", alignItems: "center", gap: 12, padding: "13px 15px", border: "1px solid #d4b270", borderRadius: 12, background: "rgba(15,15,17,.96)", color: "#f5e8c8", boxShadow: "0 8px 30px #000a", fontFamily: "Tahoma, sans-serif" }}>
+          <span aria-hidden="true" style={{ fontSize: 25 }}>↻</span>
+          <span style={{ flex: 1, fontSize: 12, lineHeight: 1.8 }}>برای تجربه بهتر، گوشی را افقی بچرخانید. اگر دستگاه اجازه چرخش خودکار نمی‌دهد، چرخش را از تنظیمات گوشی فعال کنید.</span>
+          <button type="button" onClick={() => setOrientationHint(false)} style={{ border: "1px solid #806a3d", borderRadius: 8, padding: "7px 10px", background: "#29231a", color: "#ffe0a0", whiteSpace: "nowrap" }}>متوجه شدم</button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: () => void }) {
