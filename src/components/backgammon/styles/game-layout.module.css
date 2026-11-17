@@ -69,9 +69,9 @@
 .offPocketLegal{
   position:relative;
   isolation:isolate;
-  border:2px solid #e6b94f;
-  box-shadow:0 0 8px #e6b94f55,inset 0 0 7px #e6b94f22;
-  animation:offTrayPulse 2s ease-in-out infinite;
+  border:2px solid #d9ad50;
+  box-shadow:0 0 6px #e6b94f30,inset 0 0 5px #e6b94f14;
+  animation:offTrayPulse 3.4s ease-in-out infinite;
 }
 .offPocketLegal::before,
 .offPocketLegal::after{
@@ -83,37 +83,37 @@
 }
 .offPocketLegal::before{
   z-index:1;
-  background:linear-gradient(115deg,transparent 0%,#ffe9a022 38%,#fff2c788 50%,#ffe9a022 62%,transparent 100%);
-  background-size:240% 100%;
-  animation:offTraySweep 2.6s ease-in-out infinite;
+  background:linear-gradient(115deg,transparent 0%,#ffe9a010 40%,#fff2c74a 50%,#ffe9a010 60%,transparent 100%);
+  background-size:260% 100%;
+  animation:offTraySweep 4.2s ease-in-out infinite;
 }
 .offPocketLegal::after{
   z-index:2;
   inset:3px;
-  border:1px solid #ffe5a0aa;
-  box-shadow:inset 0 0 9px #f0b90b33,0 0 8px #f0b90b66;
-  animation:offTrayInnerGlow 2s ease-in-out infinite;
+  border:1px solid #ffe5a066;
+  box-shadow:inset 0 0 6px #f0b90b20,0 0 5px #f0b90b35;
+  animation:offTrayInnerGlow 3.4s ease-in-out infinite;
 }
 .offPocketLegal > *{
   position:relative;
   z-index:3;
 }
 @keyframes offTrayPulse{
-  0%,100%{border-color:#b9872e;box-shadow:0 0 6px #e6b94f33,inset 0 0 4px #e6b94f12}
-  50%{border-color:#ffe39a;box-shadow:0 0 19px #f0b90b99,inset 0 0 11px #f0b90b33}
+  0%,100%{border-color:#bd9143;box-shadow:0 0 5px #e6b94f22,inset 0 0 3px #e6b94f0c}
+  50%{border-color:#f2d48b;box-shadow:0 0 12px #f0b90b55,inset 0 0 7px #f0b90b20}
 }
 @keyframes offTraySweep{
-  0%{background-position:130% 0;opacity:.12}
-  45%{opacity:.62}
-  100%{background-position:-130% 0;opacity:.12}
+  0%{background-position:130% 0;opacity:.08}
+  45%{opacity:.34}
+  100%{background-position:-130% 0;opacity:.08}
 }
 @keyframes offTrayInnerGlow{
-  0%,100%{inset:4px;opacity:.38}
-  50%{inset:2px;opacity:.95}
+  0%,100%{inset:4px;opacity:.28}
+  50%{inset:3px;opacity:.62}
 }
 @media(prefers-reduced-motion:reduce){
   .offPocketLegal,.offPocketLegal::before,.offPocketLegal::after{animation:none}
-  .offPocketLegal{border-color:#e6b94f;box-shadow:0 0 10px #e6b94f66,inset 0 0 6px #e6b94f22}
+  .offPocketLegal{border-color:#d9ad50;box-shadow:0 0 6px #e6b94f30,inset 0 0 5px #e6b94f14}
   .offPocketLegal::before{display:none}
 }
 .offPocketMoves{
