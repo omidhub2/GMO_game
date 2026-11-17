@@ -34,7 +34,7 @@ export async function GET() {
   } catch { return NextResponse.json({ error: "Player profile is temporarily unavailable." }, { status: 503 }); }
 }
 
-const profileInput = z.object({ avatarChoice: z.enum(["avatar-1", "avatar-2", "avatar-3"]).default("avatar-3"), username: z.string().trim().min(3).max(32).regex(/^[a-zA-Z0-9_]+$/), displayName: z.string().trim().max(64), bio: z.string().trim().max(500) });
+const profileInput = z.object({ avatarChoice: z.enum(["avatar-1", "avatar-2", "avatar-3", "profile-photo"]).default("avatar-3"), username: z.string().trim().min(3).max(32).regex(/^[a-zA-Z0-9_]+$/), displayName: z.string().trim().max(64), bio: z.string().trim().max(500) });
 
 export async function PATCH(request: Request) {
   try {
