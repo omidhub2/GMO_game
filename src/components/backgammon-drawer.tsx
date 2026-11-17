@@ -12,6 +12,7 @@ export default function BackgammonDrawer({ onClose, children }: { onClose: () =>
     el.showModal(); close.current?.focus();
     return () => { el.close(); previous?.focus(); };
   }, []);
+  // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
   return <dialog ref={dialog} className={styles.drawer} aria-label="منوی بازی" onClick={event => { if (event.target === event.currentTarget) onClose(); }} onCancel={e => { e.preventDefault(); onClose(); }}>
     <header><span>منوی بازی <small dir="ltr">GMO / TABLE SERIES</small></span><button ref={close} onClick={onClose} aria-label="بستن منو"><X size={21}/></button></header>
     {children}
