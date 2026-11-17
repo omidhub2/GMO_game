@@ -148,7 +148,7 @@ describe("Persian manual board interactions", () => {
     expect(container.querySelectorAll("[data-player-country]")).toHaveLength(0);
     expect(container.querySelectorAll("[data-player-timer]")).toHaveLength(2);
     expect(container.querySelectorAll("[data-player-match-score]")).toHaveLength(2);
-    expect([...container.querySelectorAll("[data-player-match-score]")].map(node => node.textContent?.trim())).toEqual(["۰", "۰"]);
+    expect([...container.querySelectorAll("[data-player-match-score]")].map(node => node.textContent?.trim())).toEqual(["0", "0"]);
     expect(container.querySelectorAll("[data-player-level]")).toHaveLength(0);
     expect(container.textContent).not.toContain("Level");
     expect(container.textContent).not.toContain("زده‌شده:");
