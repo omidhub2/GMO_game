@@ -60,15 +60,23 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
   const [avatarNotice, setAvatarNotice] = useState("");
   useEffect(() => {
     const controller = new AbortController();
+    const savedChoice = window.localStorage.getItem("gmo-game-avatar-choice");
+    if (savedChoice === "avatar-1" || savedChoice === "avatar-2" || savedChoice === "avatar-3") {
+      setAvatarChoice(savedChoice);
+      setPlayerAvatar(`/avatars/gmo-${savedChoice}.webp`);
+    }
     fetch("/api/profile", { cache: "no-store", signal: controller.signal })
       .then(async response => response.ok ? response.json() : null)
       .then(result => {
         if (!result?.data || controller.signal.aborted) return;
         const data = result.data;
         setProfilePhoto(data.avatarUrl || null);
-        setAvatarChoice(data.avatarChoice || (data.avatarUrl ? "profile-photo" : "avatar-3"));
         setProfileData({ username: data.username, displayName: data.displayName || "", bio: data.bio || "" });
-        setPlayerAvatar(data.avatarChoice === "profile-photo" && data.avatarUrl ? data.avatarUrl : `/avatars/gmo-${data.avatarChoice && data.avatarChoice !== "profile-photo" ? data.avatarChoice : "avatar-3"}.webp`);
+        const choice = savedChoice === "avatar-1" || savedChoice === "avatar-2" || savedChoice === "avatar-3"
+          ? savedChoice
+          : data.avatarChoice || (data.avatarUrl ? "profile-photo" : "avatar-3");
+        setAvatarChoice(choice);
+        setPlayerAvatar(choice === "profile-photo" && data.avatarUrl ? data.avatarUrl : `/avatars/gmo-${choice !== "profile-photo" ? choice : "avatar-3"}.webp`);
       })
       .catch(() => {});
     return () => controller.abort();
@@ -527,16 +535,22 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
        {avatarPickerOpen && <div className={drawerStyles.avatarPicker}>
          <div className={drawerStyles.avatarOptions}>
            {(["avatar-1","avatar-2","avatar-3"] as const).map((choice,index)=><button type="button" key={choice} disabled={avatarSaving} aria-pressed={avatarChoice===choice} className={avatarChoice===choice?drawerStyles.avatarSelected:""} onClick={async()=>{
-             setAvatarNotice("");
-             if(!profileData){setAvatarNotice("اطلاعات پروفایل در دسترس نیست.");return;}
+             setAvatarChoice(choice);
+             setPlayerAvatar("/avatars/gmo-"+choice+".webp");
+             window.localStorage.setItem("gmo-game-avatar-choice", choice);
+             setAvatarNotice("آواتار برای این بازی انتخاب شد.");
+             if (!profileData) return;
              setAvatarSaving(true);
-             try{
-               const response=await fetch("/api/profile",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({...profileData,avatarChoice:choice})});
-               const result=await response.json();
-               if(!response.ok) throw new Error(result.error||"ذخیره آواتار انجام نشد.");
-               setAvatarChoice(choice);setPlayerAvatar("/avatars/gmo-"+choice+".webp");setAvatarNotice("آواتار ذخیره شد.");
-             }catch(error){setAvatarNotice(error instanceof Error?error.message:"ذخیره آواتار انجام نشد.");}
-             finally{setAvatarSaving(false);}
+             try {
+               const response = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...profileData, avatarChoice: choice }) });
+               const result = await response.json();
+               if (!response.ok) throw new Error(result.error || "ذخیره در پروفایل انجام نشد.");
+               setAvatarNotice("آواتار انتخاب و در پروفایل ذخیره شد.");
+             } catch {
+               setAvatarNotice("آواتار برای این بازی انتخاب شد؛ ذخیره دائمی پروفایل در دسترس نبود.");
+             } finally {
+               setAvatarSaving(false);
+             }
            }}><Image src={"/avatars/gmo-"+choice+".webp"} alt={"آواتار "+(index+1)} width={54} height={54} unoptimized/><small>{index===2?"پیش‌فرض":"آواتار "+(index+1)}</small></button>)}
            {profilePhoto && <button type="button" disabled={avatarSaving} aria-pressed={avatarChoice==="profile-photo"} className={avatarChoice==="profile-photo"?drawerStyles.avatarSelected:""} onClick={async()=>{
              setAvatarNotice("");
