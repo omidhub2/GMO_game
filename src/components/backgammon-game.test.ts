@@ -126,7 +126,7 @@ describe("Persian manual board interactions", () => {
   it("renders borne-off trays with live counts and a stacked checker area", () => {
     const trays = [...container.querySelectorAll('aside[aria-label="فضای خروج مهره‌ها"] > div')];
     expect(trays).toHaveLength(2);
-    expect(trays.map(tray => tray.querySelector("strong")?.textContent?.trim())).toEqual(["۰", "۰"]);
+    expect(trays.map(tray => tray.querySelector("strong")?.textContent?.trim())).toEqual(["0", "0"]);
     expect(trays.every(tray => tray.querySelector("[data-off-stack]"))).toBe(true);
     expect(trays.every(tray => tray.querySelector("[data-off-stack]")?.children.length === 0)).toBe(true);
     expect(trays.every(tray => tray.getAttribute("role") === "button")).toBe(true);
