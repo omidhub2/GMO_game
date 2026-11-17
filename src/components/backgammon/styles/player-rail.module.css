@@ -278,11 +278,11 @@
 
 .playerTimer,
 .playerMatchScore {
-  align-self: center;
+  align-self: end;
   justify-self: center;
   width: max-content;
   min-height: 24px;
-  padding: 2px 0;
+  padding: 2px 0 0;
 }
 
 .playerMatchScore {
