@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Menu, Maximize, LogOut, HelpCircle, Dices, Undo2, MessageCircle, Clock3, Send, X, Settings2, Trophy, Crown, Sparkles } from "lucide-react";
+import { Menu, LogOut, HelpCircle, Dices, Undo2, MessageCircle, Clock3, Send, X, Settings2, Trophy, Crown, Sparkles } from "lucide-react";
 import { canDouble, canUndo, gameReducer, legalMoves, newGame, opponent, pointNumber, type GameAction, type Move, type Side, type Source } from "@/modules/games/domain/backgammon";
 import type { GameSession, OnlineSnapshot } from "@/modules/games/domain/backgammon-session";
 import { computerMove } from "@/modules/games/domain/backgammon-computer";
@@ -53,6 +53,12 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
   const mounted = useRef(true);
   const humanSide = lobby.colors[session.snapshot?.seat ?? "requester"]!;
   const [playerAvatar, setPlayerAvatar] = useState("/avatars/gmo-avatar-3.webp");
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+  const [avatarChoice, setAvatarChoice] = useState<"avatar-1" | "avatar-2" | "avatar-3" | "profile-photo">("avatar-3");
+  const [profileData, setProfileData] = useState<{ username: string; displayName: string; bio: string } | null>(null);
+  const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
+  const [avatarSaving, setAvatarSaving] = useState(false);
+  const [avatarNotice, setAvatarNotice] = useState("");
   useEffect(() => {
     const controller = new AbortController();
     fetch("/api/profile", { cache: "no-store", signal: controller.signal })
@@ -60,6 +66,9 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       .then(result => {
         if (!result?.data || controller.signal.aborted) return;
         const data = result.data;
+        setProfilePhoto(data.avatarUrl || null);
+        setAvatarChoice(data.avatarChoice || (data.avatarUrl ? "profile-photo" : "avatar-3"));
+        setProfileData({ username: data.username, displayName: data.displayName || "", bio: data.bio || "" });
         setPlayerAvatar(data.avatarChoice === "profile-photo" && data.avatarUrl ? data.avatarUrl : `/avatars/gmo-${data.avatarChoice && data.avatarChoice !== "profile-photo" ? data.avatarChoice : "avatar-3"}.webp`);
       })
       .catch(() => {});
@@ -515,7 +524,35 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
     </div>}
     {menuOpen && <BackgammonDrawer onClose={()=>setMenuOpen(false)}>
       <div className={drawerStyles.drawerPlayer}><Dices size={30}/><h2>تخته‌نرد</h2><p>{state.target ? `مسابقه تا ${fa(state.target)} امتیاز` : "بازی ساده • بدون دوبل"}</p><small>درخواست‌دهنده: {names[lobby.colors.requester!]} • حریف: {names[lobby.colors.guest!]}</small></div>
-      <button className={drawerStyles.drawerItem} onClick={()=>{onFullscreen();setMenuOpen(false);}}><Maximize size={20}/><span>نمایش تمام‌صفحه<small>تمرکز روی تخته</small></span></button>
+      <button className={drawerStyles.drawerItem} aria-expanded={avatarPickerOpen} onClick={()=>{setAvatarPickerOpen(value=>!value);setAvatarNotice("");}}><Image src={playerAvatar} alt="" width={30} height={30} unoptimized/><span>انتخاب آواتار<small>تغییر تصویر بازیکن</small></span></button>
+       {avatarPickerOpen && <div className={drawerStyles.avatarPicker}>
+         <div className={drawerStyles.avatarOptions}>
+           {(["avatar-1","avatar-2","avatar-3"] as const).map((choice,index)=><button type="button" key={choice} disabled={avatarSaving} aria-pressed={avatarChoice===choice} className={avatarChoice===choice?drawerStyles.avatarSelected:""} onClick={async()=>{
+             setAvatarNotice("");
+             if(!profileData){setAvatarNotice("اطلاعات پروفایل در دسترس نیست.");return;}
+             setAvatarSaving(true);
+             try{
+               const response=await fetch("/api/profile",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({...profileData,avatarChoice:choice})});
+               const result=await response.json();
+               if(!response.ok) throw new Error(result.error||"ذخیره آواتار انجام نشد.");
+               setAvatarChoice(choice);setPlayerAvatar("/avatars/gmo-"+choice+".webp");setAvatarNotice("آواتار ذخیره شد.");
+             }catch(error){setAvatarNotice(error instanceof Error?error.message:"ذخیره آواتار انجام نشد.");}
+             finally{setAvatarSaving(false);}
+           }}><Image src={"/avatars/gmo-"+choice+".webp"} alt={"آواتار "+(index+1)} width={54} height={54} unoptimized/><small>{index===2?"پیش‌فرض":"آواتار "+(index+1)}</small></button>)}
+           {profilePhoto && <button type="button" disabled={avatarSaving} aria-pressed={avatarChoice==="profile-photo"} className={avatarChoice==="profile-photo"?drawerStyles.avatarSelected:""} onClick={async()=>{
+             setAvatarNotice("");
+             if(!profileData){setAvatarNotice("اطلاعات پروفایل در دسترس نیست.");return;}
+             setAvatarSaving(true);
+             try{
+               const response=await fetch("/api/profile",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({...profileData,avatarChoice:"profile-photo"})});
+               const result=await response.json();
+               if(!response.ok) throw new Error(result.error||"ذخیره تصویر انجام نشد.");
+               setAvatarChoice("profile-photo");setPlayerAvatar(profilePhoto);setAvatarNotice("عکس پروفایل انتخاب شد.");
+             }catch(error){setAvatarNotice(error instanceof Error?error.message:"ذخیره تصویر انجام نشد.");}
+             finally{setAvatarSaving(false);}
+           }}><Image src={profilePhoto} alt="عکس شخصی" width={54} height={54} unoptimized/><small>عکس من</small></button>}
+         </div><p role="status" aria-live="polite">{avatarSaving?"در حال ذخیره…":avatarNotice}</p>
+       </div>}
       <button className={drawerStyles.drawerItem} aria-label="برگشت حرکت" disabled={locked || !canUndo(state)} onClick={()=>{if(send({type:"undo",revision:state.revision})) setMenuOpen(false);}}><Undo2 size={20}/><span>برگشت حرکت<small>{canUndo(state) ? "برگرداندن آخرین حرکت با همان تاس‌ها" : state.phase === "move" ? "هنوز حرکتی انجام نشده است" : "برگشت پس از پایان نوبت ممکن نیست"}</small></span></button>
       <button className={drawerStyles.drawerItem} onClick={()=>setEditingQuick(value=>!value)} aria-expanded={editingQuick}><Settings2 size={20}/><span>تنظیم پیام‌های سریع<small>حداکثر ۵ پیام سریع؛ هر پیام تا ۴ کلمه</small></span></button>
       {editingQuick && <div className={drawerStyles.quickSettings}><p>برای هر پیام سریع می‌توانید تا ۴ کلمه بنویسید. پنج پیام را می‌توانید جداگانه تنظیم کنید.</p>{quickDrafts.map((value,index)=><label key={index}>پیام {index+1}<input value={value} maxLength={72} placeholder="مثلاً: حرکت خوبی بود" onChange={event=>setQuickDrafts(items=>items.map((item,i)=>{if(i!==index)return item;const words=event.target.value.trimStart().split(/\\s+/);return words.length>4?words.slice(0,4).join(" "):event.target.value;}))}/></label>)}<button type="button" onClick={()=>{setQuickMessages(quickDrafts.map(value=>value.trim().split(/\\s+/).slice(0,4).join(" ")));setEditingQuick(false);}}>ذخیره پیام‌ها</button></div>}
