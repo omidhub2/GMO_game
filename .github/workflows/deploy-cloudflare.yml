@@ -26,5 +26,5 @@ jobs:
       - name: Build and deploy Worker
         run: npm run deploy
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets['gmo-game'] }}
           CLOUDFLARE_ACCOUNT_ID: 4402b88e8d51e4dec0fd6f5eacf17e93
