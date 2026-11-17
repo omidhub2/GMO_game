@@ -31,7 +31,6 @@ function randomDie(): number {
 export default function BackgammonGame() {
   const [session, setSession] = useState<GameSession | null>(null);
   const shell = useRef<HTMLDivElement>(null);
-  function fullscreen() { const result=shell.current?.requestFullscreen?.(); result?.catch(() => {}); }
   function leave() {
     if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
     const url = new URL(window.location.href);
@@ -39,10 +38,10 @@ export default function BackgammonGame() {
     window.history.replaceState(null, "", url);
     setSession(null);
   }
-  return <div ref={shell} className={gameLayoutStyles.gameShell}>{session ? <BackgammonTable session={session} onLeave={leave} onFullscreen={fullscreen}/> : <BackgammonSetup onStart={setSession}/>}</div>;
+  return <div ref={shell} className={gameLayoutStyles.gameShell}>{session ? <BackgammonTable session={session} onLeave={leave}/> : <BackgammonSetup onStart={setSession}/>}</div>;
 }
 
-function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSession; onLeave: () => void; onFullscreen: () => void }) {
+function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: () => void }) {
   const { lobby, target, playMode, online } = session;
   const [state, setState] = useState(() => session.snapshot?.game ?? newGame(target, playMode === "local" ? lobby.colors.guest : null));
   const [networkError, setNetworkError] = useState("");
