@@ -22,7 +22,7 @@ const formatUsd = (amount: number) => new Intl.NumberFormat("en-US", { style: "c
 
 export default function GameMenu() {
   const [selected, setSelected] = useState(0);
-  const [dialog, setDialog] = useState<"invite" | "predictions" | "wallet" | null>(null);
+  const [dialog, setDialog] = useState<"invite" | "predictions" | "wallet" | "avatar" | null>(null);
   const [walletData, setWalletData] = useState<LobbyWallet>(demoWallet);
   const [walletLoading, setWalletLoading] = useState(false);
   const [walletNotice, setWalletNotice] = useState("");
@@ -129,7 +129,7 @@ export default function GameMenu() {
     </div>
     <div className={styles.operatorLabel} aria-hidden="true"><span>GMO // VANGUARD</span><strong>READY FOR YOUR NEXT MOVE</strong><i /></div>
     <section className={styles.modePicker} aria-label="Choose your game mode"><div className={styles.sectionLabel}><span>SELECT YOUR EXPERIENCE</span><span>01 — 04</span></div><div className={styles.modes}>{modes.map((item, index) => <button key={item.id} aria-pressed={selected === index} onClick={() => choose(index)} className={`${styles.mode} ${selected === index ? styles.selected : ""}`}><span className={styles.modeIndex}>0{index + 1}</span><item.Icon className={styles.modeIcon} size={33} strokeWidth={1.3} /><div><strong>{item.label}</strong><small>{item.detail}</small></div><ArrowUpRight className={styles.modeArrow} size={20} /></button>)}</div></section>
-    <footer className={styles.footer}><button onClick={() => { setMessage(""); setDialog("invite"); }}><UsersRound size={18} /><span>INVITE YOUR SQUAD</span><ArrowUpRight size={14} /></button><span className={styles.footerNote}>GMO ARENA <i /> GAME LOBBY</span><button onClick={() => setSound(!sound)} aria-pressed={sound} aria-label={sound ? "Mute menu sounds" : "Enable menu sounds"}>{sound ? <Volume2 size={18} /> : <VolumeX size={18} />}<span>SOUND {sound ? "ON" : "OFF"}</span></button></footer>
+    <footer className={styles.footer}><button onClick={() => { setMessage(""); setDialog("invite"); }}><UsersRound size={18} /><span>INVITE YOUR SQUAD</span><ArrowUpRight size={14} /></button><button onClick={() => { setAvatarNotice(""); setDialog("avatar"); }}><UserRound size={18} /><span>CHANGE AVATAR</span></button><span className={styles.footerNote}>GMO ARENA <i /> GAME LOBBY</span><button onClick={() => setSound(!sound)} aria-pressed={sound} aria-label={sound ? "Mute menu sounds" : "Enable menu sounds"}>{sound ? <Volume2 size={18} /> : <VolumeX size={18} />}<span>SOUND {sound ? "ON" : "OFF"}</span></button></footer>
     {dialog && <dialog ref={dialogRef} aria-labelledby="menu-dialog-title" className={styles.modal} onCancel={() => setDialog(null)}><button className={styles.close} onClick={() => setDialog(null)} aria-label="Close"><X size={22}/></button>{dialog === "avatar" ? <><h2 id="menu-dialog-title">YOUR ARENA AVATAR</h2><p>Choose one of the arena avatars or select your uploaded profile photo.</p><div className={styles.avatarPicker}>{(["avatar-1", "avatar-2", "avatar-3"] as const).map((choice, index) => <button type="button" key={choice} className={avatarChoice === choice ? styles.avatarChoiceSelected : ""} aria-pressed={avatarChoice === choice} disabled={avatarSaving} onClick={async () => {
  setAvatarChoice(choice); setAvatarNotice("");
  if (!profileData) { setAvatarNotice("Profile data is unavailable. Open your profile and try again."); return; }
