@@ -472,7 +472,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
         <div className={matchControlsStyles.resultBadge}><Crown size={16}/> {complete ? "قهرمان مسابقه" : "پایان دست"}</div>
         <div className={matchControlsStyles.resultWinner}>
           <div className={matchControlsStyles.resultAvatar} aria-label={`آواتار ${playerName(state.result.winner)}`}>
-            <span>{playerName(state.result.winner).slice(0,1)}</span>
+            {state.result.winner === humanSide ? <Image src={playerAvatar} alt="آواتار بازیکن برنده" width={104} height={104} unoptimized className={matchControlsStyles.resultAvatarImage} /> : <span>{playerName(state.result.winner).slice(0,1)}</span>}
             <i className={`${boardStyles.checker} ${state.result.winner === "light" ? boardStyles.lightChecker : boardStyles.darkChecker}`} aria-label={`مهره ${names[state.result.winner]}`}/>
           </div>
           <div className={matchControlsStyles.resultWinnerText}>
