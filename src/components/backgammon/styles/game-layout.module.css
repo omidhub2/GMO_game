@@ -70,8 +70,12 @@
   position: relative;
   isolation: isolate;
   border-color: transparent;
-  box-shadow: inset 0 0 6px #f0b90b10;
-  animation: offTrayBreath 3.2s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+  box-shadow: inset 0 0 8px #f0b90b18, 0 0 10px #f0b90b22;
+  animation:
+    offTrayBreath 2.2s ease-in-out infinite,
+    offTrayRock 2.2s ease-in-out infinite;
 }
 
 .offPocketLegal::before,
@@ -102,18 +106,18 @@
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   mask-composite: exclude;
-  opacity: 0.9;
-  filter: drop-shadow(0 0 4px #f0b90b88);
+  opacity: 0.96;
+  filter: drop-shadow(0 0 5px #f0b90b99);
   animation:
-    offTrayOrbit 4.2s linear infinite,
-    offTrayHalo 2.8s ease-in-out infinite;
+    offTrayOrbit 3.8s linear infinite,
+    offTrayHalo 2.2s ease-in-out infinite;
 }
 
 .offPocketLegal::after{
   inset: 2px;
-  background: radial-gradient(circle at 50% 50%, #f0b90b28, transparent 72%);
-  opacity: 0.62;
-  animation: offTrayInnerGlow 3.2s ease-in-out infinite;
+  background: radial-gradient(circle at 50% 50%, #f0b90b30, transparent 72%);
+  opacity: 0.68;
+  animation: offTrayInnerGlow 2.2s ease-in-out infinite;
 }
 
 .offPocketLegal > *{
@@ -148,12 +152,19 @@
   }
 }
 
+@keyframes offTrayRock{
+  0%,100%{ transform: scale(1) translateY(0) rotate(0deg); }
+  25%{ transform: scale(1.018) translateY(-1px) rotate(-0.25deg); }
+  50%{ transform: scale(1.032) translateY(-2px) rotate(0deg); }
+  75%{ transform: scale(1.018) translateY(-1px) rotate(0.25deg); }
+}
+
 @keyframes offTrayBreath{
   0%,100%{
-    box-shadow: inset 0 0 5px #f0b90b0c;
+    box-shadow: inset 0 0 7px #f0b90b14, 0 0 8px #f0b90b22;
   }
   50%{
-    box-shadow: inset 0 0 10px #f0b90b18;
+    box-shadow: inset 0 0 13px #f0b90b28, 0 0 17px #f0b90b55;
   }
 }
 
@@ -165,7 +176,9 @@
   }
 
   .offPocketLegal{
-    box-shadow: inset 0 0 6px #f0b90b12;
+    transform: none;
+    will-change: auto;
+    box-shadow: inset 0 0 8px #f0b90b18;
   }
 
   .offPocketLegal::before{
