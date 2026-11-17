@@ -141,7 +141,7 @@
   height: clamp(42px, 17cqh, 64px);
   max-width: 100%;
   aspect-ratio: 1;
-  border: 2px solid #b99556;
+  border: 0px solid #b99556;
   border-radius: 50%;
   overflow: hidden;
   background: radial-gradient(circle at 35% 28%, #3c3429, #171513 72%);
