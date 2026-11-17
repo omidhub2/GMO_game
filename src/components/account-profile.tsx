@@ -98,7 +98,6 @@ export default function AccountProfile() {
   </main>;
 
   const playerName = profile.displayName.trim() || profile.username;
-  const initial = [...playerName][0]?.toUpperCase() ?? "G";
 
   return <main className={styles.page}>
     <header className={styles.pageHeading}><span>PLAYER PROFILE <i /> PERSONNEL FILE</span><div className={styles.headingRow}><div><h1>Your operator</h1><p>Manage your Arena identity and track your competitive record.</p></div><button type="button" className={styles.iconButton} onClick={() => { setEditing(!editing); setError(""); setMessage(""); if (editing) setForm({ username: profile.username, displayName: profile.displayName, bio: profile.bio }); }} aria-label={editing ? "Cancel editing" : "Edit profile"}>{editing ? <X size={18} /> : <Pencil size={17} />}</button></div></header>
