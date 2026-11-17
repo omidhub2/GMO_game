@@ -1,7 +1,7 @@
 /* Right-side player rail. This file owns rail/card layout only. */
 .rightRail {
-  --player-meta-font-size: 12px;
-  --player-meta-icon-size: 14px;
+  --player-meta-font-size: 14px;
+  --player-meta-icon-size: 16px;
   --rail-gap: clamp(4px, 1.1cqh, 8px);
   --rail-card-radius: 14px;
   --rail-border: 1px solid #c6a24666;
@@ -287,7 +287,12 @@
 
 .playerMatchScore {
   margin-top: 0;
+  font-size: calc(var(--player-meta-font-size) + 1px);
 }
+
+.playerMatchScore svg { width: calc(var(--player-meta-icon-size) + 1px); height: calc(var(--player-meta-icon-size) + 1px); }
+.playerMatchScore small { font-size: 1.3em; font-weight: 800; font-variant-numeric: tabular-nums; }
+.playerTimer small { font-size: 1.1em; font-weight: 700; font-variant-numeric: tabular-nums; }
 
 .profileMetaItem {
   display: inline-flex;
