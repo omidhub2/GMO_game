@@ -48,3 +48,14 @@
 .quickSettings>p{margin:0 0 3px;color:#cfc2a5;font-size:11px;line-height:1.8}.quickSettings label{display:flex;flex-direction:column;align-items:stretch;gap:5px;color:#d8c69e;font-size:11px}
 .quickSettings input{width:100%;min-width:0;min-height:38px;box-sizing:border-box;padding:7px 10px;border:1px solid #d5ad5555;border-radius:7px;background:#0c0c0f;color:#fff0c8;text-align:center}
 .quickSettings>button{width:100%;min-height:36px;border:1px solid #d5ad55;border-radius:9px;background:#c39a42;color:#19140b;font-weight:800}
+
+.avatarPicker{padding:12px 10px 14px;border-bottom:1px solid #d5ad5533;background:#0d111788;border-radius:0 0 10px 10px}
+.avatarOptions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.avatarOptions button{display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 3px;border:1px solid #d5ad5533;border-radius:9px;background:#ffffff08;color:#f2e5c7;cursor:pointer}
+.avatarOptions button[aria-pressed="true"]{border-color:#e5bd68;background:#d5ad5520;box-shadow:0 0 0 1px #e5bd6850}
+.avatarOptions button:disabled{opacity:.6;cursor:wait}
+.avatarOptions img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+.avatarOptions small{font-size:9px;white-space:nowrap}
+.avatarPicker>p{margin:9px 0 0;color:#e4c77f;font-size:10px;line-height:1.7;text-align:center}
+.drawerItem>img{width:30px;height:30px;flex:none;border-radius:50%;object-fit:cover}
+@media(max-width:420px){.avatarOptions{gap:4px}.avatarOptions img{width:42px;height:42px}}
