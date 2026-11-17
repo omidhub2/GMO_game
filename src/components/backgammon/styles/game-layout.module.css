@@ -176,11 +176,11 @@
   min-height:24px;
   margin-bottom:5px;
   padding:1px 7px;
-  border:1px solid #e3bd64a8;
-  border-radius:999px;
-  background:linear-gradient(145deg,#4a3a1b,#171613);
+  border:0;
+  border-radius:0;
+  background:transparent;
   color:#ffe6a0;
-  box-shadow:0 3px 9px #0008,0 0 12px #e2b64a20;
+  box-shadow:none;
   font-size:var(--off-counter-font-size);
   font-weight:900;
   line-height:1;
@@ -217,9 +217,7 @@
   .offPocketStack{--off-piece-size:calc(min(92cqw,25px) * var(--off-checker-scale))}
 }
 .offPocketLegal .offPocketCount{
-  border-color:#f0b90b;
   color:#fff0b5;
-  box-shadow:0 0 14px #f0b90b55;
 }
 @media(max-width:900px){
   .offPocket{padding:5px 1px 4px}
