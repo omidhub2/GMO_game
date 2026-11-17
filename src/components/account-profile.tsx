@@ -8,7 +8,7 @@ import styles from "./account-profile.module.css";
 type PlayerProfile = {
   username: string;
   avatarUrl: string | null;
-  avatarChoice: "avatar-1" | "avatar-2" | "avatar-3";
+  avatarChoice: "avatar-1" | "avatar-2" | "avatar-3" | "profile-photo";
   displayName: string;
   bio: string;
   level: number;
@@ -46,7 +46,7 @@ export default function AccountProfile() {
       const player = result.data as PlayerProfile;
       setNeedsTelegramLogin(false);
       setProfile(player);
-      setAvatarChoice(player.avatarChoice || "avatar-3");
+      setAvatarChoice(player.avatarChoice || (player.avatarUrl ? "profile-photo" : "avatar-3"));
       setForm({ username: player.username, displayName: player.displayName, bio: player.bio });
     } catch (cause) { setNeedsTelegramLogin(false); setError(cause instanceof Error ? cause.message : "Profile could not be loaded."); }
     finally { setLoading(false); }
@@ -105,7 +105,7 @@ export default function AccountProfile() {
 
     <section className={styles.hero}>
       <div className={styles.coverLines} aria-hidden="true" />
-      <div className={styles.playerAvatar}>{profile.avatarUrl ? <Image src={profile.avatarUrl} alt="" width={92} height={92} unoptimized /> : <Image src={`/avatars/gmo-${profile.avatarChoice || "avatar-3"}.webp`} alt="" width={92} height={92} unoptimized />}<span><ShieldCheck size={14} /></span></div>
+      <div className={styles.playerAvatar}>{profile.avatarChoice === "profile-photo" && profile.avatarUrl ? <Image src={profile.avatarUrl} alt="" width={92} height={92} unoptimized /> : <Image src={`/avatars/gmo-${profile.avatarChoice && profile.avatarChoice !== "profile-photo" ? profile.avatarChoice : "avatar-3"}.webp`} alt="" width={92} height={92} unoptimized />}<span><ShieldCheck size={14} /></span></div>
       <div className={styles.identity}><span className={styles.levelTag}><Crown size={13} /> OPERATOR · LEVEL {profile.level}</span><h2>{playerName}</h2><span className={styles.gamerTag}>@{profile.username}</span>{profile.bio && <p>{profile.bio}</p>}</div>
       <div className={styles.memberDate}><CalendarDays size={14} /><span>IN THE ARENA SINCE</span><strong>{new Date(profile.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</strong></div>
     </section>
@@ -125,13 +125,14 @@ export default function AccountProfile() {
         <fieldset className={styles.avatarPicker}>
           <legend>Choose your Arena avatar</legend>
           <div className={styles.avatarChoices}>
+            {profile.avatarUrl && <label className={avatarChoice === "profile-photo" ? styles.avatarChoiceSelected : ""}><input type="radio" name="avatarChoice" value="profile-photo" checked={avatarChoice === "profile-photo"} onChange={() => setAvatarChoice("profile-photo")} /><Image src={profile.avatarUrl} alt="Your profile photo" width={68} height={68} unoptimized /><span>My photo</span></label>}
             {(["avatar-1", "avatar-2", "avatar-3"] as const).map((choice, index) => <label key={choice} className={avatarChoice === choice ? styles.avatarChoiceSelected : ""}>
               <input type="radio" name="avatarChoice" value={choice} checked={avatarChoice === choice} onChange={() => setAvatarChoice(choice)} />
               <Image src={`/avatars/gmo-${choice}.webp`} alt={[`Avatar 1`, `Avatar 2`, `Avatar 3`][index]} width={68} height={68} unoptimized />
               <span>{index === 2 ? "Default" : `Avatar ${index + 1}`}</span>
             </label>)}
           </div>
-          {profile.avatarUrl && <small>Your uploaded profile photo is currently displayed instead of this selection.</small>}
+          {profile.avatarUrl && <small>Choose “My photo” to use your uploaded profile picture, or select an arena avatar.</small>}
         </fieldset>
         <label>Player tag<input autoComplete="username" minLength={3} maxLength={32} pattern="[a-zA-Z0-9_]+" required value={form.username} onChange={event => setForm({ ...form, username: event.target.value })} /><small>3–32 letters, numbers, or underscores</small></label>
         <label>Display name<input maxLength={64} placeholder="How players see you" value={form.displayName} onChange={event => setForm({ ...form, displayName: event.target.value })} /></label>
