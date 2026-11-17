@@ -300,11 +300,11 @@
 
 .playerMatchScore {
   margin-top: 0;
-  font-size: calc(var(--player-meta-font-size) + 1px);
+  font-size: calc(var(--player-meta-font-size) + 2px);
 }
 
-.playerMatchScore svg { width: calc(var(--player-meta-icon-size) + 1px); height: calc(var(--player-meta-icon-size) + 1px); }
-.playerMatchScore small { font-size: 1.3em; font-weight: 800; font-variant-numeric: tabular-nums; }
+.playerMatchScore svg { width: calc(var(--player-meta-icon-size) + 2px); height: calc(var(--player-meta-icon-size) + 2px); }
+.playerMatchScore small { font-size: 1.35em; font-weight: 800; font-variant-numeric: tabular-nums; }
 .playerTimer small { font-size: 1.1em; font-weight: 700; font-variant-numeric: tabular-nums; }
 
 .profileMetaItem {
