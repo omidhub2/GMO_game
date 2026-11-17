@@ -29,6 +29,7 @@ export default function GameMenu() {
   const [walletRefresh, setWalletRefresh] = useState(0);
   const [sound, setSound] = useState(false);
   const [playerAvatar, setPlayerAvatar] = useState<string | null>(null);
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [avatarChoice, setAvatarChoice] = useState<"avatar-1" | "avatar-2" | "avatar-3">("avatar-3");
   const [profileData, setProfileData] = useState<{ username: string; displayName: string; bio: string } | null>(null);
   const [avatarSaving, setAvatarSaving] = useState(false);
@@ -45,6 +46,7 @@ export default function GameMenu() {
         const result = await response.json();
         const data = result.data;
         if (data) {
+          setProfilePhoto(data.avatarUrl || null);
           setPlayerAvatar(data.avatarUrl || `/avatars/gmo-${data.avatarChoice || "avatar-3"}.webp`);
           setAvatarChoice(data.avatarChoice || "avatar-3");
           setProfileData({ username: data.username, displayName: data.displayName || "", bio: data.bio || "" });
@@ -136,7 +138,7 @@ export default function GameMenu() {
   const response = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...profileData, avatarChoice: choice }) });
   const result = await response.json();
   if (!response.ok) throw new Error(result.error || "Avatar could not be saved.");
-  setPlayerAvatar(result.data?.avatarUrl || "/avatars/gmo-" + choice + ".webp");
+  setPlayerAvatar(profilePhoto || "/avatars/gmo-" + choice + ".webp");
   setAvatarNotice("Avatar saved.");
   window.dispatchEvent(new Event("gmo:avatar-changed"));
  } catch (error) { setAvatarNotice(error instanceof Error ? error.message : "Avatar could not be saved."); }
