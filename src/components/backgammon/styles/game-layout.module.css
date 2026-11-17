@@ -102,8 +102,8 @@
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   mask-composite: exclude;
-  opacity: 0.82;
-  filter: drop-shadow(0 0 3px #f0b90b66);
+  opacity: 0.9;
+  filter: drop-shadow(0 0 4px #f0b90b88);
   animation:
     offTrayOrbit 4.2s linear infinite,
     offTrayHalo 2.8s ease-in-out infinite;
@@ -111,8 +111,8 @@
 
 .offPocketLegal::after{
   inset: 2px;
-  background: radial-gradient(circle at 50% 50%, #f0b90b20, transparent 72%);
-  opacity: 0.58;
+  background: radial-gradient(circle at 50% 50%, #f0b90b28, transparent 72%);
+  opacity: 0.62;
   animation: offTrayInnerGlow 3.2s ease-in-out infinite;
 }
 
@@ -128,12 +128,12 @@
 
 @keyframes offTrayHalo{
   0%,100%{
-    opacity: 0.52;
-    filter: drop-shadow(0 0 3px #f0b90b55);
+    opacity: 0.62;
+    filter: drop-shadow(0 0 4px #f0b90b77);
   }
   50%{
-    opacity: 0.95;
-    filter: drop-shadow(0 0 9px #f0b90bcc);
+    opacity: 1;
+    filter: drop-shadow(0 0 11px #f0b90bdd);
   }
 }
 
