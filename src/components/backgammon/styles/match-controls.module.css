@@ -72,10 +72,12 @@
   font-weight: 800;
 }
 .resultWinner {
-  display: flex;
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
   align-items: center;
-  justify-content: center;
+  justify-content: stretch;
   gap: 16px;
+  width: 100%;
   margin: 19px 0 17px;
 }
 .resultAvatar {
@@ -106,9 +108,9 @@
   border-radius: 50%;
   box-shadow: 0 3px 8px #0008;
 }
-.resultWinnerText { min-width: 0; text-align: right; }
+.resultWinnerText { position: relative; z-index: 1; display: block; min-width: 0; width: 100%; text-align: right; overflow: visible; }
 .resultWinnerText > span { color: #e7bd60; font-size: 13px; font-weight: 800; }
-.resultWinnerText h2 { margin: 4px 0 5px; color: #fff1cd; font-size: clamp(20px, 5vw, 27px); font-weight: 900; line-height: 1.3; }
+.resultWinnerText h2 { display: block; max-width: 100%; margin: 4px 0 5px; color: #fff1cd; font-size: clamp(18px, 4.8vw, 25px); font-weight: 900; line-height: 1.4; white-space: normal; overflow-wrap: anywhere; word-break: normal; }
 .resultWinnerText p { margin: 0; color: #cbbd99; font-size: 12px; }
 .resultScoreGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .resultScoreCard {
@@ -157,7 +159,7 @@
 @keyframes resultPopIn { from { opacity: 0; transform: translateY(12px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @media (max-width: 420px) {
   .resultModal { padding: 20px 14px 16px; border-radius: 20px; }
-  .resultWinner { gap: 12px; }
+  .resultWinner { grid-template-columns: 84px minmax(0, 1fr); gap: 12px; }
   .resultAvatar { width: 84px; height: 84px; }
   .resultAvatarImage { width: 100%; height: 100%; }
   .resultAvatar > span { font-size: 26px; }
