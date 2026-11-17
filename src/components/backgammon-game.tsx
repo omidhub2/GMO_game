@@ -60,7 +60,7 @@ function BackgammonTable({ session, onLeave, onFullscreen }: { session: GameSess
       .then(result => {
         if (!result?.data || controller.signal.aborted) return;
         const data = result.data;
-        setPlayerAvatar(data.avatarUrl || `/avatars/gmo-${data.avatarChoice || "avatar-3"}.webp`);
+        setPlayerAvatar(data.avatarChoice === "profile-photo" && data.avatarUrl ? data.avatarUrl : `/avatars/gmo-${data.avatarChoice && data.avatarChoice !== "profile-photo" ? data.avatarChoice : "avatar-3"}.webp`);
       })
       .catch(() => {});
     return () => controller.abort();
