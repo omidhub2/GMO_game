@@ -505,3 +505,21 @@
   .checkerStack .selectedChecker { transform:translateX(-50%) scale(1.08); }
   .rollHologram { animation:none; }
 }
+
+
+/* Preserve short move feedback, but stop perpetual glow/scan animations on
+   mobile WebViews where they can compete with touch input and board painting. */
+@media (hover: none) and (pointer: coarse) {
+  .barUndo:not(:disabled),
+  .checkerStack .selectedChecker,
+  .barEntryCue .checker,
+  .barEntryCue::after,
+  .rollHologramHalo,
+  .rollHologram::before,
+  .playerRollPrompt {
+    animation: none;
+  }
+  .checkerStack .selectedChecker {
+    transform: translateX(-50%) scale(1.08);
+  }
+}
