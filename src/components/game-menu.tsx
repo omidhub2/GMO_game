@@ -138,7 +138,7 @@ export default function GameMenu() {
   const response = await fetch("/api/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...profileData, avatarChoice: choice }) });
   const result = await response.json();
   if (!response.ok) throw new Error(result.error || "Avatar could not be saved.");
-  setPlayerAvatar(choice === "profile-photo" && profilePhoto ? profilePhoto : "/avatars/gmo-" + (choice === "profile-photo" ? "avatar-3" : choice) + ".webp");
+  setPlayerAvatar("/avatars/gmo-" + choice + ".webp");
   setAvatarNotice("Avatar saved.");
   window.dispatchEvent(new Event("gmo:avatar-changed"));
  } catch (error) { setAvatarNotice(error instanceof Error ? error.message : "Avatar could not be saved."); }
