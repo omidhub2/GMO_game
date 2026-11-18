@@ -688,7 +688,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
               <div className={playerRailStyles.profileAvatar} data-player-avatar aria-label={`آواتار ${playerName(side)}`}>
                 <Image src={side === humanSide ? playerAvatar : "/avatars/gmo-avatar-3.webp"} alt="" aria-hidden="true" width={64} height={64} unoptimized />
               </div>
-              <span className={`${playerRailStyles.profileMetaItem} ${playerRailStyles.playerTimer}`} data-player-timer aria-label={`زمان باقی‌مانده ${turn === side ? turnSeconds : 30} ثانیه`}>
+              <span className={`${playerRailStyles.profileMetaItem} ${playerRailStyles.playerTimer}`} data-player-timer aria-label={turn === side ? "زمان باقی‌مانده نوبت فعال" : "زمان نوبت بازیکن"}>
                 <Clock3 size={13}/>
                 <TurnClock active={state.phase === "move" && turn === side} turnKey={`${state.turn}:${state.turnNumber}`} onExpire={handleTurnTimeout} />
               </span>
