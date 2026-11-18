@@ -182,7 +182,13 @@ export default function BackgammonGame() {
       if (event.cancelable) event.preventDefault();
     };
     const preventKeyboardScroll = (event: KeyboardEvent) => {
-      if (![" ", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", "Escape"].includes(event.key)) return;
+      const reloadShortcut = event.key === "F5" ||
+        ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "r");
+      if (reloadShortcut) {
+        event.preventDefault();
+        return;
+      }
+      if (![" ", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", "Escape", "Backspace"].includes(event.key)) return;
       const target = event.target;
       if (target instanceof HTMLElement && (
         target.isContentEditable ||
@@ -190,14 +196,20 @@ export default function BackgammonGame() {
       )) return;
       event.preventDefault();
     };
+    const preventAccidentalReload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
 
     window.addEventListener("popstate", keepGameOpen);
+    window.addEventListener("beforeunload", preventAccidentalReload);
     document.addEventListener("touchmove", preventPageTouchScroll, { passive: false, capture: true });
     document.addEventListener("wheel", preventPageWheelScroll, { passive: false, capture: true });
     document.addEventListener("keydown", preventKeyboardScroll, true);
 
     return () => {
       window.removeEventListener("popstate", keepGameOpen);
+      window.removeEventListener("beforeunload", preventAccidentalReload);
       document.removeEventListener("touchmove", preventPageTouchScroll, true);
       document.removeEventListener("wheel", preventPageWheelScroll, true);
       document.removeEventListener("keydown", preventKeyboardScroll, true);
