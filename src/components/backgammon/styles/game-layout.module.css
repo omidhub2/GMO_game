@@ -335,3 +335,33 @@
   .offPocketLegal::before { opacity: .45; filter: none; }
   .offPocketLegal::after { animation: none; }
 }
+
+
+/* Immersive Telegram gameplay: prevent page rubber-banding and accidental
+   browser/WebView pull gestures while keeping button interactions responsive. */
+.gameShell {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  height: var(--tg-viewport-height, 100dvh);
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: auto;
+  padding: 0;
+  margin: 0;
+}
+
+.gameShell,
+.gameShell * {
+  overscroll-behavior: none;
+}
+
+@supports (height: 100svh) {
+  .gameShell {
+    min-height: 100svh;
+  }
+}
