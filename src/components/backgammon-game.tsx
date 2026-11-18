@@ -269,8 +269,22 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
         const snapshot = await onlineSnapshot(online!, controller.signal);
         if (controller.signal.aborted) return;
         if (snapshot.messages) {
-          setChatMessages(snapshot.messages);
-          for (const message of snapshot.messages) {
+          // The online poll runs frequently. Avoid replacing the messages array
+          // on every response: that forced the whole board/chat subtree to render
+          // again even when the conversation had not changed.
+          const previous = chatMessagesRef.current;
+          const next = snapshot.messages;
+          const changed =
+            previous?.length !== next.length ||
+            next.some((message, index) => {
+              const oldMessage = previous?.[index];
+              return !oldMessage ||
+                oldMessage.id !== message.id ||
+                oldMessage.text !== message.text ||
+                oldMessage.createdAt !== message.createdAt;
+            });
+          if (changed) setChatMessages(next);
+          for (const message of next) {
             if (!seenChatIds.current.has(message.id)) {
               seenChatIds.current.add(message.id);
               showChatToast(message.text);
@@ -282,7 +296,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
         }
         setNetworkError("");
       } catch (error) { if (!controller.signal.aborted) setNetworkError(error instanceof Error ? error.message : "ارتباط قطع شد؛ در حال تلاش دوباره…"); }
-      if (!controller.signal.aborted) pollTimer = setTimeout(poll, 800);
+      if (!controller.signal.aborted) pollTimer = setTimeout(poll, 1000);
     }
     void poll();
     return () => { controller.abort(); clearTimeout(pollTimer); };
