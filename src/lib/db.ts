@@ -1,7 +1,7 @@
 import "server-only";
 import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { getRequestDatabaseConnection } from "./db-context";
+import { getRequestDatabaseClient, getRequestDatabaseConnection, setRequestDatabaseClient } from "./db-context";
 
 const globalForPrisma = globalThis as unknown as {
   prismaByConnectionString?: Map<string, PrismaClient>;
@@ -29,13 +29,23 @@ export function getPrisma(connectionString?: string): PrismaClient {
     throw new Error("Database connection is not configured. Bind Hyperdrive or set DATABASE_URL.");
   }
 
+  // Cloudflare Workers must not reuse a Prisma/pg pool across requests:
+  // reusing a pooled socket can leave later requests hanging indefinitely.
+  // The Worker request context owns this client and disconnects it after
+  // the response has been generated. Node development keeps a process cache.
+  if (getRequestDatabaseConnection()) {
+    const requestClient = getRequestDatabaseClient<PrismaClient>();
+    if (requestClient) return requestClient;
+    const client = createPrismaClient(resolvedConnectionString);
+    setRequestDatabaseClient(client);
+    return client;
+  }
+
   const clients = (globalForPrisma.prismaByConnectionString ??= new Map<string, PrismaClient>());
   let client = clients.get(resolvedConnectionString);
-
   if (!client) {
     client = createPrismaClient(resolvedConnectionString);
     clients.set(resolvedConnectionString, client);
   }
-
   return client;
 }
