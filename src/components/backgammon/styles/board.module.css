@@ -575,3 +575,42 @@
     box-shadow: 0 8px 22px #000a;
   }
 }
+
+
+/* Low-cost rendering profile for phones and Telegram WebViews.
+   Keep short move feedback, but avoid repainting blurred layers and glowing
+   checker stacks on every frame of a touch interaction. */
+@media (hover: none) and (pointer: coarse) {
+  .chatBackdrop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(5,6,9,.76);
+  }
+  .chatPanel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 8px 22px #000a;
+  }
+  .rollHologram,
+  .rollHologramHalo,
+  .rollHologram::before,
+  .rollHologram::after,
+  .barUndo:not(:disabled),
+  .barEntryCue .checker,
+  .barEntryCue::after,
+  .checkerStack .selectedChecker {
+    animation: none !important;
+  }
+  .checker,
+  .checkerStack .checker,
+  .barHit .checker {
+    filter: none !important;
+    box-shadow: inset 0 1px 2px #ffffff55, inset 0 -2px 3px #0007;
+  }
+  .selectedPoint .checker { filter: none; }
+  .checkerStack .selectedChecker {
+    transform: translateX(-50%) scale(1.06);
+    box-shadow: 0 0 0 2px #f0b90b88;
+  }
+  .chatToast { box-shadow: 0 6px 16px #0009; }
+}
