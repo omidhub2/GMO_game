@@ -689,3 +689,25 @@
 .onlineTarget{display:grid;gap:10px;margin:20px 0;font-size:14px}.onlineTarget select{min-height:46px;border:1px solid #c6a24677;border-radius:10px;background:#131315;color:#f3e6bf;padding:8px}
 .onlineLobby .onlineError{color:#ffb8ad}.sessionStatus{font-size:11px;color:#eadba9;text-align:center;margin:0}.sessionStatus span{display:block;color:#ffb8ad}
 @media(max-width:480px){.playModeChoices{grid-template-columns:1fr}.playModeChoices label{min-height:68px}}
+
+
+/* Photographic-style walnut board artwork; React point buttons and checker stacks stay interactive above it. */
+.playPage .board{
+  background-color:#2b180f!important;
+  background-image:url("/images/backgammon-walnut-board.svg")!important;
+  background-size:100% 100%!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  border:0!important;
+  border-radius:8px!important;
+  box-shadow:inset 0 0 16px #0008,0 3px 10px #0009!important;
+}
+.playPage .half{background:transparent!important}
+.playPage .point{background:transparent!important}
+.playPage .point::before{display:none!important}
+.playPage .bar{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.playPage .barBrand{color:#e6bd79;text-shadow:0 1px 3px #160a04}
