@@ -1,6 +1,6 @@
 import { handleImageOptimization, DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
-import { withDatabaseConnection } from "../src/lib/db-context";
+import { closeRequestDatabase, withDatabaseConnection } from "../src/lib/db-context";
 
 interface Env {
   ASSETS: Fetcher;
@@ -15,7 +15,7 @@ interface Env {
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
     if (url.pathname === "/_vinext/image") {
@@ -31,6 +31,16 @@ export default {
       }, allowedWidths);
     }
 
-    return withDatabaseConnection(env.HYPERDRIVE.connectionString, () => handler.fetch(request));
+    return withDatabaseConnection(env.HYPERDRIVE.connectionString, async () => {
+      try {
+        return await handler.fetch(request);
+      } finally {
+        // Close the request's Prisma pool after the response; don't make the
+        // browser wait for socket teardown.
+        ctx.waitUntil(closeRequestDatabase().catch(error => {
+          console.error("[database] request client cleanup failed", error);
+        }));
+      }
+    });
   },
 };
