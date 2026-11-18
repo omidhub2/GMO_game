@@ -154,7 +154,6 @@ export default function BackgammonGame() {
   useEffect(() => {
     if (!session) return;
 
-    const token = `gmo-game-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const previousScrollY = window.scrollY;
     const html = document.documentElement;
     const body = document.body;
@@ -200,11 +199,6 @@ export default function BackgammonGame() {
       )) return;
       event.preventDefault();
     };
-    const preventAccidentalReload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      event.returnValue = "";
-    };
-
     document.addEventListener("touchmove", preventPageTouchScroll, { passive: false, capture: true });
     document.addEventListener("wheel", preventPageWheelScroll, { passive: false, capture: true });
     document.addEventListener("keydown", preventKeyboardScroll, true);
