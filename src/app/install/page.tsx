@@ -8,7 +8,7 @@ type InstallPromptEvent = Event & {
 };
 
 type InstallStage = "checking" | "ready" | "prompting" | "waiting" | "installed" | "manual";
-const BOT_URL = "https://t.me/gmo_arenobot?start=login";
+const BOT_URL = "https://t.me/gmo_arenobot?text=%2Flogin";
 
 function isStandalone() {
   return window.matchMedia("(display-mode: standalone)").matches ||
