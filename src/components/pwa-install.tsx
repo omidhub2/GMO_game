@@ -29,6 +29,15 @@ export default function PwaInstall() {
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
+    // Register/update the worker even when already launched as an installed PWA.
+    // This ensures installed users receive the latest offline cache policy too.
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      void navigator.serviceWorker.register("/sw.js", {
+        scope: "/",
+        updateViaCache: "none",
+      }).catch(() => {});
+    }
+
     const standalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       (navigator as Navigator & { standalone?: boolean }).standalone === true;
@@ -44,10 +53,6 @@ export default function PwaInstall() {
       setVisible(true);
     };
     window.addEventListener("beforeinstallprompt", onPrompt);
-
-    if ("serviceWorker" in navigator && window.isSecureContext) {
-      void navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {});
-    }
 
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, []);
