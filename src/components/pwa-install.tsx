@@ -14,7 +14,7 @@ function getTelegramWebApp(): TelegramWebApp | undefined {
 }
 
 const APP_URL = "https://gmo-arena.omidhub-ai.workers.dev";
-const TELEGRAM_URL = "https://t.me/gmo_arenobot?text=%2Flogin";
+const TELEGRAM_URL = "https://t.me/gmo_arenobot?start=login";
 const INSTALL_URL = APP_URL + "/install";
 
 type BeforeInstallPromptEvent = Event & {
