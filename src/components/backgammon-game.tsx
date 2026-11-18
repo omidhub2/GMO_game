@@ -482,9 +482,67 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
     setChatText("");
     setChatOpen(false);
   }
-  function animateMove(destination: Move["to"]) {
-    busy.current = true; setMoving(true); setMovingTo(typeof destination === "number" ? destination : null);
-    timer.current = setTimeout(() => { busy.current = false; setMoving(false); setMovingTo(null); }, 240);
+  function animateMove(from: Move["from"], destination: Move["to"]) {
+    busy.current = true;
+    setMoving(true);
+    setMovingTo(typeof destination === "number" ? destination : null);
+
+    // Animate a lightweight visual clone between the real DOM positions.
+    // The game state is still committed by the reducer/server; this layer is
+    // purely presentational and never participates in hit testing.
+    const boardElement = document.querySelector(`.${boardStyles.board}`);
+    const sourceSelector = from === "bar"
+      ? `.${boardStyles.barHitSelected} .${boardStyles.checker}`
+      : `[data-point="${from}"] .${boardStyles.checkerStack} .${boardStyles.checker}:last-child`;
+    const source = boardElement?.querySelector<HTMLElement>(sourceSelector);
+    const target = destination === "off"
+      ? document.querySelector<HTMLElement>(`[data-off-tray="${turn}"] [data-off-stack]`)
+      : boardElement?.querySelector<HTMLElement>(`[data-point="${destination}"]`);
+
+    let animationFinished = false;
+    const finish = () => {
+      if (animationFinished) return;
+      animationFinished = true;
+      if (timer.current) clearTimeout(timer.current);
+      busy.current = false;
+      setMoving(false);
+      setMovingTo(null);
+    };
+
+    if (source && target) {
+      const fromRect = source.getBoundingClientRect();
+      const toRect = target.getBoundingClientRect();
+      const ghost = source.cloneNode(true) as HTMLElement;
+      Object.assign(ghost.style, {
+        position: "fixed",
+        left: `${fromRect.left}px`,
+        top: `${fromRect.top}px`,
+        width: `${fromRect.width}px`,
+        height: `${fromRect.height}px`,
+        margin: "0",
+        zIndex: "20000",
+        pointerEvents: "none",
+        transform: "none",
+        animation: "none",
+        transition: "none",
+        willChange: "transform",
+      });
+      document.body.appendChild(ghost);
+      const dx = toRect.left + toRect.width / 2 - (fromRect.left + fromRect.width / 2);
+      const dy = toRect.top + toRect.height / 2 - (fromRect.top + fromRect.height / 2);
+      const animation = ghost.animate(
+        [
+          { transform: "translate3d(0,0,0) scale(1)" },
+          { transform: `translate3d(${dx}px,${dy}px,0) scale(1.06)` },
+        ],
+        { duration: 230, easing: "cubic-bezier(.2,.75,.25,1)", fill: "forwards" },
+      );
+      animation.onfinish = () => { ghost.remove(); finish(); };
+      animation.oncancel = () => { ghost.remove(); finish(); };
+      timer.current = setTimeout(() => { ghost.remove(); finish(); }, 280);
+    } else {
+      timer.current = setTimeout(finish, 180);
+    }
   }
   function roll() {
     if (!canAct || requestPending.current || !["opening", "roll"].includes(current.current.phase) || state.revision !== current.current.revision) return false;
@@ -494,7 +552,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
     current.current=next; setState(next); return true;
   }
   function move(move: Move) {
-    if (send({ type: "move", move, revision: state.revision })) animateMove(move.to);
+    if (send({ type: "move", move, revision: state.revision })) animateMove(move.from, move.to);
   }
   function select(from: Source | null) { send({ type: "select", from, revision: state.revision }); }
   function clickPoint(index: number) {
