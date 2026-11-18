@@ -84,7 +84,7 @@ export default function TelegramSession() {
         if (!cancelled) {
           emitStartup("gmo:startup-ready");
         }
-      } catch (cause) {
+      } catch {
         if (!cancelled) {
           console.warn("[telegram-session] automatic sign-in failed; user can reopen from the bot");
           emitStartup("gmo:startup-error");
