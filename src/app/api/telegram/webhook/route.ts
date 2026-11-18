@@ -6,7 +6,13 @@ type TelegramUpdate = {
   message?: {
     text?: string;
     chat?: { id?: number; type?: string };
-    from?: { is_bot?: boolean };
+    from?: {
+      id?: number;
+      is_bot?: boolean;
+      first_name?: string;
+      last_name?: string;
+      username?: string;
+    };
   };
 };
 
@@ -27,25 +33,69 @@ export async function POST(request: Request) {
 
   const message = update.message;
   const chatId = message?.chat?.id;
-  const text = message?.text?.trim() ?? "";
-  // Telegram deep links (?start=login) arrive as "/start login".
-  // Also accept a literal "/login" command for users who type it.
-  const loginCommand = /^\/(?:login(?:@\w+)?|start(?:@\w+)?\s+login)(?:\s|$)/i.test(text);
-  const startCommand = /^\/start(?:@\w+)?(?:\s|$)/i.test(text);
-  if (!chatId || message?.from?.is_bot || (!startCommand && !loginCommand)) {
+  const command = message?.text?.trim() ?? "";
+  const from = message?.from;
+  const loginCommand = /^\/login(?:@\w+)?(?:\s|$)/i.test(command);
+  const startCommand = /^\/start(?:@\w+)?(?:\s|$)/i.test(command);
+
+  if (!chatId || from?.is_bot || (!loginCommand && !startCommand)) {
     return NextResponse.json({ ok: true });
   }
 
   const appUrl = process.env.APP_URL?.trim() || "https://gmo-arena.omidhub-ai.workers.dev";
-  const welcome = [
-    loginCommand ? "🎮 ورود دوباره به GMO Arena" : "🎮 به GMO Arena خوش آمدید!",
-    "",
-    loginCommand
-      ? "برای ورود مستقیم به بازی، دکمه زیر را بزنید. اگر GMO Arena روی گوشی نصب باشد، می‌توانید نسخه نصب‌شده را باز کنید؛ در غیر این صورت بازی در تلگرام اجرا می‌شود."
-      : "برای ورود امن به بازی، دکمه زیر را بزنید. شناسه تلگرام شما هنگام بازشدن Mini App به‌صورت امن تأیید می‌شود.",
-    "",
-    "🏆 آماده ورود به میدان هستید؟"
-  ].join("\n");
+  let loginUrl: string | undefined;
+
+  // /login is a bot-chat command, not a Telegram Mini App launch. Create a
+  // short-lived one-time session ticket so the button can open the installed
+  // PWA directly without depending on Telegram WebApp initData.
+  if (loginCommand) {
+    if (!from?.id || !from.first_name) {
+      return NextResponse.json({ ok: true });
+    }
+    try {
+      const provision = await fetch(new URL("/api/auth/telegram/bot-login", appUrl), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-gmo-bot-login-secret": secret,
+        },
+        body: JSON.stringify({
+          id: from.id,
+          first_name: from.first_name,
+          last_name: from.last_name,
+          username: from.username,
+        }),
+        signal: AbortSignal.timeout(12000),
+      });
+      const result = await provision.json() as { loginUrl?: string };
+      if (!provision.ok || !result.loginUrl) {
+        console.error("[telegram-webhook] could not create PWA login ticket", provision.status);
+        return NextResponse.json({ ok: true });
+      }
+      loginUrl = result.loginUrl;
+    } catch (error) {
+      console.error("[telegram-webhook] PWA login ticket request failed", error instanceof Error ? error.name : "UnknownError");
+      return NextResponse.json({ ok: true });
+    }
+  }
+
+  const welcome = loginCommand
+    ? [
+        "🎮 ورود مستقیم به GMO Arena",
+        "",
+        "حساب تلگرام شما با امنیت تأیید شد.",
+        "دکمه زیر را بزنید تا مستقیماً وارد نسخه نصب‌شده GMO Arena شوید؛ این دکمه Mini App تلگرام را باز نمی‌کند.",
+        "",
+        "🏆 به میدان خوش آمدید!"
+      ].join("\n")
+    : [
+        "🎮 به GMO Arena خوش آمدید!",
+        "",
+        "برای اجرای بازی داخل تلگرام، دکمه زیر را بزنید.",
+        "برای ورود مستقیم به نسخه نصب‌شده، در گفت‌وگوی ربات دستور /login را ارسال کنید.",
+        "",
+        "🏆 آماده ورود به میدان هستید؟"
+      ].join("\n");
 
   try {
     const response = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
@@ -56,7 +106,11 @@ export async function POST(request: Request) {
         photo: new URL("/images/telegram-mini-app-640x360.png", appUrl).toString(),
         caption: welcome,
         reply_markup: {
-          inline_keyboard: [[{ text: "🎮 ورود به بازی GMO Arena", web_app: { url: appUrl } }]]
+          inline_keyboard: [[
+            loginCommand
+              ? { text: "🚀 ورود مستقیم به اپلیکیشن GMO Arena", url: loginUrl }
+              : { text: "🎮 اجرای بازی داخل تلگرام", web_app: { url: appUrl } }
+          ]]
         }
       }),
       signal: AbortSignal.timeout(12000)
