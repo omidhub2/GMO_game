@@ -193,6 +193,7 @@ export default function BackgammonGame() {
       }
       if (![" ", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", "Escape", "Backspace"].includes(event.key)) return;
       const target = event.target;
+      if (target instanceof Element && target.closest("[data-game-scroll]")) return;
       if (target instanceof HTMLElement && (
         target.isContentEditable ||
         target.matches("input, textarea, select, button, [role='button']")
@@ -829,8 +830,8 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
       <div className={matchControlsStyles.actions}><button disabled={locked || !canDouble(state)} onClick={()=>send({type:"offerDouble",revision:state.revision})}>پیشنهاد دوبل ×{fa(state.cube * 2)}</button></div>
     </footer>}
     {state.phase === "double" && <section className={matchControlsStyles.result} aria-label="پاسخ دوبل"><h2>{names[opponent(turn)]}؛ پیشنهاد دوبل ×{fa(state.cube * 2)}</h2><p>با رد، {fa(state.cube)} امتیاز به {names[turn]} می‌رسد.</p><button disabled={locked} onClick={()=>send({type:"acceptDouble",revision:state.revision})}>پذیرش دوبل</button><button disabled={locked} onClick={()=>send({type:"rejectDouble",revision:state.revision})}>رد دوبل</button></section>}
-    {state.result && <div className={matchControlsStyles.resultOverlay}>
-      <section className={matchControlsStyles.resultModal} role="dialog" aria-modal="true" aria-labelledby="backgammon-result-title" aria-describedby="backgammon-result-description" dir="rtl">
+    {state.result && <div className={matchControlsStyles.resultOverlay} data-game-scroll tabIndex={-1}>
+      <section className={matchControlsStyles.resultModal} data-game-scroll role="dialog" aria-modal="true" aria-labelledby="backgammon-result-title" aria-describedby="backgammon-result-description" dir="rtl">
         {previewResult && <div role="status" className={matchControlsStyles.resultOnlineNote}>پیش‌نمایش آزمایشی — هیچ امتیاز واقعی ثبت نشده است <button type="button" onClick={closeResultPreview}>بستن پیش‌نمایش و بازگشت به بازی</button></div>}
         {resultView === "winner" ? <>
         <div className={matchControlsStyles.resultOrnament} aria-hidden="true"><Sparkles/><span/><Sparkles/></div>
