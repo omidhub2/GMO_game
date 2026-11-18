@@ -389,3 +389,16 @@
   .playerStats, .messageButton { transition: none; }
   .profileAvatar { box-shadow: none; }
 }
+
+
+/* Keep mobile player rail mostly static; message pulse is decorative only. */
+@media (hover: none) and (pointer: coarse) {
+  .messagePulse {
+    animation: none !important;
+    filter: none;
+  }
+  .playerStats,
+  .messageButton {
+    transition: none;
+  }
+}
