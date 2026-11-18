@@ -552,3 +552,34 @@ h1 { margin: 7px 0 8px; font-size: clamp(25px, 4vw, 34px); letter-spacing: -.04e
 .lobby-menu-item { min-height:82px; }.lobby-menu-item:hover { background:linear-gradient(90deg,#ff713842,transparent); }
 .lobby-featured { border-color:#c68b5a77; background:#151310bd; }
 @media(max-width:760px) { .lobby-backdrop { background-position:center,center,62% center; }.lobby-backdrop:before { background:linear-gradient(90deg,#0b0d0edc,#0b0d0e7a 52%,#0b0d0e28),linear-gradient(0deg,#111212 0%,transparent 55%); }.lobby-menu { transform:translateZ(28px) rotateY(-2deg); }.lobby-menu-item { min-height:68px; } }
+
+
+/* Installed PWA viewport: use the entire display area when the browser
+   grants fullscreen/standalone mode, including display cutouts. */
+html, body {
+  min-height: 100%;
+  min-height: 100dvh;
+}
+
+@media (display-mode: fullscreen), (display-mode: standalone) {
+  html, body {
+    width: 100%;
+    min-height: 100%;
+    min-height: 100dvh;
+    margin: 0;
+    overscroll-behavior: none;
+  }
+
+  body {
+    padding:
+      env(safe-area-inset-top, 0px)
+      env(safe-area-inset-right, 0px)
+      env(safe-area-inset-bottom, 0px)
+      env(safe-area-inset-left, 0px);
+  }
+
+  .app-shell {
+    min-height: 100dvh;
+    padding-bottom: max(84px, env(safe-area-inset-bottom));
+  }
+}
