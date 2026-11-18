@@ -28,18 +28,21 @@ export async function POST(request: Request) {
   const message = update.message;
   const chatId = message?.chat?.id;
   const text = message?.text?.trim() ?? "";
-  if (!chatId || message?.from?.is_bot || !/^\/start(?:@\w+)?(?:\s|$)/i.test(text)) {
+  // Telegram deep links (?start=login) arrive as "/start login".
+  // Also accept a literal "/login" command for users who type it.
+  const loginCommand = /^\\/(?:login(?:@\\w+)?|start(?:@\\w+)?\\s+login)(?:\\s|$)/i.test(text);
+  const startCommand = /^\\/start(?:@\\w+)?(?:\\s|$)/i.test(text);
+  if (!chatId || message?.from?.is_bot || (!startCommand && !loginCommand)) {
     return NextResponse.json({ ok: true });
   }
 
   const appUrl = process.env.APP_URL?.trim() || "https://gmo-arena.omidhub-ai.workers.dev";
   const welcome = [
-    "🎮 به GMO Arena خوش آمدید!",
+    loginCommand ? "🎮 ورود دوباره به GMO Arena" : "🎮 به GMO Arena خوش آمدید!",
     "",
-    "برای ورود امن به بازی، دکمه زیر را بزنید.",
-    "با باز شدن اپلیکیشن در تلگرام، شناسه شما به‌صورت امن تأیید و حساب بازی بارگذاری می‌شود.",
-    "",
-    "اگر می‌خواهید نسخه نصب‌شده را اجرا کنید، ابتدا PWA را نصب کنید و سپس از همین ربات دکمه ورود به بازی را بزنید.",
+    loginCommand
+      ? "برای ورود مستقیم به بازی، دکمه زیر را بزنید. اگر GMO Arena روی گوشی نصب باشد، می‌توانید نسخه نصب‌شده را باز کنید؛ در غیر این صورت بازی در تلگرام اجرا می‌شود."
+      : "برای ورود امن به بازی، دکمه زیر را بزنید. شناسه تلگرام شما هنگام بازشدن Mini App به‌صورت امن تأیید می‌شود.",
     "",
     "🏆 آماده ورود به میدان هستید؟"
   ].join("\\n");
