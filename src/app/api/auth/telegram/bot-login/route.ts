@@ -1,30 +1,20 @@
-import { createHash, randomBytes } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getPrisma } from "@/lib/db";
+import { createTelegramPwaLoginTicket, hashTelegramSessionToken, type TelegramBotIdentity } from "@/lib/telegram-bot-login";
 
 export const runtime = "nodejs";
 
-type TelegramBotUser = {
-  id: number;
-  first_name: string;
-  last_name?: string;
-  username?: string;
-};
-
-function hashToken(value: string) {
-  return createHash("sha256").update(value).digest("hex");
-}
-
-// Called only by our Telegram webhook after Telegram has authenticated the sender.
+// Internal authenticated endpoint retained for diagnostics and trusted callers.
 export async function POST(request: Request) {
   const secret = process.env.TELEGRAM_WEBHOOK_SECRET?.trim();
   if (!secret || request.headers.get("x-gmo-bot-login-secret") !== secret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  let telegram: TelegramBotUser;
+  let telegram: TelegramBotIdentity;
   try {
-    const body = await request.json() as TelegramBotUser;
+    const body = await request.json() as TelegramBotIdentity;
     if (!Number.isSafeInteger(body.id) || body.id <= 0 ||
         typeof body.first_name !== "string" || !body.first_name.trim() ||
         body.first_name.length > 256 ||
@@ -38,65 +28,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const prisma = getPrisma();
-    const ticket = randomBytes(32).toString("base64url");
-    const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
-
-    const userId = await prisma.$transaction(async tx => {
-      await tx.$queryRaw`SELECT 1::int AS locked FROM (SELECT pg_advisory_xact_lock(${BigInt(telegram.id)})) AS advisory_lock`;
-      const identity = await tx.externalAccount.upsert({
-        where: { provider_providerUserId: { provider: "TELEGRAM", providerUserId: String(telegram.id) } },
-        update: { metadata: { username: telegram.username ?? "", firstName: telegram.first_name } },
-        create: {
-          provider: "TELEGRAM",
-          providerUserId: String(telegram.id),
-          metadata: { username: telegram.username ?? "", firstName: telegram.first_name },
-          user: {
-            create: {
-              username: `tg_${telegram.id}`,
-              profile: { create: { displayName: [telegram.first_name, telegram.last_name].filter(Boolean).join(" ").slice(0, 64), preferredLocale: "fa" } },
-            },
-          },
-        },
-        select: { userId: true, user: { select: { status: true } } },
-      });
-      if (identity.user.status !== "ACTIVE") throw new Error("ACCOUNT_INACTIVE");
-
-      const administrators = (process.env.TELEGRAM_ADMIN_IDS ?? "").split(",").map(id => id.trim());
-      if (administrators.includes(String(telegram.id))) {
-        const role = await tx.adminRole.upsert({
-          where: { name: "WALLET_ADMIN" },
-          update: { permissions: ["wallet:manage"] },
-          create: { name: "WALLET_ADMIN", permissions: ["wallet:manage"] },
-        });
-        await tx.adminUser.upsert({
-          where: { userId_roleId: { userId: identity.userId, roleId: role.id } },
-          update: {},
-          create: { userId: identity.userId, roleId: role.id },
-        });
-      } else {
-        await tx.adminUser.deleteMany({ where: { userId: identity.userId, role: { name: "WALLET_ADMIN" } } });
-      }
-
-      for (const accountType of ["BALANCE", "REWARDS", "PRIZE"] as const) {
-        await tx.walletAccount.upsert({
-          where: { userId_accountType_currency: { userId: identity.userId, accountType, currency: "GMO" } },
-          update: {},
-          create: { userId: identity.userId, accountType, currency: "GMO" },
-        });
-      }
-
-      await tx.session.deleteMany({ where: { userId: identity.userId, expiresAt: { lt: new Date() } } });
-      await tx.session.create({
-        data: { userId: identity.userId, tokenHash: hashToken(ticket), expiresAt },
-      });
-      return identity.userId;
-    });
-
-    const appUrl = process.env.APP_URL?.trim() || "https://gmo-arena.omidhub-ai.workers.dev";
-    const loginUrl = new URL("/api/auth/telegram/bot-login", appUrl);
-    loginUrl.searchParams.set("ticket", ticket);
-    return NextResponse.json({ ok: true, loginUrl: loginUrl.toString(), userId });
+    const result = await createTelegramPwaLoginTicket(telegram);
+    return NextResponse.json({ ok: true, loginUrl: result.loginUrl });
   } catch (error) {
     if (error instanceof Error && error.message === "ACCOUNT_INACTIVE") {
       return NextResponse.json({ error: "Account is not active" }, { status: 403 });
@@ -115,7 +48,7 @@ export async function GET(request: Request) {
   }
 
   const prisma = getPrisma();
-  const ticketHash = hashToken(ticket);
+  const ticketHash = hashTelegramSessionToken(ticket);
   const nextToken = randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
@@ -130,7 +63,7 @@ export async function GET(request: Request) {
 
     const exchanged = await prisma.session.updateMany({
       where: { id: session.id, tokenHash: ticketHash, expiresAt: { gt: new Date() } },
-      data: { tokenHash: hashToken(nextToken), expiresAt, lastSeenAt: new Date() },
+      data: { tokenHash: hashTelegramSessionToken(nextToken), expiresAt, lastSeenAt: new Date() },
     });
     if (exchanged.count !== 1) {
       return NextResponse.redirect(new URL("/?login=expired", url.origin), 303);
