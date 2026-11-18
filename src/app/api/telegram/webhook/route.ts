@@ -30,8 +30,8 @@ export async function POST(request: Request) {
   const text = message?.text?.trim() ?? "";
   // Telegram deep links (?start=login) arrive as "/start login".
   // Also accept a literal "/login" command for users who type it.
-  const loginCommand = /^\/(?:login(?:@\\w+)?|start(?:@\\w+)?\\s+login)(?:\\s|$)/i.test(text);
-  const startCommand = /^\/start(?:@\\w+)?(?:\\s|$)/i.test(text);
+  const loginCommand = /^\/(?:login(?:@\w+)?|start(?:@\w+)?\s+login)(?:\s|$)/i.test(text);
+  const startCommand = /^\/start(?:@\w+)?(?:\s|$)/i.test(text);
   if (!chatId || message?.from?.is_bot || (!startCommand && !loginCommand)) {
     return NextResponse.json({ ok: true });
   }
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       : "برای ورود امن به بازی، دکمه زیر را بزنید. شناسه تلگرام شما هنگام بازشدن Mini App به‌صورت امن تأیید می‌شود.",
     "",
     "🏆 آماده ورود به میدان هستید؟"
-  ].join("\\n");
+  ].join("\n");
 
   try {
     const response = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
