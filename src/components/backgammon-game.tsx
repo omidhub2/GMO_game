@@ -42,6 +42,9 @@ export default function BackgammonGame() {
       Telegram?: { WebApp?: {
         requestFullscreen?: () => void;
         exitFullscreen?: () => void;
+        expand?: () => void;
+        disableVerticalSwipes?: () => void;
+        enableVerticalSwipes?: () => void;
         lockOrientation?: () => void;
         unlockOrientation?: () => void;
       } };
@@ -50,6 +53,10 @@ export default function BackgammonGame() {
     // Telegram Bot API 8+ expands the Mini App without leaving Telegram.
     // Keep the call in the game-start click handler to preserve user activation.
     try {
+      // Expand the Mini App first, then request Telegram's immersive mode.
+      // Disable Telegram's downward swipe-to-collapse gesture while a match is active.
+      telegram?.expand?.();
+      telegram?.disableVerticalSwipes?.();
       if (telegram?.requestFullscreen) telegram.requestFullscreen();
       else if (shell.current?.requestFullscreen) {
         void shell.current.requestFullscreen().catch(() => {});
@@ -78,9 +85,10 @@ export default function BackgammonGame() {
 
   function leave() {
     const telegram = (window as Window & {
-      Telegram?: { WebApp?: { exitFullscreen?: () => void; unlockOrientation?: () => void } };
+      Telegram?: { WebApp?: { exitFullscreen?: () => void; unlockOrientation?: () => void; enableVerticalSwipes?: () => void } };
     }).Telegram?.WebApp;
     try { telegram?.unlockOrientation?.(); } catch {}
+    try { telegram?.enableVerticalSwipes?.(); } catch {}
     try { telegram?.exitFullscreen?.(); } catch {}
     try {
       const orientation = window.screen?.orientation as ScreenOrientation & { unlock?: () => void };
