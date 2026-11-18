@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createTelegramPwaLoginTicket } from "@/lib/telegram-bot-login";
 
 export const runtime = "nodejs";
 
@@ -47,36 +48,26 @@ export async function POST(request: Request) {
   const appUrl = process.env.APP_URL?.trim() || "https://gmo-arena.omidhub-ai.workers.dev";
   let loginUrl: string | undefined;
 
-  // /login is a bot-chat command, not a Telegram Mini App launch. Create a
-  // short-lived one-time session ticket so the button can open the installed
-  // PWA directly without depending on Telegram WebApp initData.
+  // Create the ticket inside this Worker request. Avoid calling our own public
+  // Worker URL and parsing an internal HTTP response (which previously returned
+  // non-JSON on some deployments and caused SyntaxError before the bot replied).
   if (loginCommand) {
     if (!from?.id || !from.first_name) {
       return NextResponse.json({ ok: true });
     }
     try {
-      const provision = await fetch(new URL("/api/auth/telegram/bot-login", appUrl), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-gmo-bot-login-secret": secret,
-        },
-        body: JSON.stringify({
-          id: from.id,
-          first_name: from.first_name,
-          last_name: from.last_name,
-          username: from.username,
-        }),
-        signal: AbortSignal.timeout(12000),
+      const result = await createTelegramPwaLoginTicket({
+        id: from.id,
+        first_name: from.first_name,
+        last_name: from.last_name,
+        username: from.username,
       });
-      const result = await provision.json() as { loginUrl?: string };
-      if (!provision.ok || !result.loginUrl) {
-        console.error("[telegram-webhook] could not create PWA login ticket", provision.status);
-        return NextResponse.json({ ok: true });
-      }
       loginUrl = result.loginUrl;
     } catch (error) {
-      console.error("[telegram-webhook] PWA login ticket request failed", error instanceof Error ? error.name : "UnknownError");
+      console.error(
+        "[telegram-webhook] PWA login ticket creation failed",
+        error instanceof Error ? error.message : "UnknownError"
+      );
       return NextResponse.json({ ok: true });
     }
   }
