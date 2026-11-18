@@ -552,7 +552,51 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
     current.current=next; setState(next); return true;
   }
   function move(move: Move) {
-    if (send({ type: "move", move, revision: state.revision })) animateMove(move.from, move.to);
+    const action: GameAction = { type: "move", move, revision: current.current.revision };
+
+    if (online) {
+      if (requestPending.current || !canAct) return;
+      const optimistic = gameReducer(current.current, action);
+      if (optimistic === current.current) return;
+
+      // Render the locally validated move immediately. The server remains
+      // authoritative; any rejection/error is reconciled from a fresh snapshot.
+      current.current = optimistic;
+      setState(optimistic);
+      animateMove(move.from, move.to);
+      requestPending.current = true;
+      setPending(true);
+      void onlineRequest({ operation: "action", action }, online)
+        .then(result => {
+          const snapshot = result as OnlineSnapshot;
+          if (mounted.current && snapshot.game) {
+            current.current = snapshot.game;
+            setState(snapshot.game);
+            setNetworkError("");
+          }
+        })
+        .catch(async error => {
+          if (!mounted.current) return;
+          setNetworkError(error instanceof Error ? error.message : "حرکت ثبت نشد؛ وضعیت بازی همگام‌سازی می‌شود.");
+          try {
+            const snapshot = await onlineSnapshot(online);
+            if (mounted.current && snapshot.game) {
+              current.current = snapshot.game;
+              setState(snapshot.game);
+            }
+          } catch {
+            // Keep the optimistic board visible until the next regular poll
+            // succeeds; do not invent a rollback state.
+          }
+        })
+        .finally(() => {
+          requestPending.current = false;
+          if (mounted.current) setPending(false);
+        });
+      return;
+    }
+
+    if (send(action)) animateMove(move.from, move.to);
   }
   function select(from: Source | null) { send({ type: "select", from, revision: state.revision }); }
   function clickPoint(index: number) {
