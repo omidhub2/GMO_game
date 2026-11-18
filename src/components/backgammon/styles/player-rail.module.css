@@ -98,7 +98,7 @@
 
 .playerStats {
   display: grid;
-  grid-template-columns: minmax(48px, .9fr) minmax(0, 1.25fr);
+  grid-template-columns: minmax(42px, .78fr) minmax(0, 1.25fr);
   grid-template-rows: minmax(0, 1fr) auto;
   align-items: stretch;
   gap: 6px;
@@ -129,7 +129,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  justify-content: space-between;
+  justify-content: center;
   min-width: 0;
   min-height: 0;
 }
@@ -137,9 +137,9 @@
 .profileAvatar {
   display: grid;
   place-items: center;
-  width: clamp(46px, 19cqh, 68px);
-  height: clamp(46px, 19cqh, 68px);
-  transform: translateY(6px);
+  width: clamp(38px, 12cqh, 50px);
+  height: clamp(38px, 12cqh, 50px);
+  transform: none;
   position: relative;
   z-index: 1;
   max-width: 100%;
@@ -365,7 +365,7 @@
 @media (max-width: 360px) {
   .rightRail { grid-template-rows: auto clamp(64px, 22cqh, 84px) auto minmax(0, 1fr) auto; }
   .playerStats { gap: 4px; padding: 4px; }
-  .profileAvatar { width: clamp(39px, 16cqh, 54px); height: clamp(39px, 16cqh, 54px); }
+  .profileAvatar { width: clamp(36px, 11cqh, 46px); height: clamp(36px, 11cqh, 46px); }
   .profileMetaItem { min-width: 0; min-height: 15px; padding: 0; }
 }
 
@@ -373,7 +373,7 @@
   .rightRail { --rail-gap: 3px; grid-template-rows: auto 62px auto minmax(0, 1fr) auto; }
   .railControls { min-height: 28px; }
   .menuToggle { min-height: 25px; }
-  .profileAvatar { width: 40px; height: 40px; }
+  .profileAvatar { width: 36px; height: 36px; }
   .profileMetaItem { min-height: 15px; padding: 0; }
 }
 
