@@ -87,8 +87,8 @@ export default function BackgammonSetup({ onStart }: { onStart: (session: GameSe
       <h1>تخته‌نرد؛ چطور بازی می‌کنی؟</h1>
       <p className={styles.setupIntro}>ابتدا آفلاین یا آنلاین را انتخاب کن، سپس بازیکن‌ها و تنظیمات بازی را مشخص کن.</p>
       <fieldset className={styles.playModeField}><legend>نوع اتصال</legend><div className={styles.playModeChoices}>
-        <label><input type="radio" name="connection" aria-label="آفلاین" checked={connection === "offline"} onChange={() => resetChoices("offline")}/><span>آفلاین<small>بازی روی همین دستگاه</small></span></label>
-        <label><input type="radio" name="connection" aria-label="آنلاین" checked={connection === "online"} onChange={() => resetChoices("online")}/><span>آنلاین<small>دونفره روی دو دستگاه</small></span></label>
+        <label><input type="radio" name="connection" aria-label="آفلاین" checked={connection === "offline"} onChange={() => resetChoices("offline")}/><span>آفلاین<small>کاملاً داخلی؛ بدون اینترنت و سرور</small></span></label>
+        <label><input type="radio" name="connection" aria-label="آنلاین" checked={connection === "online"} onChange={() => resetChoices("online")}/><span>آنلاین<small>بازی با حریف و همگام‌سازی از سرور</small></span></label>
       </div></fieldset>
       {connection === "offline" && <fieldset className={styles.playModeField}><legend>تعداد بازیکن‌ها</legend><div className={styles.playModeChoices}>
         <label><input type="radio" name="players" aria-label="تک‌نفره با کامپیوتر" checked={players === "computer"} onChange={() => resetChoices("offline", "computer")}/><span>تک‌نفره با کامپیوتر<small>نفر دوم، کامپیوتر است</small></span></label>
@@ -96,7 +96,7 @@ export default function BackgammonSetup({ onStart }: { onStart: (session: GameSe
       </div></fieldset>}
       {connection === "online" && <BackgammonOnline onStart={onStart}/>}
       {connection === "offline" && players && <>
-      <p className={styles.setupIntro}>{players === "computer" ? "رنگ خودت را انتخاب کن؛ رنگ مقابل برای کامپیوتر است." : "هر بازیکن رنگ خود را تأیید کند؛ سپس وارد بازی شوید."}</p>
+      <p className={styles.setupIntro}>{players === "computer" ? "رنگ خودت را انتخاب کن؛ رنگ مقابل برای کامپیوتر است. تمام محاسبات، تاس و حرکت‌ها روی همین دستگاه انجام می‌شوند و به اینترنت نیاز ندارند." : "هر بازیکن رنگ خود را تأیید کند؛ سپس وارد بازی شوید."}</p>
       <div className={styles.seatGrid}>
         <article className={styles.seatCard} aria-label="انتخاب رنگ مهره‌ها">
           <div className={styles.seatHeading}><span><Crown size={18}/> درخواست‌دهنده</span><small>اولویت انتخاب</small></div>
@@ -131,7 +131,7 @@ export default function BackgammonSetup({ onStart }: { onStart: (session: GameSe
         </div>}
       </div><p>تنظیمات پیش از شروع اعمال می‌شوند. رنگ مهره، شروع‌کننده را تعیین نمی‌کند؛ تاس شروع تصمیم می‌گیرد.</p></div>
       <button className={styles.startButton} type="button" disabled={!canStart(lobby)} onClick={enterGame}>{canStart(lobby) ? "ورود به بازی" : "پس از تأیید هر دو، ورود به بازی"}<ChevronLeft size={20}/></button>
-      <p className={styles.localNotice}>{players === "computer" ? "شما و کامپیوتر به نوبت بازی می‌کنید. تاس شروع، نفر اول را تعیین می‌کند." : "بازی دونفرهٔ آفلاین است؛ هر دو نفر از همین دستگاه استفاده می‌کنند."}</p>
+      <p className={styles.localNotice}>{players === "computer" ? "شما و کامپیوتر به نوبت بازی می‌کنید. تاس شروع، نفر اول را تعیین می‌کند." : "بازی کاملاً محلی است؛ هر دو نفر از همین دستگاه استفاده می‌کنند و هیچ حرکت یا تاسی به سرور ارسال نمی‌شود."}</p>
       </>}
     </section>
   </main>;
