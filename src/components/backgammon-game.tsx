@@ -72,14 +72,28 @@ export default function BackgammonGame() {
       lock?: (orientation: "landscape") => Promise<void>;
       unlock?: () => void;
     };
+    // Ask Telegram and the browser independently. Telegram's native
+    // orientation lock is the preferred path inside Mini Apps; the Screen
+    // Orientation API is the fallback for installed Android PWAs.
+    let telegramLockRequested = false;
+    try {
+      if (telegram?.lockOrientation) {
+        telegram.lockOrientation();
+        telegramLockRequested = true;
+      }
+    } catch {
+      // Fall through to the browser orientation API.
+    }
+
     if (orientation?.lock) {
       void orientation.lock("landscape").then(() => {
         orientationLocked.current = true;
-        try { telegram?.lockOrientation?.(); } catch {}
         setOrientationHint(false);
-      }).catch(() => setOrientationHint(true));
+      }).catch(() => {
+        setOrientationHint(!telegramLockRequested);
+      });
     } else {
-      setOrientationHint(true);
+      setOrientationHint(!telegramLockRequested);
     }
   }
 
@@ -122,11 +136,11 @@ export default function BackgammonGame() {
   return (
     <div ref={shell} className={gameLayoutStyles.gameShell}>
       {session ? <BackgammonTable session={session} onLeave={leave}/> : <BackgammonSetup onStart={startGame}/>}
-      {session && orientationHint && portraitViewport && (
-        <div role="status" dir="rtl" style={{ position: "fixed", zIndex: 100, inset: "auto 12px 18px", display: "flex", alignItems: "center", gap: 12, padding: "13px 15px", border: "1px solid #d4b270", borderRadius: 12, background: "rgba(15,15,17,.96)", color: "#f5e8c8", boxShadow: "0 8px 30px #000a", fontFamily: "Tahoma, sans-serif" }}>
-          <span aria-hidden="true" style={{ fontSize: 25 }}>↻</span>
-          <span style={{ flex: 1, fontSize: 12, lineHeight: 1.8 }}>برای تجربه بهتر، گوشی را افقی بچرخانید. اگر دستگاه اجازه چرخش خودکار نمی‌دهد، چرخش را از تنظیمات گوشی فعال کنید.</span>
-          <button type="button" onClick={() => setOrientationHint(false)} style={{ border: "1px solid #806a3d", borderRadius: 8, padding: "7px 10px", background: "#29231a", color: "#ffe0a0", whiteSpace: "nowrap" }}>متوجه شدم</button>
+      {session && portraitViewport && (
+        <div role="alert" dir="rtl" style={{ position: "fixed", zIndex: 1000, inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18, padding: 28, background: "#090b0d", color: "#f5e8c8", textAlign: "center", fontFamily: "Tahoma, sans-serif" }}>
+          <span aria-hidden="true" style={{ fontSize: 64, lineHeight: 1 }}>↻</span>
+          <strong style={{ fontSize: 20 }}>لطفاً گوشی را افقی نگه دارید</strong>
+          <span style={{ maxWidth: 320, fontSize: 13, lineHeight: 2, color: "#c9c2b3" }}>صفحه بازی فقط در حالت افقی قابل نمایش است. دستگاه را بچرخانید تا بازی ادامه پیدا کند.</span>
         </div>
       )}
     </div>
