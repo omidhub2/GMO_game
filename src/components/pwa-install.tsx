@@ -83,7 +83,7 @@ export default function PwaInstall() {
   }
 
   function openInstalledApp() {
-    const telegram = window.Telegram?.WebApp;
+    const telegram = window.Telegram?.WebApp as unknown as TelegramWebApp | undefined;
     try {
       if (telegram?.openLink) telegram.openLink(APP_URL, { try_instant_view: false });
       else window.open(APP_URL, "_blank", "noopener,noreferrer");
