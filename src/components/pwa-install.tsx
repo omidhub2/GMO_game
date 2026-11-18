@@ -25,6 +25,7 @@ type BeforeInstallPromptEvent = Event & {
 export default function PwaInstall() {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
   const [inTelegram, setInTelegram] = useState(false);
   const [standalone, setStandalone] = useState(false);
   const [installedBefore, setInstalledBefore] = useState(false);
@@ -62,6 +63,16 @@ export default function PwaInstall() {
       setInstalledBefore(window.localStorage.getItem("gmo-pwa-installed") === "1");
     } catch {}
     refreshMatch();
+    void fetch("/api/auth/session", { credentials: "same-origin", cache: "no-store" })
+      .then(response => response.ok ? response.json() : { authenticated: false })
+      .then(result => setAuthenticated(Boolean(result.authenticated)))
+      .catch(() => setAuthenticated(false));
+    const onSessionChanged = () => {
+      void fetch("/api/auth/session", { credentials: "same-origin", cache: "no-store" })
+        .then(response => response.ok ? response.json() : { authenticated: false })
+        .then(result => setAuthenticated(Boolean(result.authenticated)))
+        .catch(() => setAuthenticated(false));
+    };
 
     const onMatchUpdate = () => refreshMatch();
     const onBeforeInstallPrompt = (event: Event) => {
@@ -77,12 +88,14 @@ export default function PwaInstall() {
     const onVisibility = () => {
       if (document.visibilityState === "visible") refreshMatch();
     };
+    window.addEventListener("gmo:session-changed", onSessionChanged);
     window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
     window.addEventListener("appinstalled", onAppInstalled);
     window.addEventListener("gmo-match-updated", onMatchUpdate);
     window.addEventListener("pageshow", onMatchUpdate);
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
+      window.removeEventListener("gmo:session-changed", onSessionChanged);
       window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
       window.removeEventListener("appinstalled", onAppInstalled);
       window.removeEventListener("gmo-match-updated", onMatchUpdate);
@@ -155,7 +168,7 @@ export default function PwaInstall() {
         </aside>
       )}
 
-      {visible && !showResume && (
+      {visible && !showResume && !authenticated && (
         <aside aria-label="ورود به GMO Arena" style={{ position: "fixed", zIndex: 150, insetInline: 12, bottom: "max(12px, env(safe-area-inset-bottom))", maxWidth: 520, marginInline: "auto", padding: 13, border: "1px solid #806b43", borderRadius: 14, background: "rgba(17,21,24,.97)", color: "#f1f5f3", boxShadow: "0 8px 32px #0009", direction: "rtl" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
             <img src="/icons/gmo-arena-192.svg" width="42" height="42" alt="" style={{ borderRadius: 10 }} />
