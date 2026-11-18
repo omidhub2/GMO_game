@@ -627,3 +627,27 @@ html, body {
   .backgammon-banner-board b { width: 21px; height: 21px; }
   .backgammon-banner-title, .backgammon-banner-kicker, .backgammon-banner-subtitle, .backgammon-banner-cta { position: relative; z-index: 1; text-shadow: 0 1px 8px #000; }
 }
+
+
+/* First-paint branded shell: rendered by the root layout before hydration. */
+.gmo-startup-splash {
+  position: fixed; z-index: 11000; inset: 0; display: grid; place-items: center;
+  min-height: 100dvh; padding: 24px; color: #f1e5c8; background:
+    radial-gradient(ellipse at 50% 42%, #b78a3820 0, transparent 36%),
+    radial-gradient(ellipse at 50% 100%, #b78a3810 0, transparent 50%), #090b0d;
+  opacity: 1; transition: opacity .34s ease, visibility .34s ease;
+}
+.gmo-startup-splash.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+.gmo-startup-brand { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.gmo-startup-brand img { width: 104px; height: 104px; object-fit: contain; filter: drop-shadow(0 8px 26px #c59a4a35); animation: gmo-splash-glow 2.4s ease-in-out infinite; }
+.gmo-startup-title { margin-top: 7px; color: #e7c47d; font-size: 25px; font-weight: 950; letter-spacing: .2em; }
+.gmo-startup-tagline { color: #9d8964; font-size: 9px; font-weight: 700; letter-spacing: .24em; }
+.gmo-startup-progress { width: 176px; height: 3px; margin-top: 26px; overflow: hidden; border-radius: 10px; background: #332c20; }
+.gmo-startup-progress span { display: block; width: 42%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #a77b35, #f1d58e); animation: gmo-splash-load 1.45s ease-in-out infinite; }
+.gmo-startup-caption { margin-top: 5px; color: #9d978a; font-size: 11px; }
+@keyframes gmo-splash-load { 0% { transform: translateX(-130%); } 100% { transform: translateX(340%); } }
+@keyframes gmo-splash-glow { 0%, 100% { transform: scale(.97); opacity: .88; } 50% { transform: scale(1.03); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .gmo-startup-splash, .gmo-startup-brand img { animation: none; transition: none; }
+  .gmo-startup-progress span { animation: none; width: 100%; }
+}
