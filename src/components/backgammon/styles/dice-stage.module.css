@@ -109,7 +109,7 @@
 
 @media (max-height: 360px) {
   .diceStage { gap: 3px; padding: 3px; }
-  .turnPrompt .railChecker { width: 32px; }
+  .turnPrompt .railChecker { width: var(--rail-checker-size); }
 }
 
 @media (prefers-reduced-motion: reduce) {
