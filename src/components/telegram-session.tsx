@@ -8,10 +8,8 @@ type TelegramWebApp = {
   expand?: () => void;
 };
 
-declare global {
-  interface Window {
-    Telegram?: { WebApp?: TelegramWebApp };
-  }
+function getTelegramWebApp(): TelegramWebApp | undefined {
+  return (window as Window & { Telegram?: { WebApp?: TelegramWebApp } }).Telegram?.WebApp;
 }
 
 let pendingLogin: Promise<void> | null = null;
@@ -21,7 +19,7 @@ function emitStartup(name: "gmo:startup-ready" | "gmo:startup-error") {
 }
 
 async function waitForTelegramWebApp(timeoutMs = 2500): Promise<TelegramWebApp | null> {
-  const existing = window.Telegram?.WebApp;
+  const existing = getTelegramWebApp();
   if (existing) return existing;
   return new Promise(resolve => {
     const started = Date.now();
