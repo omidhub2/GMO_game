@@ -108,12 +108,14 @@ export default function PwaInstall() {
   }
 
   function openInstalledApp() {
-    const telegram = window.Telegram?.WebApp as unknown as TelegramWebApp | undefined;
+    // The Telegram in-app browser cannot reliably read the PWA browser's
+    // installation marker. Opening the canonical start URL gives Android/
+    // the browser a chance to hand off to the installed web app; if it does
+    // not, the user can continue in this Telegram Mini App.
     try {
-      if (telegram?.openLink) telegram.openLink(APP_URL, { try_instant_view: false });
-      else window.open(APP_URL, "_blank", "noopener,noreferrer");
+      window.open(APP_URL + "/?launch=pwa", "_blank", "noopener,noreferrer");
     } catch {
-      window.open(APP_URL, "_blank", "noopener,noreferrer");
+      window.location.assign(APP_URL + "/?launch=pwa");
     }
   }
 
@@ -157,9 +159,7 @@ export default function PwaInstall() {
               <strong style={{ display: "block", fontSize: 13 }}>ورود به GMO Arena</strong>
               <span style={{ display: "block", marginTop: 3, color: "#aab6af", fontSize: 11, lineHeight: 1.8 }}>
                 {inTelegram
-                  ? installedBefore
-                    ? "نسخه نصب‌شده دارید؟ وارد اپلیکیشن شوید؛ یا همین‌جا در تلگرام بازی کنید."
-                    : "برای بازی نیازی به نصب نیست؛ می‌توانید همین‌جا در تلگرام بازی کنید."
+                  ? "اگر GMO Arena را نصب کرده‌اید، بازکردن نسخه نصب‌شده را امتحان کنید؛ در غیر این صورت همین‌جا در تلگرام ادامه دهید."
                   : "برای ورود و احراز هویت، از ربات رسمی GMO Arena در تلگرام وارد شوید."}
               </span>
             </div>
@@ -168,13 +168,8 @@ export default function PwaInstall() {
 
           {inTelegram ? (
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-              {installedBefore && (
-                <button type="button" onClick={openInstalledApp} style={{ flex: 1, border: 0, borderRadius: 9, padding: "10px 12px", background: "#b7f34a", color: "#172207", fontWeight: 800 }}>
-                  ورود به اپ نصب‌شده
-                </button>
-              )}
-              <button type="button" onClick={openInstallPage} style={{ flex: 1, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 700 }}>
-                بازکردن صفحه نصب
+              <button type="button" onClick={openInstalledApp} style={{ flex: 1, border: 0, borderRadius: 9, padding: "10px 12px", background: "#b7f34a", color: "#172207", fontWeight: 800 }}>
+                تلاش برای بازکردن اپ نصب‌شده
               </button>
               <button type="button" onClick={() => setVisible(false)} style={{ flex: 1, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 700 }}>
                 بازی در تلگرام
