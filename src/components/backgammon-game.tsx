@@ -133,6 +133,90 @@ export default function BackgammonGame() {
     };
   }, [session]);
 
+  // While a match is active, keep the installed PWA on the game screen.
+  // A same-URL history sentinel absorbs Android/browser Back; explicit in-game
+  // Leave still works and removes the sentinel during cleanup.
+  useEffect(() => {
+    if (!session) return;
+
+    const token = `gmo-game-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const previousScrollY = window.scrollY;
+    const html = document.documentElement;
+    const body = document.body;
+    const previousStyles = {
+      htmlOverflow: html.style.overflow,
+      htmlOverscroll: html.style.overscrollBehavior,
+      htmlHeight: html.style.height,
+      bodyOverflow: body.style.overflow,
+      bodyOverscroll: body.style.overscrollBehavior,
+      bodyHeight: body.style.height,
+    };
+
+    html.style.overflow = "hidden";
+    html.style.overscrollBehavior = "none";
+    html.style.height = "100%";
+    body.style.overflow = "hidden";
+    body.style.overscrollBehavior = "none";
+    body.style.height = "100%";
+    html.classList.add("gmo-game-locked");
+
+    const currentState = window.history.state;
+    const lockState = currentState && typeof currentState === "object"
+      ? { ...currentState, __gmoGameBackLock: token }
+      : { __gmoGameBackLock: token };
+    window.history.pushState(lockState, "", window.location.href);
+
+    const keepGameOpen = () => {
+      // Restore the sentinel after the browser consumes it, so repeated Back
+      // presses cannot leave the active match.
+      window.history.pushState(lockState, "", window.location.href);
+    };
+    const preventPageTouchScroll = (event: TouchEvent) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest("[data-game-scroll]")) return;
+      if (event.cancelable) event.preventDefault();
+    };
+    const preventPageWheelScroll = (event: WheelEvent) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest("[data-game-scroll]")) return;
+      if (event.cancelable) event.preventDefault();
+    };
+    const preventKeyboardScroll = (event: KeyboardEvent) => {
+      if (![" ", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(event.key)) return;
+      const target = event.target;
+      if (target instanceof HTMLElement && (
+        target.isContentEditable ||
+        target.matches("input, textarea, select, button, [role='button']")
+      )) return;
+      event.preventDefault();
+    };
+
+    window.addEventListener("popstate", keepGameOpen);
+    document.addEventListener("touchmove", preventPageTouchScroll, { passive: false, capture: true });
+    document.addEventListener("wheel", preventPageWheelScroll, { passive: false, capture: true });
+    document.addEventListener("keydown", preventKeyboardScroll, true);
+
+    return () => {
+      window.removeEventListener("popstate", keepGameOpen);
+      document.removeEventListener("touchmove", preventPageTouchScroll, true);
+      document.removeEventListener("wheel", preventPageWheelScroll, true);
+      document.removeEventListener("keydown", preventKeyboardScroll, true);
+      html.classList.remove("gmo-game-locked");
+
+      html.style.overflow = previousStyles.htmlOverflow;
+      html.style.overscrollBehavior = previousStyles.htmlOverscroll;
+      html.style.height = previousStyles.htmlHeight;
+      body.style.overflow = previousStyles.bodyOverflow;
+      body.style.overscrollBehavior = previousStyles.bodyOverscroll;
+      body.style.height = previousStyles.bodyHeight;
+
+      // Consume only our own same-URL sentinel; do not navigate away from the
+      // route when the player uses the game's explicit Leave action.
+      if (window.history.state?.__gmoGameBackLock === token) window.history.back();
+      window.scrollTo(0, previousScrollY);
+    };
+  }, [session]);
+
   return (
     <div ref={shell} className={gameLayoutStyles.gameShell}>
       {session ? <BackgammonTable session={session} onLeave={leave}/> : <BackgammonSetup onStart={startGame}/>}
