@@ -12,6 +12,11 @@ type TelegramWebApp = {
 const APP_URL = "https://gmo-arena.omidhub-ai.workers.dev";
 const TELEGRAM_URL = "https://t.me/gmo_arenobot";
 
+type BeforeInstallPromptEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
+};
+
 export default function PwaInstall() {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
@@ -19,6 +24,8 @@ export default function PwaInstall() {
   const [standalone, setStandalone] = useState(false);
   const [installedBefore, setInstalledBefore] = useState(false);
   const [activeMatch, setActiveMatch] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [installing, setInstalling] = useState(false);
 
   const refreshMatch = useCallback(() => {
     try {
@@ -52,6 +59,10 @@ export default function PwaInstall() {
     refreshMatch();
 
     const onMatchUpdate = () => refreshMatch();
+    const onBeforeInstallPrompt = (event: Event) => {
+      event.preventDefault();
+      setInstallPrompt(event as BeforeInstallPromptEvent);
+    };
     const onAppInstalled = () => {
       try {
         window.localStorage.setItem("gmo-pwa-installed", "1");
@@ -61,11 +72,13 @@ export default function PwaInstall() {
     const onVisibility = () => {
       if (document.visibilityState === "visible") refreshMatch();
     };
+    window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
     window.addEventListener("appinstalled", onAppInstalled);
     window.addEventListener("gmo-match-updated", onMatchUpdate);
     window.addEventListener("pageshow", onMatchUpdate);
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
+      window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
       window.removeEventListener("appinstalled", onAppInstalled);
       window.removeEventListener("gmo-match-updated", onMatchUpdate);
       window.removeEventListener("pageshow", onMatchUpdate);
@@ -90,6 +103,22 @@ export default function PwaInstall() {
       else window.open(APP_URL, "_blank", "noopener,noreferrer");
     } catch {
       window.open(APP_URL, "_blank", "noopener,noreferrer");
+    }
+  }
+
+  async function installPwa() {
+    if (!installPrompt || installing) return;
+    setInstalling(true);
+    try {
+      await installPrompt.prompt();
+      const choice = await installPrompt.userChoice;
+      if (choice.outcome === "accepted") {
+        setInstalledBefore(true);
+        try { window.localStorage.setItem("gmo-pwa-installed", "1"); } catch {}
+      }
+    } finally {
+      setInstallPrompt(null);
+      setInstalling(false);
     }
   }
 
@@ -131,14 +160,27 @@ export default function PwaInstall() {
                   ورود به اپ نصب‌شده
                 </button>
               )}
+              <button type="button" onClick={openInstalledApp} style={{ flex: 1, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 700 }}>
+                بازکردن در مرورگر برای نصب
+              </button>
               <button type="button" onClick={() => setVisible(false)} style={{ flex: 1, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 700 }}>
                 بازی در تلگرام
               </button>
             </div>
           ) : (
-            <button type="button" onClick={openTelegram} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 9, padding: "10px 12px", background: "#b7f34a", color: "#172207", fontWeight: 800 }}>
+            {installPrompt && !standalone && (
+              <button type="button" disabled={installing} onClick={() => void installPwa()} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 9, padding: "10px 12px", background: "#b7f34a", color: "#172207", fontWeight: 800 }}>
+                {installing ? "در حال آماده‌سازی نصب..." : "نصب GMO Arena روی گوشی"}
+              </button>
+            )}
+            <button type="button" onClick={openTelegram} style={{ width: "100%", marginTop: 8, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 800 }}>
               ورود از طریق تلگرام
             </button>
+            {!inTelegram && !standalone && !installPrompt && (
+              <span style={{ display: "block", marginTop: 8, color: "#aab6af", fontSize: 10, lineHeight: 1.7 }}>
+                برای نصب، از منوی مرورگر گزینه Install app یا Add to Home Screen را انتخاب کن.
+              </span>
+            )}
           )}
           {standalone && <span style={{ display: "block", marginTop: 8, color: "#aab6af", fontSize: 10 }}>این نسخه نصب‌شده است؛ راهنمای نصب دیگری نمایش داده نمی‌شود.</span>}
         </aside>
