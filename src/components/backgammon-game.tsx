@@ -189,6 +189,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
   const [chatText, setChatText] = useState("");
   const [chatMessages, setChatMessages] = useState<Array<{id:string;seat?:string;text:string;createdAt:number}>>(session.snapshot?.messages ?? []);
   const chatMessagesRef = useRef<HTMLDivElement>(null);
+  const polledMessages = useRef<Array<{id:string;seat?:string;text:string;createdAt:number}>>([]);
   const [quickMessages, setQuickMessages] = useState<string[]>(["سلام","دمت","موفق","صبر","بازی"]);
   const [quickDrafts, setQuickDrafts] = useState<string[]>(["سلام","آفرین","موفق","صبر","بازی"]);
   const [editingQuick, setEditingQuick] = useState(false);
@@ -272,7 +273,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
           // The online poll runs frequently. Avoid replacing the messages array
           // on every response: that forced the whole board/chat subtree to render
           // again even when the conversation had not changed.
-          const previous = chatMessagesRef.current;
+          const previous = polledMessages.current;
           const next = snapshot.messages;
           const changed =
             previous?.length !== next.length ||
@@ -283,7 +284,10 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
                 oldMessage.text !== message.text ||
                 oldMessage.createdAt !== message.createdAt;
             });
-          if (changed) setChatMessages(next);
+          if (changed) {
+            polledMessages.current = next;
+            setChatMessages(next);
+          }
           for (const message of next) {
             if (!seenChatIds.current.has(message.id)) {
               seenChatIds.current.add(message.id);
