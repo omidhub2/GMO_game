@@ -28,9 +28,13 @@ self.addEventListener("install", event => {
       if (page.ok) {
         const html = await page.text();
         const assetUrls = new Set();
-        for (const match of html.matchAll(/(?:src|href)=["']([^"']+\/_next\/static\/[^"']+)["']/g)) {
+        for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
           const asset = new URL(match[1], self.location.origin);
-          if (asset.origin === self.location.origin && /\\.(?:js|mjs|css)$/i.test(asset.pathname)) {
+          if (
+            asset.origin === self.location.origin &&
+            asset.pathname.startsWith("/_next/static/") &&
+            /\.(?:js|mjs|css)$/i.test(asset.pathname)
+          ) {
             assetUrls.add(asset.href);
           }
         }
