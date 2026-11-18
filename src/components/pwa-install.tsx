@@ -11,6 +11,7 @@ type TelegramWebApp = {
 
 const APP_URL = "https://gmo-arena.omidhub-ai.workers.dev";
 const TELEGRAM_URL = "https://t.me/gmo_arenobot";
+const INSTALL_URL = APP_URL + "/install";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -96,6 +97,16 @@ export default function PwaInstall() {
     }
   }
 
+  function openInstallPage() {
+    const telegram = window.Telegram?.WebApp as unknown as TelegramWebApp | undefined;
+    try {
+      if (telegram?.openLink) telegram.openLink(INSTALL_URL, { try_instant_view: false });
+      else window.location.assign(INSTALL_URL);
+    } catch {
+      window.location.assign(INSTALL_URL);
+    }
+  }
+
   function openInstalledApp() {
     const telegram = window.Telegram?.WebApp as unknown as TelegramWebApp | undefined;
     try {
@@ -121,6 +132,8 @@ export default function PwaInstall() {
       setInstalling(false);
     }
   }
+
+  if (pathname === "/install") return null;
 
   const showResume = activeMatch && pathname !== "/games/backgammon";
 
@@ -160,8 +173,8 @@ export default function PwaInstall() {
                   ورود به اپ نصب‌شده
                 </button>
               )}
-              <button type="button" onClick={openInstalledApp} style={{ flex: 1, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 700 }}>
-                بازکردن در مرورگر برای نصب
+              <button type="button" onClick={openInstallPage} style={{ flex: 1, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 700 }}>
+                بازکردن صفحه نصب
               </button>
               <button type="button" onClick={() => setVisible(false)} style={{ flex: 1, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 700 }}>
                 بازی در تلگرام
