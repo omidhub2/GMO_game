@@ -381,3 +381,11 @@
   .messagePulse { animation: none; }
   .playerStats, .messageButton { transition: none; }
 }
+
+
+@media (hover: none) and (pointer: coarse) {
+  .activeStats { box-shadow: inset 0 0 0 1px #f0b90b38; }
+  .messagePulse { animation: none; filter: none; }
+  .playerStats, .messageButton { transition: none; }
+  .profileAvatar { box-shadow: none; }
+}
