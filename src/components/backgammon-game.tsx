@@ -29,7 +29,15 @@ function randomDie(): number {
 }
 
 export default function BackgammonGame() {
-  const [session, setSession] = useState<GameSession | null>(null);
+  const [session, setSession] = useState<GameSession | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const saved = window.sessionStorage.getItem("gmo-active-match");
+      return saved ? JSON.parse(saved) as GameSession : null;
+    } catch {
+      return null;
+    }
+  });
   const [orientationHint, setOrientationHint] = useState(false);
   const [portraitViewport, setPortraitViewport] = useState(false);
   const shell = useRef<HTMLDivElement>(null);
@@ -37,6 +45,10 @@ export default function BackgammonGame() {
 
   function startGame(nextSession: GameSession) {
     setSession(nextSession);
+    try {
+      window.sessionStorage.setItem("gmo-active-match", JSON.stringify(nextSession));
+      window.dispatchEvent(new Event("gmo-match-updated"));
+    } catch { /* Session restore is best-effort if storage is unavailable. */ }
 
     const telegram = (window as Window & {
       Telegram?: { WebApp?: {
@@ -98,6 +110,10 @@ export default function BackgammonGame() {
   }
 
   function leave() {
+    try {
+      window.sessionStorage.removeItem("gmo-active-match");
+      window.dispatchEvent(new Event("gmo-match-updated"));
+    } catch {}
     const telegram = (window as Window & {
       Telegram?: { WebApp?: { exitFullscreen?: () => void; unlockOrientation?: () => void; enableVerticalSwipes?: () => void } };
     }).Telegram?.WebApp;
@@ -133,9 +149,8 @@ export default function BackgammonGame() {
     };
   }, [session]);
 
-  // While a match is active, keep the installed PWA on the game screen.
-  // A same-URL history sentinel absorbs Android/browser Back; explicit in-game
-  // Leave still works and removes the sentinel during cleanup.
+  // Lock the viewport while playing. Match state is saved separately so
+  // Android Back may return to the app without destroying the in-progress game.
   useEffect(() => {
     if (!session) return;
 
@@ -160,19 +175,6 @@ export default function BackgammonGame() {
     body.style.height = "100%";
     html.classList.add("gmo-game-locked");
 
-    const currentState = window.history.state;
-    const lockState = currentState && typeof currentState === "object"
-      ? { ...currentState, __gmoGameBackLock: token }
-      : { __gmoGameBackLock: token };
-    window.history.pushState(lockState, "", window.location.href);
-
-    const keepGameOpen = (event: PopStateEvent) => {
-      // Stop the router's own popstate handler as well as the browser Back
-      // navigation, then restore our same-URL sentinel.
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      window.history.pushState(lockState, "", window.location.href);
-    };
     const preventPageTouchScroll = (event: TouchEvent) => {
       const target = event.target;
       if (target instanceof Element && target.closest("[data-game-scroll]")) return;
@@ -203,15 +205,11 @@ export default function BackgammonGame() {
       event.returnValue = "";
     };
 
-    window.addEventListener("popstate", keepGameOpen, true);
-    window.addEventListener("beforeunload", preventAccidentalReload);
     document.addEventListener("touchmove", preventPageTouchScroll, { passive: false, capture: true });
     document.addEventListener("wheel", preventPageWheelScroll, { passive: false, capture: true });
     document.addEventListener("keydown", preventKeyboardScroll, true);
 
     return () => {
-      window.removeEventListener("popstate", keepGameOpen, true);
-      window.removeEventListener("beforeunload", preventAccidentalReload);
       document.removeEventListener("touchmove", preventPageTouchScroll, true);
       document.removeEventListener("wheel", preventPageWheelScroll, true);
       document.removeEventListener("keydown", preventKeyboardScroll, true);
@@ -224,9 +222,6 @@ export default function BackgammonGame() {
       body.style.overscrollBehavior = previousStyles.bodyOverscroll;
       body.style.height = previousStyles.bodyHeight;
 
-      // Consume only our own same-URL sentinel; do not navigate away from the
-      // route when the player uses the game's explicit Leave action.
-      if (window.history.state?.__gmoGameBackLock === token) window.history.back();
       window.scrollTo(0, previousScrollY);
     };
   }, [session]);
@@ -333,6 +328,28 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
   const [toastText, setToastText] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
   const { board, turn, selected, dice, remaining } = state;
+
+  // Keep a resumable copy across app routes and accidental exits. Credentials
+  // stay in sessionStorage (tab/session scoped), never in a public cache.
+  useEffect(() => {
+    try {
+      const resumable: GameSession = {
+        ...session,
+        snapshot: {
+          ...(session.snapshot ?? {
+            lobby: session.lobby,
+            target: session.target,
+            game: state,
+            seat: "requester" as const,
+            joined: true,
+          }),
+          game: state,
+        },
+      };
+      window.sessionStorage.setItem("gmo-active-match", JSON.stringify(resumable));
+      window.dispatchEvent(new Event("gmo-match-updated"));
+    } catch { /* Match can continue even if browser storage is unavailable. */ }
+  }, [session, state]);
   const busy = useRef(false);
   const handleDiceBusy = useCallback((value: boolean) => { busy.current = value; setRolling(value); }, []);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
