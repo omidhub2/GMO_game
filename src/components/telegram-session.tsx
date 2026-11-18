@@ -18,14 +18,15 @@ function emitStartup(name: "gmo:startup-ready" | "gmo:startup-error") {
   window.dispatchEvent(new Event(name));
 }
 
-async function waitForTelegramWebApp(timeoutMs = 2500): Promise<TelegramWebApp | null> {
+async function waitForTelegramWebApp(timeoutMs = 4000): Promise<TelegramWebApp | null> {
   const existing = getTelegramWebApp();
-  if (existing) return existing;
+  if (existing?.initData) return existing;
   return new Promise(resolve => {
     const started = Date.now();
     const timer = window.setInterval(() => {
       const app = getTelegramWebApp();
-      if (app || Date.now() - started >= timeoutMs) {
+      // Telegram may expose WebApp before its signed initData is populated.
+      if (app?.initData || Date.now() - started >= timeoutMs) {
         window.clearInterval(timer);
         resolve(app ?? null);
       }
