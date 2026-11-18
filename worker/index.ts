@@ -2,6 +2,8 @@ import { handleImageOptimization, DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } fr
 import handler from "vinext/server/app-router-entry";
 import { closeRequestDatabase, withDatabaseConnection } from "../src/lib/db-context";
 
+type WorkerExecutionContext = { waitUntil(promise: Promise<unknown>): void };
+
 interface Env {
   ASSETS: Fetcher;
   HYPERDRIVE: { connectionString: string };
@@ -15,7 +17,7 @@ interface Env {
 }
 
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: WorkerExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
     if (url.pathname === "/_vinext/image") {
