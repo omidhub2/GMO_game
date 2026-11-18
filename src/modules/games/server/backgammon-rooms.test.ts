@@ -37,6 +37,20 @@ describe("online backgammon rooms", () => {
     expect(moved.game!.usedDice).toHaveLength(1);
     expect(roomSnapshot(inactive.room, inactive.token).game).toEqual(moved.game);
   });
+  it("accepts a legal move without a separate server-side selection request", () => {
+    const host = createRoom("light", null), guest = joinRoom(host.room);
+    readyRoom(guest.room, guest.token);
+    let snapshot = roomSnapshot(host.room, host.token);
+    for (let i = 0; snapshot.game?.phase === "opening" && i < 100; i++) {
+      snapshot = roomAction(host.room, host.token, { type: "roll", dice: [0, 0], revision: snapshot.game!.revision });
+    }
+    const state = snapshot.game!;
+    const move = legalMoves(state.board, state.turn, state.remaining)[0];
+    const active = state.turn === "light" ? host : guest;
+    const moved = roomAction(active.room, active.token, { type: "move", move, revision: state.revision }, "a8dbf4c7-92de-45f1-b9e8-37aee3f51c5c");
+    expect(moved.game!.revision).toBe(state.revision + 2);
+    expect(moved.game!.usedDice).toHaveLength(1);
+  });
   it("applies an online command once and safely returns the snapshot for retries", () => {
     const host = createRoom("light", null), guest = joinRoom(host.room);
     readyRoom(guest.room, guest.token);
