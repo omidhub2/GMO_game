@@ -298,8 +298,13 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
         if (snapshot.game && snapshot.game.revision > current.current.revision && !requestPending.current) {
           current.current = snapshot.game; setState(snapshot.game);
         }
-        setNetworkError("");
-      } catch (error) { if (!controller.signal.aborted) setNetworkError(error instanceof Error ? error.message : "ارتباط قطع شد؛ در حال تلاش دوباره…"); }
+        setNetworkError(previous => previous ? "" : previous);
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          const message = error instanceof Error ? error.message : "ارتباط قطع شد؛ در حال تلاش دوباره…";
+          setNetworkError(previous => previous === message ? previous : message);
+        }
+      }
       if (!controller.signal.aborted) pollTimer = setTimeout(poll, 1000);
     }
     void poll();
