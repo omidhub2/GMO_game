@@ -428,7 +428,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
     const nextLobby = { ...lobby, colors: { requester: rematchColor, guest: opponent(rematchColor) }, ready: { requester: true, guest: true }, started: true, revision: lobby.revision + 1 };
     const nextGame = { ...newGame(state.target, state.result?.winner ?? null), scores: { ...state.scores }, crawfordUsed: state.crawfordUsed, crawford: !state.crawfordUsed && !!state.target && Math.max(state.scores.light, state.scores.dark) === state.target - 1 };
     current.current = nextGame; setState(nextGame);
-    setTurnSeconds(30); setChatOpen(false); setMenuOpen(false); setToastText(""); setToastVisible(false);
+    setChatOpen(false); setMenuOpen(false); setToastText(""); setToastVisible(false);
     session.lobby = nextLobby;
     setResultView("winner");
   }
