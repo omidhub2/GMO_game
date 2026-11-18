@@ -166,9 +166,11 @@ export default function BackgammonGame() {
       : { __gmoGameBackLock: token };
     window.history.pushState(lockState, "", window.location.href);
 
-    const keepGameOpen = () => {
-      // Restore the sentinel after the browser consumes it, so repeated Back
-      // presses cannot leave the active match.
+    const keepGameOpen = (event: PopStateEvent) => {
+      // Stop the router's own popstate handler as well as the browser Back
+      // navigation, then restore our same-URL sentinel.
+      event.preventDefault();
+      event.stopImmediatePropagation();
       window.history.pushState(lockState, "", window.location.href);
     };
     const preventPageTouchScroll = (event: TouchEvent) => {
@@ -201,14 +203,14 @@ export default function BackgammonGame() {
       event.returnValue = "";
     };
 
-    window.addEventListener("popstate", keepGameOpen);
+    window.addEventListener("popstate", keepGameOpen, true);
     window.addEventListener("beforeunload", preventAccidentalReload);
     document.addEventListener("touchmove", preventPageTouchScroll, { passive: false, capture: true });
     document.addEventListener("wheel", preventPageWheelScroll, { passive: false, capture: true });
     document.addEventListener("keydown", preventKeyboardScroll, true);
 
     return () => {
-      window.removeEventListener("popstate", keepGameOpen);
+      window.removeEventListener("popstate", keepGameOpen, true);
       window.removeEventListener("beforeunload", preventAccidentalReload);
       document.removeEventListener("touchmove", preventPageTouchScroll, true);
       document.removeEventListener("wheel", preventPageWheelScroll, true);
