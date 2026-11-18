@@ -10,7 +10,7 @@ const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("roll"), revision, dice: z.tuple([z.number(), z.number()]) }),
   z.object({ type: z.literal("select"), revision, from: source.nullable() }),
   z.object({ type: z.literal("move"), revision, move: z.object({ from: source, to: z.union([z.literal("off"), z.number().int().min(0).max(23)]), die: z.number().int().min(1).max(6), hit: z.boolean() }) }),
-  ...(["undo", "offerDouble", "acceptDouble", "rejectDouble", "nextGame"] as const).map(type => z.object({ type: z.literal(type), revision })),
+  ...(["undo", "offerDouble", "acceptDouble", "rejectDouble", "nextGame", "timeout"] as const).map(type => z.object({ type: z.literal(type), revision })),
 ]);
 function failure(error: unknown) {
   if (error instanceof RoomError) return NextResponse.json({ error: error.message }, { status: error.status });
@@ -36,7 +36,10 @@ export async function POST(request: Request) {
     const token = request.headers.get("authorization")?.replace(/^Bearer /, "") ?? "";
     if (body.operation === "ready") return NextResponse.json(readyRoom(room, token));
     if (body.operation === "message") { const text = z.string().trim().min(1).max(120).parse(body.text); return NextResponse.json(roomMessage(room, token, text)); }
-    if (body.operation === "action") return NextResponse.json(roomAction(room, token, actionSchema.parse(body.action)));
+    if (body.operation === "action") {
+      const commandId = z.string().uuid().parse(body.commandId);
+      return NextResponse.json(roomAction(room, token, actionSchema.parse(body.action), commandId), { headers: { "Cache-Control": "no-store" } });
+    }
     throw new RoomError("درخواست معتبر نیست.");
   } catch (error) { return failure(error); }
 }
