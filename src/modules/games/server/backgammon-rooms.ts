@@ -12,6 +12,7 @@ interface Room {
   expires: number;
   turnStartedAt: number;
   messages: Array<{ id: string; seat: Seat; text: string; createdAt: number }>;
+  commands: Map<string, { seat: Seat; fingerprint: string }>;
 }
 // Development rooms belong to this server process and expire after six hours.
 const shared = globalThis as typeof globalThis & { backgammonRooms?: Map<string, Room> };
@@ -26,7 +27,7 @@ export function createRoom(color: "light" | "dark", target: number | null) {
   lobby = lobbyReducer(lobby, { type: "choose", color, actor: "requester", revision: lobby.revision });
   lobby = lobbyReducer(lobby, { type: "ready", actor: "requester", revision: lobby.revision });
   const id = randomUUID(), token = randomUUID();
-  rooms.set(id, { lobby, target, game: null, tokens: { requester: token, guest: null }, expires: Date.now() + 6 * 3600_000, turnStartedAt: Date.now(), messages: [] });
+  rooms.set(id, { lobby, target, game: null, tokens: { requester: token, guest: null }, expires: Date.now() + 6 * 3600_000, turnStartedAt: Date.now(), messages: [], commands: new Map() });
   return { room: id, token };
 }
 function getRoom(id: string) {
@@ -59,8 +60,19 @@ export function readyRoom(id: string, token: string) {
   }
   return roomSnapshot(id, token);
 }
-export function roomAction(id: string, token: string, action: GameAction) {
-  const room = getRoom(id), seat = participant(room, token), state = room.game;
+export function roomAction(id: string, token: string, action: GameAction, commandId?: string) {
+  const room = getRoom(id), seat = participant(room, token);
+  const fingerprint = JSON.stringify(action);
+  if (commandId) {
+    const previous = room.commands.get(commandId);
+    if (previous) {
+      if (previous.seat !== seat || previous.fingerprint !== fingerprint) {
+        throw new RoomError("شناسه حرکت قبلاً برای درخواست دیگری استفاده شده است.", 409);
+      }
+      return roomSnapshot(id, token);
+    }
+  }
+  const state = room.game;
   if (!state) throw new RoomError("بازی هنوز شروع نشده است.", 409);
   const side = room.lobby.colors[seat];
   if (action.type === "timeout") {
@@ -76,6 +88,14 @@ export function roomAction(id: string, token: string, action: GameAction) {
   if (next === state) throw new RoomError("وضعیت بازی تغییر کرده است؛ دوباره تلاش کن.", 409);
   room.game = next;
   if ((action.type === "roll" && next.phase === "move") || next.turn !== state.turn || next.turnNumber !== state.turnNumber) room.turnStartedAt = Date.now();
+  if (commandId) {
+    room.commands.set(commandId, { seat, fingerprint });
+    // Bound memory use for long-running rooms while retaining recent retries.
+    if (room.commands.size > 500) {
+      const oldest = room.commands.keys().next().value;
+      if (oldest) room.commands.delete(oldest);
+    }
+  }
   return roomSnapshot(id, token);
 }
 
