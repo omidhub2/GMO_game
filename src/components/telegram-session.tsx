@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 type TelegramWebApp = {
   initData?: string;
@@ -54,10 +55,15 @@ export function signInWithTelegram() {
 }
 
 export default function TelegramSession() {
-  const [error, setError] = useState("");
-  const [retrying, setRetrying] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
+    // The public PWA install page must never trigger game sign-in. The user
+    // chooses the Telegram bot explicitly from that page. 
+    if (pathname === "/install") {
+      emitStartup("gmo:startup-ready");
+      return;
+    }
     let cancelled = false;
     const initialize = async () => {
       const app = await waitForTelegramWebApp();
@@ -70,51 +76,24 @@ export default function TelegramSession() {
       app.ready?.();
       app.expand?.();
       if (!app.initData) {
-        const message = "اطلاعات امن تلگرام در دسترس نیست. لطفاً GMO Arena را از دکمه ربات باز کن.";
-        setError(message);
         emitStartup("gmo:startup-error");
         return;
       }
       try {
         await signInWithTelegram();
         if (!cancelled) {
-          setError("");
           emitStartup("gmo:startup-ready");
         }
       } catch (cause) {
         if (!cancelled) {
-          setError(cause instanceof Error ? cause.message : "ورود تلگرام ناموفق بود.");
+          console.warn("[telegram-session] automatic sign-in failed; user can reopen from the bot");
           emitStartup("gmo:startup-error");
         }
       }
     };
     void initialize();
     return () => { cancelled = true; };
-  }, []);
+  }, [pathname]);
 
-  async function retry() {
-    setRetrying(true);
-    setError("");
-    try {
-      await signInWithTelegram();
-      setError("");
-      emitStartup("gmo:startup-ready");
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "ورود تلگرام ناموفق بود.");
-      emitStartup("gmo:startup-error");
-    } finally {
-      setRetrying(false);
-    }
-  }
-
-  if (!error) return null;
-  return (
-    <div role="alert" style={{ position: "fixed", bottom: 16, left: 16, right: 16, zIndex: 12000, padding: 16, background: "#172332", color: "#fff", border: "1px solid #f5c46b", borderRadius: 14, direction: "rtl" }}>
-      <strong style={{ display: "block", marginBottom: 6 }}>ورود تلگرام انجام نشد</strong>
-      <span>{error}</span>
-      <button type="button" disabled={retrying} onClick={() => void retry()} style={{ display: "block", marginTop: 12, padding: "10px 14px", borderRadius: 9, border: 0, background: "#b7f34a", color: "#172207", fontWeight: 800 }}>
-        {retrying ? "در حال اتصال..." : "تلاش دوباره"}
-      </button>
-    </div>
-  );
+  return null;
 }
