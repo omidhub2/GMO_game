@@ -57,13 +57,21 @@ export default function PwaInstall() {
     refreshMatch();
 
     const onMatchUpdate = () => refreshMatch();
+    const onAppInstalled = () => {
+      try {
+        window.localStorage.setItem("gmo-pwa-installed", "1");
+        setInstalledBefore(true);
+      } catch {}
+    };
     const onVisibility = () => {
       if (document.visibilityState === "visible") refreshMatch();
     };
+    window.addEventListener("appinstalled", onAppInstalled);
     window.addEventListener("gmo-match-updated", onMatchUpdate);
     window.addEventListener("pageshow", onMatchUpdate);
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
+      window.removeEventListener("appinstalled", onAppInstalled);
       window.removeEventListener("gmo-match-updated", onMatchUpdate);
       window.removeEventListener("pageshow", onMatchUpdate);
       document.removeEventListener("visibilitychange", onVisibility);
