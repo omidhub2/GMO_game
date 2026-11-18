@@ -147,12 +147,38 @@ export default function BackgammonGame() {
   );
 }
 
+function TurnClock({ active, turnKey, onExpire }: { active: boolean; turnKey: string; onExpire: () => void }) {
+  const [seconds, setSeconds] = useState(30);
+  const expired = useRef(false);
+
+  useEffect(() => {
+    setSeconds(30);
+    expired.current = false;
+    if (!active) return;
+    const interval = window.setInterval(() => {
+      setSeconds(previous => {
+        if (previous <= 1) {
+          if (!expired.current) {
+            expired.current = true;
+            onExpire();
+          }
+          window.clearInterval(interval);
+          return 0;
+        }
+        return previous - 1;
+      });
+    }, 1000);
+    return () => window.clearInterval(interval);
+  }, [active, turnKey, onExpire]);
+
+  return <small>{`00:${String(active ? seconds : 30).padStart(2, "0")}`}</small>;
+}
+
 function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: () => void }) {
   const { lobby, target, playMode, online } = session;
   const [state, setState] = useState(() => session.snapshot?.game ?? newGame(target, playMode === "local" ? lobby.colors.guest : null));
   const [networkError, setNetworkError] = useState("");
   const [pending, setPending] = useState(false);
-  const [turnSeconds, setTurnSeconds] = useState(30);
   const timeoutSent = useRef(false);
   const requestPending = useRef(false);
   const mounted = useRef(true);
@@ -239,42 +265,38 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
   useEffect(() => { try { const saved=localStorage.getItem("gmo-backgammon-quick-messages"); if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed))setQuickMessages(Array.from({length:5},(_,i)=>String(parsed[i]??"").trim().split(/\\s+/).slice(0,4).join(" ")));} } catch {} }, []);
   useEffect(() => { try { localStorage.setItem("gmo-backgammon-quick-messages",JSON.stringify(quickMessages)); } catch {} }, [quickMessages]);
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; if(messagePulseTimer.current) clearTimeout(messagePulseTimer.current); if(toastTimer.current) clearTimeout(toastTimer.current); }; }, []);
-  useEffect(() => {
-    if (state.phase !== "move") {
-      setTurnSeconds(30);
-      timeoutSent.current = false;
-      return;
-    }
-    // The clock starts only after the roll has produced a playable turn.
-    setTurnSeconds(30);
-    timeoutSent.current = false;
-    const interval = setInterval(() => {
-      setTurnSeconds(seconds => {
-        if (seconds <= 1) {
-          if (!timeoutSent.current) {
-            timeoutSent.current = true;
-            const revision = current.current.revision;
-            if (online) {
-              void onlineRequest({ operation: "action", action: { type: "timeout", revision } }, online)
-                .then(result => {
-                  const snapshot = result as OnlineSnapshot;
-                  if (mounted.current && snapshot.game && snapshot.game.revision >= current.current.revision) {
-                    current.current = snapshot.game; setState(snapshot.game);
-                  }
-                })
-                .catch(error => { timeoutSent.current = false; if (mounted.current) setNetworkError(error instanceof Error ? error.message : "انتقال نوبت انجام نشد."); });
-            } else {
-              const next = gameReducer(current.current, { type: "timeout", revision });
-              if (next !== current.current) { current.current = next; setState(next); }
-            }
+  const handleTurnTimeout = useCallback(() => {
+    if (timeoutSent.current) return;
+    timeoutSent.current = true;
+    const revision = current.current.revision;
+    if (online) {
+      void onlineRequest({ operation: "action", action: { type: "timeout", revision } }, online)
+        .then(result => {
+          const snapshot = result as OnlineSnapshot;
+          if (mounted.current && snapshot.game && snapshot.game.revision >= current.current.revision) {
+            current.current = snapshot.game;
+            setState(snapshot.game);
           }
-          return 0;
-        }
-        return seconds - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [state.phase, state.turn, state.turnNumber, online]);
+        })
+        .catch(error => {
+          timeoutSent.current = false;
+          if (mounted.current) setNetworkError(error instanceof Error ? error.message : "انتقال نوبت انجام نشد.");
+        });
+    } else {
+      const next = gameReducer(current.current, { type: "timeout", revision });
+      if (next !== current.current) {
+        current.current = next;
+        setState(next);
+      }
+    }
+  }, [online]);
+  useEffect(() => {
+    if (state.phase === "move") {
+      timeoutSent.current = false;
+    } else {
+      timeoutSent.current = false;
+    }
+  }, [state.phase, state.turn, state.turnNumber]);
   useEffect(() => {
     if (!online) return;
     const controller = new AbortController();
@@ -571,7 +593,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
               </div>
               <span className={`${playerRailStyles.profileMetaItem} ${playerRailStyles.playerTimer}`} data-player-timer aria-label={`زمان باقی‌مانده ${turn === side ? turnSeconds : 30} ثانیه`}>
                 <Clock3 size={13}/>
-                <small>{`00:${String(turn === side ? turnSeconds : 30).padStart(2,"0")}`}</small>
+                <TurnClock active={state.phase === "move" && turn === side} turnKey={`${state.turn}:${state.turnNumber}`} onExpire={handleTurnTimeout} />
               </span>
             </div>
             <div className={playerRailStyles.profileInfo} dir="rtl">
