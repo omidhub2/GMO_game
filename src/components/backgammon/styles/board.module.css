@@ -523,3 +523,55 @@
     transform: translateX(-50%) scale(1.08);
   }
 }
+
+
+/* Mobile rendering budget: preserve short move feedback, but remove continuous
+   paint-heavy glows, scans, filters and glass blur from the live game board. */
+@media (hover: none) and (pointer: coarse) {
+  .barUndo:not(:disabled),
+  .checkerStack .selectedChecker,
+  .barEntryCue .checker,
+  .barEntryCue::after,
+  .barEntryCue,
+  .barEntryPoint,
+  .rollHologram,
+  .rollHologram::before,
+  .rollHologramHalo,
+  .playerRollPrompt {
+    animation: none !important;
+  }
+
+  .checkerStack .checker,
+  .barHit .checker {
+    filter: none;
+    box-shadow: 0 1px 2px #0008, inset 0 1px 2px #fff5, inset 0 -2px 3px #0007;
+  }
+
+  .point::before {
+    filter: none;
+  }
+
+  .checkerStack .selectedChecker {
+    transform: translateX(-50%) scale(1.06);
+    box-shadow: 0 2px 4px #0009, 0 0 0 2px #f0b90b88;
+  }
+
+  .rollHologram {
+    box-shadow: 0 0 0 2px #f0b90b1b, 0 0 12px #f0b90b33, inset 0 1px #fff5c14d;
+  }
+
+  .rollHologramHalo {
+    box-shadow: 0 0 8px #f0b90b55, inset 0 0 5px #f0b90b22;
+  }
+
+  .chatBackdrop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .chatPanel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 8px 22px #000a;
+  }
+}
