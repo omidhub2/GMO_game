@@ -46,6 +46,7 @@ export default function PwaInstall() {
     setInTelegram(telegramContext);
     setVisible(true);
     try {
+      if (isStandalone) window.localStorage.setItem("gmo-pwa-installed", "1");
       setInstalledBefore(window.localStorage.getItem("gmo-pwa-installed") === "1");
     } catch {}
     refreshMatch();
