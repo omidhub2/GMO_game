@@ -5,6 +5,7 @@ import Script from "next/script";
 import TelegramSession from "@/components/telegram-session";
 import PwaInstall from "@/components/pwa-install";
 import StartupSplash from "@/components/startup-splash";
+import AuthGate from "@/components/auth-gate";
 
 export const metadata: Metadata = {
   title: "GMO ARENA | Play. Compete. Predict.",
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {children}
         <AppChrome />
         <PwaInstall />
+        <AuthGate />
       </body>
     </html>
   );
