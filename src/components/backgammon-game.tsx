@@ -311,6 +311,8 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
     ? playMode === "computer" || session.snapshot?.seat === "requester"
     : state.phase === "double" ? state.turn !== humanSide : state.turn === humanSide);
   const current = useRef(state);
+  // Selection is local UI state; only accepted game commands advance this revision.
+  const serverRevision = useRef(session.snapshot?.game?.revision ?? state.revision);
   const [rolling, setRolling] = useState(false);
   const [computerRollSignal, setComputerRollSignal] = useState(0);
   const [moving, setMoving] = useState(false);
@@ -387,9 +389,10 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
     const revision = current.current.revision;
     if (online) {
       try {
-        const result = await onlineRequest({ operation: "action", action: { type: "timeout", revision } }, online);
+        const result = await onlineRequest({ operation: "action", commandId: crypto.randomUUID(), action: { type: "timeout", revision: serverRevision.current } }, online);
         const snapshot = result as OnlineSnapshot;
-        if (mounted.current && snapshot.game && snapshot.game.revision >= current.current.revision) {
+        if (mounted.current && snapshot.game && snapshot.game.revision >= serverRevision.current) {
+          serverRevision.current = snapshot.game.revision;
           current.current = snapshot.game;
           setState(snapshot.game);
         }
@@ -443,7 +446,8 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
             }
           }
         }
-        if (snapshot.game && snapshot.game.revision > current.current.revision && !requestPending.current) {
+        if (snapshot.game && snapshot.game.revision > serverRevision.current && !requestPending.current) {
+          serverRevision.current = snapshot.game.revision;
           current.current = snapshot.game; setState(snapshot.game);
         }
         setNetworkError(previous => previous ? "" : previous);
@@ -554,13 +558,24 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
     if ((busy.current && action.type !== "roll") || requestPending.current || !canAct) return false;
     if (online) {
       requestPending.current = true; setPending(true);
-      void onlineRequest({ operation: "action", action }, online).then(result => {
+      const authoritativeAction = { ...action, revision: serverRevision.current };
+      void onlineRequest({ operation: "action", commandId: crypto.randomUUID(), action: authoritativeAction }, online).then(result => {
         const snapshot = result as OnlineSnapshot;
-        if (mounted.current && snapshot.game && snapshot.game.revision >= current.current.revision) {
+        if (mounted.current && snapshot.game) {
+          serverRevision.current = snapshot.game.revision;
           current.current = snapshot.game; setState(snapshot.game); setNetworkError("");
         }
-      }).catch(error => { if (mounted.current) setNetworkError(error instanceof Error ? error.message : "ارتباط برقرار نشد."); })
-        .finally(() => { requestPending.current = false; if (mounted.current) setPending(false); });
+      }).catch(async error => {
+        if (!mounted.current) return;
+        setNetworkError(error instanceof Error ? error.message : "ارتباط برقرار نشد.");
+        try {
+          const snapshot = await onlineSnapshot(online);
+          if (mounted.current && snapshot.game) {
+            serverRevision.current = snapshot.game.revision;
+            current.current = snapshot.game; setState(snapshot.game);
+          }
+        } catch {}
+      }).finally(() => { requestPending.current = false; if (mounted.current) setPending(false); });
       return true;
     }
     const next = gameReducer(current.current, action);
@@ -683,10 +698,12 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
       animateMove(move.from, move.to);
       requestPending.current = true;
       setPending(true);
-      void onlineRequest({ operation: "action", action }, online)
+      const authoritativeAction: GameAction = { ...action, revision: serverRevision.current };
+      void onlineRequest({ operation: "action", commandId: crypto.randomUUID(), action: authoritativeAction }, online)
         .then(result => {
           const snapshot = result as OnlineSnapshot;
           if (mounted.current && snapshot.game) {
+            serverRevision.current = snapshot.game.revision;
             current.current = snapshot.game;
             setState(snapshot.game);
             setNetworkError("");
@@ -698,6 +715,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
           try {
             const snapshot = await onlineSnapshot(online);
             if (mounted.current && snapshot.game) {
+              serverRevision.current = snapshot.game.revision;
               current.current = snapshot.game;
               setState(snapshot.game);
             }
@@ -715,7 +733,17 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
 
     if (send(action)) animateMove(move.from, move.to);
   }
-  function select(from: Source | null) { send({ type: "select", from, revision: state.revision }); }
+  function select(from: Source | null) {
+    const action: GameAction = { type: "select", from, revision: current.current.revision };
+    if (online) {
+      if (requestPending.current || !canAct) return;
+      // A checker tap is only local presentation state; do not round-trip it.
+      const next = gameReducer(current.current, action);
+      if (next !== current.current) { current.current = next; setState(next); }
+      return;
+    }
+    send(action);
+  }
   function clickPoint(index: number) {
     if (locked || busy.current) return;
     if (selected === index) { select(null); return; }
