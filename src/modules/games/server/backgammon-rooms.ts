@@ -84,8 +84,15 @@ export function roomAction(id: string, token: string, action: GameAction, comman
   }
   // The server owns dice; clients cannot choose their outcome.
   if (action.type === "roll") action = { ...action, dice: [randomInt(1, 7), randomInt(1, 7)] };
-  const next = gameReducer(state, action);
-  if (next === state) throw new RoomError("وضعیت بازی تغییر کرده است؛ دوباره تلاش کن.", 409);
+  // Checker selection is local presentation state. For a move command, the
+  // server independently selects the submitted source before validating the
+  // legal destination/die, so selection never needs its own network request.
+  const selected = action.type === "move" && state.selected !== action.move.from
+    ? gameReducer(state, { type: "select", from: action.move.from, revision: state.revision })
+    : state;
+  const authoritativeAction = selected === state ? action : { ...action, revision: selected.revision };
+  const next = gameReducer(selected, authoritativeAction);
+  if (next === state || next === selected) throw new RoomError("وضعیت بازی تغییر کرده است؛ دوباره تلاش کن.", 409);
   room.game = next;
   if ((action.type === "roll" && next.phase === "move") || next.turn !== state.turn || next.turnNumber !== state.turnNumber) room.turnStartedAt = Date.now();
   if (commandId) {
