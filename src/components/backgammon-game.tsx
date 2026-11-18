@@ -284,6 +284,13 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
       setAvatarChoice(savedChoice);
       setPlayerAvatar(`/avatars/gmo-${savedChoice}.webp`);
     }
+
+    // Offline matches are fully local: do not fetch profile data just to render
+    // the board. The bundled avatar and locally saved preference are sufficient.
+    if (playMode !== "online") {
+      return () => controller.abort();
+    }
+
     fetch("/api/profile", { cache: "no-store", signal: controller.signal })
       .then(async response => response.ok ? response.json() : null)
       .then(result => {
@@ -299,7 +306,7 @@ function BackgammonTable({ session, onLeave }: { session: GameSession; onLeave: 
       })
       .catch(() => {});
     return () => controller.abort();
-  }, []);
+  }, [playMode]);
   const canAct = playMode === "local" || (state.phase === "opening" || state.phase === "finished"
     ? playMode === "computer" || session.snapshot?.seat === "requester"
     : state.phase === "double" ? state.turn !== humanSide : state.turn === humanSide);
