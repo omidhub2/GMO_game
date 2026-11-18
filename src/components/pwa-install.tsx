@@ -9,6 +9,10 @@ type TelegramWebApp = {
   openLink?: (url: string, options?: { try_instant_view?: boolean }) => void;
 };
 
+function getTelegramWebApp(): TelegramWebApp | undefined {
+  return (window as Window & { Telegram?: { WebApp?: TelegramWebApp } }).Telegram?.WebApp;
+}
+
 const APP_URL = "https://gmo-arena.omidhub-ai.workers.dev";
 const TELEGRAM_URL = "https://t.me/gmo_arenobot";
 const INSTALL_URL = APP_URL + "/install";
@@ -49,7 +53,7 @@ export default function PwaInstall() {
       window.matchMedia("(display-mode: standalone)").matches ||
       window.matchMedia("(display-mode: fullscreen)").matches ||
       (navigator as Navigator & { standalone?: boolean }).standalone === true;
-    const telegramContext = Boolean(window.Telegram?.WebApp?.initData);
+    const telegramContext = Boolean(getTelegramWebApp()?.initData);
     setStandalone(isStandalone);
     setInTelegram(telegramContext);
     setVisible(true);
@@ -88,7 +92,7 @@ export default function PwaInstall() {
   }, [refreshMatch]);
 
   function openTelegram() {
-    const telegram = window.Telegram?.WebApp as unknown as TelegramWebApp | undefined;
+    const telegram = getTelegramWebApp() as unknown as TelegramWebApp | undefined;
     try {
       if (telegram?.openLink) telegram.openLink(TELEGRAM_URL, { try_instant_view: false });
       else window.location.assign(TELEGRAM_URL);
@@ -98,7 +102,7 @@ export default function PwaInstall() {
   }
 
   function openInstallPage() {
-    const telegram = window.Telegram?.WebApp as unknown as TelegramWebApp | undefined;
+    const telegram = getTelegramWebApp() as unknown as TelegramWebApp | undefined;
     try {
       if (telegram?.openLink) telegram.openLink(INSTALL_URL, { try_instant_view: false });
       else window.location.assign(INSTALL_URL);
@@ -172,7 +176,7 @@ export default function PwaInstall() {
                 تلاش برای بازکردن اپ نصب‌شده
               </button>
               <button type="button" onClick={() => setVisible(false)} style={{ flex: 1, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 700 }}>
-                بازی در تلگرام
+                ادامه بازی در تلگرام
               </button>
             </div>
           ) : (
