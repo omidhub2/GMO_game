@@ -45,12 +45,15 @@
 }
 
 .dieScene {
-  --size: 48px;
+  --size: calc(var(--rail-checker-size, 34px) * 1.1);
   position: relative;
   display: block;
-  flex: 0 0 auto;
+  flex: 0 0 var(--size);
   width: var(--size);
+  min-width: var(--size);
+  max-width: none;
   height: var(--size);
+  aspect-ratio: 1;
   perspective: 400px;
   filter: drop-shadow(0 6px 4px #0009);
 }
@@ -151,15 +154,28 @@
 }
 
 @media (max-width: 900px) {
-  .dieScene { --size: 42px; }
   .dieUsedMark { top: -15px; }
 }
 
 @media (max-height: 400px) {
-  .dieScene { --size: 34px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .spinning .dieCube, .revealed { animation: none; }
   .spinning { opacity: .7; }
+}
+
+/* A finite, eased final tumble: the dice slow down before the committed face is revealed. */
+.diceBox[data-stage="settling"] .spinning .dieCube {
+  animation: diceSettle 650ms cubic-bezier(.12,.72,.18,1) both !important;
+}
+@keyframes diceSettle {
+  0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  45% { transform: rotateX(500deg) rotateY(245deg) rotateZ(105deg); }
+  76% { transform: rotateX(665deg) rotateY(325deg) rotateZ(158deg); }
+  92% { transform: rotateX(710deg) rotateY(352deg) rotateZ(176deg); }
+  100% { transform: rotateX(720deg) rotateY(360deg) rotateZ(180deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .diceBox[data-stage="settling"] .spinning .dieCube { animation: none !important; }
 }
