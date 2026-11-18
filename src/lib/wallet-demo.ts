@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "../generated/prisma/client";
 
 export type WalletDemoTransaction = { id: string; type: string; title: string; description: string; reference: string | null; amount: string; currency: string; direction: string; status: string; createdAt: string };
 
