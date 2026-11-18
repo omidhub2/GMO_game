@@ -583,3 +583,47 @@ html, body {
     padding-bottom: max(84px, env(safe-area-inset-bottom));
   }
 }
+
+
+/* Dedicated backgammon feature card on the games catalogue. */
+.backgammon-feature { border-color: #b98b3d66; background: linear-gradient(145deg, #171612, #101214); }
+.backgammon-banner {
+  position: relative; isolation: isolate; min-height: 205px; overflow: hidden;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  gap: 8px; padding: 23px 25px; color: #f5e7c3; text-decoration: none;
+  background:
+    radial-gradient(ellipse at 78% 38%, #c89b4a30, transparent 38%),
+    linear-gradient(120deg, #241d12 0%, #151713 56%, #101719 100%);
+}
+.backgammon-banner::before {
+  content: ""; position: absolute; z-index: -1; inset: 0; opacity: .25;
+  background: repeating-linear-gradient(135deg, transparent 0 18px, #e0b76512 18px 19px);
+}
+.backgammon-banner-kicker { color: #e4c17b; font-size: 9px; font-weight: 800; letter-spacing: .2em; }
+.backgammon-banner-title { font-size: clamp(27px, 4vw, 38px); font-weight: 900; line-height: 1.25; }
+.backgammon-banner-subtitle { color: #bda77b; font-size: 9px; letter-spacing: .16em; }
+.backgammon-banner-cta { display: inline-flex; align-items: center; gap: 9px; margin-top: 7px; padding: 8px 13px; border: 1px solid #d3a94f; border-radius: 9px; color: #f4d68e; font-size: 11px; font-weight: 800; }
+.backgammon-banner-board {
+  position: absolute; inset-inline-end: 22px; top: 50%; transform: translateY(-50%);
+  width: min(42%, 215px); aspect-ratio: 1.18; display: grid; grid-template-columns: repeat(9, 1fr);
+  align-items: center; justify-items: center; padding: 9px; border: 2px solid #c3954b;
+  border-radius: 9px; background: linear-gradient(145deg, #553d22, #261d14);
+  box-shadow: 0 10px 30px #0008, inset 0 0 0 3px #d5ae6b22;
+}
+.backgammon-banner-board i { width: 0; height: 0; border-inline: 7px solid transparent; border-top: 43px solid #d9b36e; opacity: .8; }
+.backgammon-banner-board i:nth-child(even) { border-top-color: #3b2920; transform: rotate(180deg); }
+.backgammon-banner-board b { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: #21180c; background: #f1d28d; font-size: 13px; box-shadow: 0 2px 5px #0008; }
+.backgammon-mode-list { display: grid; gap: 10px; margin: 8px 0 4px; }
+.backgammon-mode-list > div { display: flex; align-items: flex-start; gap: 9px; }
+.backgammon-mode-list strong { display: block; color: #e8d6ae; font-size: 12px; }
+.backgammon-mode-list small { display: block; margin-top: 3px; color: #9ca8a3; font-size: 10px; line-height: 1.7; }
+.backgammon-mode-dot { width: 7px; height: 7px; flex: 0 0 auto; margin-top: 4px; border-radius: 50%; }
+.backgammon-mode-dot.offline { background: #a9d66b; box-shadow: 0 0 10px #a9d66b55; }
+.backgammon-mode-dot.online { background: #68b9ed; box-shadow: 0 0 10px #68b9ed55; }
+@media (max-width: 520px) {
+  .backgammon-banner { min-height: 176px; padding: 18px; }
+  .backgammon-banner-board { inset-inline-end: 12px; width: 40%; opacity: .78; }
+  .backgammon-banner-board i { border-inline-width: 5px; border-top-width: 32px; }
+  .backgammon-banner-board b { width: 21px; height: 21px; }
+  .backgammon-banner-title, .backgammon-banner-kicker, .backgammon-banner-subtitle, .backgammon-banner-cta { position: relative; z-index: 1; text-shadow: 0 1px 8px #000; }
+}
