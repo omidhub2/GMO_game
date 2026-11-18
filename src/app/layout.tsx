@@ -4,6 +4,7 @@ import AppChrome from "@/components/app-chrome";
 import Script from "next/script";
 import TelegramSession from "@/components/telegram-session";
 import PwaInstall from "@/components/pwa-install";
+import StartupSplash from "@/components/startup-splash";
 
 export const metadata: Metadata = {
   title: "GMO ARENA | Play. Compete. Predict.",
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" dir="ltr">
       <head><meta name="mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-title" content="GMO ARENA" /><link rel="manifest" href="/manifest.webmanifest" /><Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" /></head>
       <body>
+        <StartupSplash />
         <TelegramSession />
         {children}
         <AppChrome />
