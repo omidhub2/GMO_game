@@ -35,7 +35,9 @@ export async function POST(request: Request) {
   const chatId = message?.chat?.id;
   const command = message?.text?.trim() ?? "";
   const from = message?.from;
-  const loginCommand = /^\/login(?:@\w+)?(?:\s|$)/i.test(command);
+  // A PWA login button opens t.me/bot?start=login. Telegram delivers that as
+  // "/start login"; users should never need to type a separate /login command.
+  const loginCommand = /^\/(?:login(?:@\w+)?|start(?:@\w+)?\s+login)(?:\s|$)/i.test(command);
   const startCommand = /^\/start(?:@\w+)?(?:\s|$)/i.test(command);
 
   if (!chatId || from?.is_bot || (!loginCommand && !startCommand)) {
@@ -92,7 +94,7 @@ export async function POST(request: Request) {
         "🎮 به GMO Arena خوش آمدید!",
         "",
         "برای اجرای بازی داخل تلگرام، دکمه زیر را بزنید.",
-        "برای ورود مستقیم به نسخه نصب‌شده، در گفت‌وگوی ربات دستور /login را ارسال کنید.",
+        "برای ورود مستقیم به نسخه نصب‌شده، از داخل اپلیکیشن روی «ورود از طریق تلگرام» بزنید و گزینه شروع ربات را تأیید کنید.",
         "",
         "🏆 آماده ورود به میدان هستید؟"
       ].join("\n");
