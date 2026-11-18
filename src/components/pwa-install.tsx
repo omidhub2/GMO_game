@@ -9,12 +9,6 @@ type TelegramWebApp = {
   openLink?: (url: string, options?: { try_instant_view?: boolean }) => void;
 };
 
-declare global {
-  interface Window {
-    Telegram?: { WebApp?: TelegramWebApp };
-  }
-}
-
 const APP_URL = "https://gmo-arena.omidhub-ai.workers.dev";
 const TELEGRAM_URL = "https://t.me/gmo_arenobot";
 
@@ -79,7 +73,7 @@ export default function PwaInstall() {
   }, [refreshMatch]);
 
   function openTelegram() {
-    const telegram = window.Telegram?.WebApp;
+    const telegram = window.Telegram?.WebApp as unknown as TelegramWebApp | undefined;
     try {
       if (telegram?.openLink) telegram.openLink(TELEGRAM_URL, { try_instant_view: false });
       else window.location.assign(TELEGRAM_URL);
