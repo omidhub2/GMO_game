@@ -32,8 +32,9 @@ export default function DiceBox({ dice, usedDice, canRoll, opening, computerRoll
     stage.current = "holding"; setVisual("holding"); setPattern(p => (p + 1) % 3); onBusy(true);
     // Computer results are already committed by the game reducer; this only animates them.
     timers.current = [
-      setTimeout(() => { stage.current = "first"; setVisual("first"); }, 500),
-      setTimeout(() => { stage.current = "idle"; setVisual("idle"); onBusy(false); }, 1000)
+      setTimeout(() => { stage.current = "settling"; setVisual("settling"); }, 420),
+      setTimeout(() => { stage.current = "first"; setVisual("first"); }, 1070),
+      setTimeout(() => { stage.current = "idle"; setVisual("idle"); onBusy(false); }, 1220)
     ];
   }, [computerRollSignal, onBusy]);
   function begin() {
@@ -50,7 +51,7 @@ export default function DiceBox({ dice, usedDice, canRoll, opening, computerRoll
     if (!onRoll()) { cancel(); return; }
     stage.current = "settling"; setVisual("settling");
     // Neither timeout changes dice or game state. They only reveal committed results.
-    timers.current = [setTimeout(() => { stage.current = "first"; setVisual("first"); }, 500),
+    timers.current = [setTimeout(() => { stage.current = "first"; setVisual("first"); }, 650),
       setTimeout(() => { stage.current = "idle"; setVisual("idle"); onBusy(false); }, 900)];
   }
   const spinning = visual !== "idle";
