@@ -17,6 +17,31 @@ self.addEventListener("install", event => {
       const response = await fetch(path, { cache: "reload" });
       if (response.ok) await cache.put(path, response);
     }));
+
+    // Warm the actual backgammon route's content-hashed JS/CSS during PWA
+    // installation. We only cache its static dependencies, never its HTML.
+    try {
+      const page = await fetch("/games/backgammon", {
+        cache: "no-store",
+        headers: { accept: "text/html" },
+      });
+      if (page.ok) {
+        const html = await page.text();
+        const assetUrls = new Set();
+        for (const match of html.matchAll(/(?:src|href)=["']([^"']+\/_next\/static\/[^"']+)["']/g)) {
+          const asset = new URL(match[1], self.location.origin);
+          if (asset.origin === self.location.origin && /\\.(?:js|mjs|css)$/i.test(asset.pathname)) {
+            assetUrls.add(asset.href);
+          }
+        }
+        await Promise.allSettled([...assetUrls].map(async assetUrl => {
+          const response = await fetch(assetUrl, { cache: "reload" });
+          if (response.ok) await cache.put(assetUrl, response);
+        }));
+      }
+    } catch {
+      // The app can still install; missing route assets are cached on first use.
+    }
     await self.skipWaiting();
   })());
 });
