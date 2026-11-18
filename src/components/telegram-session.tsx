@@ -24,7 +24,7 @@ async function waitForTelegramWebApp(timeoutMs = 2500): Promise<TelegramWebApp |
   return new Promise(resolve => {
     const started = Date.now();
     const timer = window.setInterval(() => {
-      const app = window.Telegram?.WebApp;
+      const app = getTelegramWebApp();
       if (app || Date.now() - started >= timeoutMs) {
         window.clearInterval(timer);
         resolve(app ?? null);
