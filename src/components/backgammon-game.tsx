@@ -182,7 +182,7 @@ export default function BackgammonGame() {
       if (event.cancelable) event.preventDefault();
     };
     const preventKeyboardScroll = (event: KeyboardEvent) => {
-      if (![" ", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(event.key)) return;
+      if (![" ", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", "Escape"].includes(event.key)) return;
       const target = event.target;
       if (target instanceof HTMLElement && (
         target.isContentEditable ||
