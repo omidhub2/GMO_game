@@ -168,19 +168,21 @@ export default function PwaInstall() {
               </button>
             </div>
           ) : (
-            {installPrompt && !standalone && (
-              <button type="button" disabled={installing} onClick={() => void installPwa()} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 9, padding: "10px 12px", background: "#b7f34a", color: "#172207", fontWeight: 800 }}>
-                {installing ? "در حال آماده‌سازی نصب..." : "نصب GMO Arena روی گوشی"}
+            <>
+              {installPrompt && !standalone && (
+                <button type="button" disabled={installing} onClick={() => void installPwa()} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 9, padding: "10px 12px", background: "#b7f34a", color: "#172207", fontWeight: 800 }}>
+                  {installing ? "در حال آماده‌سازی نصب..." : "نصب GMO Arena روی گوشی"}
+                </button>
+              )}
+              <button type="button" onClick={openTelegram} style={{ width: "100%", marginTop: 8, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 800 }}>
+                ورود از طریق تلگرام
               </button>
-            )}
-            <button type="button" onClick={openTelegram} style={{ width: "100%", marginTop: 8, border: "1px solid #52605a", borderRadius: 9, padding: "10px 12px", background: "#20282a", color: "#f1f5f3", fontWeight: 800 }}>
-              ورود از طریق تلگرام
-            </button>
-            {!inTelegram && !standalone && !installPrompt && (
-              <span style={{ display: "block", marginTop: 8, color: "#aab6af", fontSize: 10, lineHeight: 1.7 }}>
-                برای نصب، از منوی مرورگر گزینه Install app یا Add to Home Screen را انتخاب کن.
-              </span>
-            )}
+              {!inTelegram && !standalone && !installPrompt && (
+                <span style={{ display: "block", marginTop: 8, color: "#aab6af", fontSize: 10, lineHeight: 1.7 }}>
+                  برای نصب، از منوی مرورگر گزینه Install app یا Add to Home Screen را انتخاب کن.
+                </span>
+              )}
+            </>
           )}
           {standalone && <span style={{ display: "block", marginTop: 8, color: "#aab6af", fontSize: 10 }}>این نسخه نصب‌شده است؛ راهنمای نصب دیگری نمایش داده نمی‌شود.</span>}
         </aside>
