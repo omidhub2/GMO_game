@@ -6,7 +6,7 @@ const PRECACHE = [
   "/avatars/gmo-avatar-2.webp",
   "/avatars/gmo-avatar-3.webp",
 ];
-const STATIC_EXT = /\\.(?:css|js|mjs|svg|png|webp|jpg|jpeg|avif|gif|woff2?|ttf|otf)$/i;
+const STATIC_EXT = /\.(?:css|js|mjs|svg|png|webp|jpg|jpeg|avif|gif|woff2?|ttf|otf)$/i;
 const MAX_RUNTIME_ENTRIES = 140;
 
 self.addEventListener("install", event => {
