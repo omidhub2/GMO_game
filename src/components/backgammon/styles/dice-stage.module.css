@@ -5,6 +5,7 @@
 }
 
 .diceStage {
+  --rail-checker-size: clamp(26px, 14cqh, 54px);
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr);
   align-items: center;
@@ -80,8 +81,8 @@
 }
 
 .turnPrompt .railChecker {
-  width: clamp(26px, 14cqh, 54px);
-  max-width: 100%;
+  width: var(--rail-checker-size);
+  max-width: none;
   height: auto;
 }
 
