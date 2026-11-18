@@ -115,3 +115,9 @@
   .turnPrompt { transition: none; }
   .turnPromptRolling .railChecker { animation: none; outline: 2px solid #f0b90b; }
 }
+
+
+@media (hover: none) and (pointer: coarse) {
+  .turnPromptRolling .railChecker { animation: none; filter: none; }
+  .diceStage { box-shadow: inset 0 1px #ffffff12; }
+}
