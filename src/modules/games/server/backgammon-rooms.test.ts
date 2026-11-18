@@ -37,6 +37,18 @@ describe("online backgammon rooms", () => {
     expect(moved.game!.usedDice).toHaveLength(1);
     expect(roomSnapshot(inactive.room, inactive.token).game).toEqual(moved.game);
   });
+  it("applies an online command once and safely returns the snapshot for retries", () => {
+    const host = createRoom("light", null), guest = joinRoom(host.room);
+    readyRoom(guest.room, guest.token);
+    const commandId = "7b8f4e3a-6f27-4c6f-9e7a-9c0f6a1b2d33";
+    const before = roomSnapshot(host.room, host.token).game!;
+    const action = { type: "roll" as const, dice: [2, 5] as [number, number], revision: before.revision };
+    const accepted = roomAction(host.room, host.token, action, commandId);
+    const retried = roomAction(host.room, host.token, action, commandId);
+    expect(retried.game).toEqual(accepted.game);
+    expect(retried.game!.revision).toBe(accepted.game!.revision);
+    expect(() => roomAction(host.room, host.token, { ...action, dice: [3, 4] }, commandId)).toThrow(/شناسه حرکت/);
+  });
   it("expires abandoned rooms", () => {
     const host = createRoom("light", null);
     vi.useFakeTimers();
