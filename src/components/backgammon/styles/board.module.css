@@ -614,3 +614,12 @@
   }
   .chatToast { box-shadow: 0 6px 16px #0009; }
 }
+
+
+/* The document is locked during a live match; the chat transcript remains
+   the one intentional touch-scroll region inside the game. */
+.chatMessages[data-game-scroll] {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
